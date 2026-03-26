@@ -1,0 +1,38 @@
+{
+  "Parent": "Template_Weapon_Daggers",
+  "TranslationProperties": {
+    "Name": "Heirlooms.Weapon_Heirloom_Quick_Quick.name",
+    "Description": "Heirlooms.Weapon_Heirloom_General_Voxel_Tier_2.description"
+  },
+  "Model": "Items/Weapons/Dagger/Quick_Quick.blockymodel",
+  "Texture": "Items/Weapons/Dagger/Quick_Quick.png",
+  "ItemLevel": 30,
+  "Tags": {
+    "Family": [
+      "Dagger"
+    ],
+    "Type": [
+      "Weapon"
+    ]
+  },
+  "Interactions": {
+    "Primary": "Root_Weapon_Heirloom_Quick_Quick_Primary",
+    "Ability1": "Root_Signature_Heirloom_Quick_Quick"
+  },
+  "Weapon": {
+    "EntityStatsToClear": [
+      "SignatureEnergy"
+    ],
+    "StatModifiers": {
+      "SignatureEnergy": [
+        {
+          "Amount": 20,
+          "CalculationType": "Additive"
+        }
+      ]
+    },
+    "RenderDualWielded": true
+  },
+  "MaxDurability": 9999,
+  "DurabilityLossOnHit": 0
+}

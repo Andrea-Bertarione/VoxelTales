@@ -1,0 +1,9 @@
+{
+  "Cooldown": {
+    "Cooldown": 0.1
+  },
+  "RequireNewClick": false,
+  "Interactions": [
+    "Weapon_Heirloom_Quick_Sharp_Primary"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "Parent": "Template_Weapon_Shortbow",
+  "TranslationProperties": {
+    "Name": "Heirlooms.Weapon_Heirloom_Quick_Sharp.name",
+    "Description": "Heirlooms.Weapon_Heirloom_General_Voxel_Tier_2.description"
+  },
+  "Model": "Items/Weapons/Shortbow/Quick_Sharp.blockymodel",
+  "Texture": "Items/Weapons/Shortbow/Quick_Sharp.png",
+  "ItemLevel": 30,
+  "Tags": {
+    "Family": [
+      "Shortbow"
+    ],
+    "Type": [
+      "Weapon"
+    ]
+  },
+  "Interactions": {
+    "Primary": "Root_Weapon_Heirloom_Quick_Sharp_Primary",
+    "Ability1": "Root_Signature_Heirloom_Quick_Sharp"
+  },
+  "Weapon": {
+    "EntityStatsToClear": [
+      "SignatureEnergy"
+    ],
+    "StatModifiers": {
+      "SignatureEnergy": [
+        {
+          "Amount": 20,
+          "CalculationType": "Additive"
+        }
+      ]
+    },
+    "RenderDualWielded": false
+  },
+  "MaxDurability": 9999,
+  "DurabilityLossOnHit": 0
+}

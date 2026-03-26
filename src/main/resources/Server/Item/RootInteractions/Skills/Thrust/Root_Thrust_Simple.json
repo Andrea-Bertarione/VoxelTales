@@ -1,0 +1,22 @@
+{
+  "Interactions": [
+    {
+      "Type": "Charging",
+      "DisplayProgress": true,
+      "Next": {
+        "0": {
+          "Type": "Replace",
+          "Var": "Thrust_Stamina",
+          "DefaultOk": true,
+          "DefaultValue": {
+            "Interactions": [
+              "Weapon_Sword_Primary_Thrust_StaminaCondition"
+            ]
+          }
+        }
+      },
+      "AllowIndefiniteHold": false
+    }
+  ],
+  "RequireNewClick": false
+}

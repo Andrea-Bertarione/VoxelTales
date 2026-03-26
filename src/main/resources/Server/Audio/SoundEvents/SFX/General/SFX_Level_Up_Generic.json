@@ -1,0 +1,28 @@
+{
+  "Volume": 0.0,
+  "Pitch": 0.0,
+  "MusicDuckingVolume": -10.0,
+  "AmbientDuckingVolume": -5.0,
+  "StartAttenuationDistance": 0.0,
+  "MaxDistance": 32.0,
+  "MaxInstance": 3,
+  "PreventSoundInterruption": true,
+  "Layers": [
+    {
+      "Volume": 0.0,
+      "StartDelay": 0.0,
+      "Looping": false,
+      "Probability": 100,
+      "Files": [
+        "Sounds/SFX/SFX_Level_Up_Generic.ogg"
+      ],
+      "RandomSettings": {
+        "MinVolume": -0.5,
+        "MaxVolume": 0.5,
+        "MinPitch": -0.5,
+        "MaxPitch": 1.0,
+        "MaxStartOffset": 0.0
+      }
+    }
+  ]
+}

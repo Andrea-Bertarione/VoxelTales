@@ -1,0 +1,308 @@
+    <style>
+        .page-overlay {
+            anchor-full: 0;
+            layout-mode: centermiddle;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .window-wrapper {
+            layout-mode: top;
+            padding: 10;
+        }
+
+        .decorated-container {
+            anchor-width: 1200;
+            anchor-height: 800;
+        }
+
+        .native-tab-button {
+            margin: 5;
+            flex-weight: 1;
+            anchor-height: 40;
+        }
+
+        .filter-wrapper {
+            layout-mode: left;
+            anchor-height: 40;
+            margin-bottom: 15;
+        }
+
+        .split-layout-container {
+            layout-mode: left;
+            flex-weight: 1;
+        }
+
+        .pane-left-list {
+            flex-weight: 1;
+            margin-right: 10;
+        }
+
+        .list-entry {
+            layout-mode: topscrolling;
+            flex-weight: 1;
+            margin-top: 35;
+        }
+
+        .ui-menu-divider {
+            anchor-width: 23;
+            background-image: url('Assets/DecoratedDivider.png');
+            margin-left: -20;
+
+        }
+
+        .pane-right-editor {
+            layout-mode: topscrolling;
+            flex-weight: 2;
+            margin-left: 20;
+            padding-right: 10;
+        }
+
+        .editor-section-header {
+            font-weight: bold;
+            color: #ffcc00;
+            text-transform: uppercase;
+            letter-spacing: 1;
+            margin-top: 20;
+            margin-bottom: 10;
+            background-color: rgba(255, 204, 0, 0.1);
+            padding: 5;
+        }
+
+        .item-preview-box {
+            layout-mode: left;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10;
+            margin-bottom: 10;
+            anchor-height: 80;
+        }
+
+        .hidden { display: none; }
+    </style>
+
+    <div id="page-root">
+        <div class="page-overlay" id="main-overlay">
+            <div class="window-wrapper">
+
+                <nav id="weapon-tabs" class="native-tab-navigation" style="layout-mode: left;" data-selected-tab="overview">
+                    <button id="overview-button-tab" class="native-tab-button" data-hyui-tab-id="overview">Overview</button>
+                    <button id="blades-button-tab" class="native-tab-button" data-hyui-tab-id="blades">Blades</button>
+                    <button id="handles-button-tab" class="native-tab-button" data-hyui-tab-id="handles">Handles</button>
+                </nav>
+
+                <div id="overview" class="tab-content" data-hyui-tab-id="overview">
+                    <div class="decorated-container" data-hyui-title="Weapon Configuration - Overview">
+                        <div class="container-contents" style="layout-mode: top; padding: 30;">
+
+                            <div style="flex-weight: 1; layout-mode: centermiddle; background-color: rgba(0,0,0,0.1); border-radius: 8;">
+                                <div style="layout-mode: top; anchor-width: 800;">
+                                    <p id="title-overview-text" style="text-align: center; font-size: 38; color: #ffcc00; font-weight: bold; text-shadow: 2 2 0 rgba(0,0,0,0.5);">
+                                        VoxelTales Forge
+                                    </p>
+                                    <p style="text-align: center; font-size: 20; color: #ffffff; margin-top: 10; opacity: 0.9;">
+                                        The official configuration suite for Blades and Handles.
+                                    </p>
+
+                                    <img style="margin-top: 20;" src="Assets/mod-logo.png" width="256" height="256" />
+
+                                    <div style="layout-mode: center; margin-top: 40; justify-content: center;">
+                                        <div style="anchor-width: 250; anchor-height: 80; padding: 15; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,204,0,0.2); margin-right: 20; layout-mode: top;">
+                                            <p style="color: #ffcc00; font-weight: bold; text-align: center; flex-weight: 1; margin-top: 3;">BLADES</p>
+                                            <p style="white-space: wrap; font-size: 12; color: #888888; text-align: center; margin-bottom: 3;">Modify base damage, scaling, and unique blade passives.</p>
+                                        </div>
+                                        <div style="anchor-width: 250; anchor-height: 80; padding: 15; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,204,0,0.2); layout-mode: top;">
+                                            <p style="color: #ffcc00; font-weight: bold; text-align: center; flex-weight: 1; margin-top: 3;">HANDLES</p>
+                                            <p style="white-space: wrap; font-size: 12; color: #888888; text-align: center; margin-bottom: 3;">Adjust attack speed multipliers and handle-specific perks.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 20; layout-mode: left; vertical-alignment: middle; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15;">
+                                <div style="layout-mode: top; flex-weight: 1;">
+                                    <p style="color: #444444; font-size: 12;">SYSTEM: STABLE</p>
+                                    <p style="color: #444444; font-size: 14;">VoxelTales Weapon System v1.2.4</p>
+                                </div>
+                                <button class="tertiary-button" style="anchor-width: 200; anchor-height: 45;" id="quick-jump-blades">
+                                    Open Forge ->
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div id="blades" class="tab-content" data-hyui-tab-id="blades">
+                    <div class="decorated-container" data-hyui-title="Weapon Configuration - Blades">
+                        <div class="container-contents" style="layout-mode: top; padding: 15;">
+
+                            <div class="filter-wrapper">
+                                <div style="flex-weight: 1; layout-mode: full; padding-right: 10;">
+                                    <input id="blades-search-bar" class="default-style" type="text" placeholder="Search a blade...">
+                                </div>
+                                <div style="flex-weight: 1; layout-mode: full;">
+                                    <select id="blades-tier-filter" data-hyui-forced-label="Filter for tier" data-hyui-showlabel="true">
+                                        <option value="0">All Tiers</option>
+                                        <option value="1">Tier 1</option>
+                                        <option value="2">Tier 2</option>
+                                        <option value="3">Tier 3</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="split-layout-container">
+                                <div class="pane-left-list">
+                                    <div style="layout-mode: left;">
+                                        <p id="blades-list-label" style="color: #aaaaaa; margin-top: 5;">Blades</p>
+                                        <button id="blades-add-item" class="secondary-button" style="margin-top: 0; margin-left: 140; anchor-height: 30;">+ Add blades</button>
+                                    </div>
+                                    <div id="blades-item-list" class="list-entry" data-hyui-scrollbar-style="DefaultScrollbarStyle">
+                                    </div>
+                                </div>
+
+                                <div class="ui-menu-divider"></div>
+
+                                <div id="blades-editor-scroll-pane" class="pane-right-editor" data-hyui-scrollbar-style="DefaultScrollbarStyle">
+
+                                    <div id="blades-empty-state" style="layout-mode: centermiddle; flex-weight: 1;">
+                                        <p style="color: #666666;">Select a blade to edit its properties.</p>
+                                    </div>
+
+                                    <div id="blades-editor-ui" class="hidden" style="layout-mode: top;">
+                                        <div class="item-preview-box">
+                                            <span id="blades-icon-render" class="item-icon" style="anchor-width: 64; anchor-height: 64;"></span>
+
+                                            <div style="layout-mode: left; margin-left: 15; flex-weight: 1; vertical-alignment: middle;">
+                                                <div style="layout-mode: top; flex-weight: 1;">
+                                                    <div style="layout-mode: left; vertical-alignment: middle; margin-top: 10;">
+                                                        <p id="blades-display-name" style="font-size: 20; font-weight: bold; color: #ffffff;">--</p>
+                                                        <button id="blades-rename-btn" class="tertiary-button" style="margin-left: 10;">Edit Name</button>
+                                                    </div>
+                                                    <p id="blades-internal-id" style="color: #aaaaaa; font-size: 14;">ID: --</p>
+                                                </div>
+                                            </div>
+
+                                            <div style="layout-mode: left; anchor-width: 200; margin-right: 15;">
+                                                <div style="layout-mode: top; flex-weight: 1;">
+                                                    <p style="font-size: 12; color: #ffcc00; margin-top: 10; text-align: center;">ATK SPEED</p>
+                                                    <input id="blades-atk-speed-input" type="number" class="default-style" value="1.0" />
+                                                </div>
+                                                <div style="layout-mode: top; flex-weight: 1; margin-left: 10;">
+                                                    <p style="font-size: 12; color: #ffcc00; margin-top: 10; text-align: center;">TIER</p>
+                                                    <input id="blades-tier-input" type="number" class="default-style" value="0" />
+                                                </div>
+                                                <button id="blades-delete-item" class="small-tertiary-button" style="margin-left: 10; margin-top: 10; anchor-height: 25; anchor-width: 25">X</button>
+                                            </div>
+                                        </div>
+
+                                        <p class="editor-section-header">Base Damage</p>
+                                        <div id="blades-damage-container" style="layout-mode: top;"></div>
+                                        <button id="blades-add-damage-btn" class="tertiary-button" style="anchor-height: 25; margin-top: 5;">+ Add Damage Type</button>
+
+                                        <p class="editor-section-header">Attribute Scaling</p>
+                                        <div id="blades-scaling-container" style="layout-mode: top;"></div>
+                                        <button id="blades-add-scaling-btn" class="tertiary-button" style="anchor-height: 25; margin-top: 5;">+ Add Scaling</button>
+
+                                        <p class="editor-section-header">Passives</p>
+                                        <div id="blades-passive-container" style="layout-mode: top;"></div>
+                                        <button id="blades-add-passive-btn" class="tertiary-button" style="anchor-height: 25; margin-top: 5;">+ Add Passive</button>
+
+                                        <div style="margin-top: 40; layout-mode: left; anchor-height: 45;">
+                                            <button id="blades-save-btn" class="primary-button" style="flex-weight: 1; margin-right: 10;">Save Changes</button>
+                                            <button id="blades-reset-btn" class="secondary-button" style="flex-weight: 1;">Reset</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="handles" class="tab-content" data-hyui-tab-id="handles">
+                    <div class="decorated-container" data-hyui-title="Weapon Configuration - Handles">
+                        <div class="container-contents" style="layout-mode: top; padding: 15;">
+
+                            <div class="filter-wrapper">
+                                <div style="flex-weight: 1; layout-mode: full; padding-right: 10;">
+                                    <input id="handles-search-bar" class="default-style" type="text" placeholder="Search a handle...">
+                                </div>
+                                <div style="flex-weight: 1; layout-mode: full;">
+                                    <select id="handles-tier-filter" data-hyui-forced-label="Filter for tier" data-hyui-showlabel="true">
+                                        <option value="0">All Tiers</option>
+                                        <option value="1">Tier 1</option>
+                                        <option value="2">Tier 2</option>
+                                        <option value="3">Tier 3</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="split-layout-container">
+                                <div class="pane-left-list">
+                                    <div style="layout-mode: left">
+                                        <p id="handles-list-label" style="color: #aaaaaa; margin-top: 5;">Handles</p>
+                                        <button id="handles-add-item" class="secondary-button" style="margin-top: 0; margin-left: 125; anchor-height: 30;">+ Add handle</button>
+                                    </div>
+                                    <div id="handles-item-list" class="list-entry" data-hyui-scrollbar-style="DefaultScrollbarStyle">
+                                    </div>
+                                </div>
+
+                                <div class="ui-menu-divider"></div>
+
+                                <div id="handles-editor-scroll-pane" class="pane-right-editor" data-hyui-scrollbar-style="DefaultScrollbarStyle">
+
+                                    <div id="handles-empty-state" style="layout-mode: centermiddle; flex-weight: 1;">
+                                        <p style="color: #666666;">Select a handle to edit its properties.</p>
+                                    </div>
+
+                                    <div id="handles-editor-ui" class="hidden" style="layout-mode: top;">
+                                        <div class="item-preview-box">
+                                            <span id="handles-icon-render" class="item-icon" style="anchor-width: 64; anchor-height: 64;"></span>
+
+                                            <div style="layout-mode: left; margin-left: 15; flex-weight: 1; vertical-alignment: middle;">
+                                                <div style="layout-mode: top; flex-weight: 1;">
+                                                    <div style="layout-mode: left; vertical-alignment: middle; margin-top: 10;">
+                                                        <p id="handles-display-name" style="font-size: 20; font-weight: bold; color: #ffffff;">--</p>
+                                                        <button id="handles-rename-btn" class="tertiary-button" style="margin-left: 10;">Edit Name</button>
+                                                    </div>
+                                                    <p id="handles-internal-id" style="color: #aaaaaa; font-size: 14;">ID: --</p>
+                                                </div>
+                                            </div>
+
+                                            <div style="layout-mode: left; anchor-width: 200; margin-right: 15;">
+                                                <div style="layout-mode: top; flex-weight: 1;">
+                                                    <p style="font-size: 12; color: #ffcc00; margin-top: 10; text-align: center;">ATK SPEED</p>
+                                                    <input id="handles-atk-speed-input" type="number" class="default-style" value="1.0" />
+                                                </div>
+                                                <div style="layout-mode: top; flex-weight: 1; margin-left: 10;">
+                                                    <p style="font-size: 12; color: #ffcc00; margin-top: 10; text-align: center;">TIER</p>
+                                                    <input id="handles-tier-input" type="number" class="default-style" value="0" />
+                                                </div>
+                                                <button id="handles-delete-item" class="small-tertiary-button" style="margin-left: 10; margin-top: 10; anchor-height: 25; anchor-width: 25">X</button>
+                                            </div>
+                                        </div>
+
+                                        <p class="editor-section-header">Base Damage</p>
+                                        <div id="handles-damage-container" style="layout-mode: top;"></div>
+                                        <button id="handles-add-damage-btn" class="tertiary-button" style="anchor-height: 25; margin-top: 5;">+ Add Damage Type</button>
+
+                                        <p class="editor-section-header">Attribute Scaling</p>
+                                        <div id="handles-scaling-container" style="layout-mode: top;"></div>
+                                        <button id="handles-add-scaling-btn" class="tertiary-button" style="anchor-height: 25; margin-top: 5;">+ Add Scaling</button>
+
+                                        <p class="editor-section-header">Passives</p>
+                                        <div id="handles-passive-container" style="layout-mode: top;"></div>
+                                        <button id="handles-add-passive-btn" class="tertiary-button" style="anchor-height: 25; margin-top: 5;">+ Add Passive</button>
+
+                                        <div style="margin-top: 40; layout-mode: left; anchor-height: 45;">
+                                            <button id="handles-save-btn" class="primary-button" style="flex-weight: 1; margin-right: 10;">Save Changes</button>
+                                            <button id="handles-reset-btn" class="secondary-button" style="flex-weight: 1;">Reset</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>

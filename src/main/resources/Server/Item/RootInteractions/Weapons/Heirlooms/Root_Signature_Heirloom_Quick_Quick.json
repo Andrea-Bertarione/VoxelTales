@@ -1,0 +1,9 @@
+{
+  "Cooldown": {
+    "Cooldown": 0.25
+  },
+  "RequireNewClick": true,
+  "Interactions": [
+    "Weapon_Heirloom_Quick_Quick_Signature"
+  ]
+}
