@@ -48,7 +48,7 @@ public class MobDeathXPSystem extends DeathSystems.OnDeathSystem {
         float totalDamage = 0;
         for (float d : damageMap.values()) totalDamage += d;
 
-        int totalXp = EntityXPConfigsHelper.getMobXP(npcEntity.getNPCTypeId(), entityStatMap);
+        int totalXp = EntityXPConfigsHelper.getMobXP(npcEntity, entityStatMap);
 
         for (Map.Entry<UUID, Float> entry : damageMap.entrySet()) {
             float percentage = entry.getValue() / totalDamage;

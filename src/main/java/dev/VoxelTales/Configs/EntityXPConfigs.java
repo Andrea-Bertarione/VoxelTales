@@ -4,13 +4,13 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
-import com.hypixel.hytale.codec.validation.Validators;
+import com.hypixel.hytale.server.core.asset.type.attitude.Attitude;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
+import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
 import java.util.HashMap;
-import java.util.OptionalInt;
 
 public class EntityXPConfigs {
     private HashMap<String, Integer> mobXPLookUpTable;
@@ -38,15 +38,22 @@ public class EntityXPConfigs {
         return this.mobXPLookUpTable.get(name);
     }
 
-    public int getOrGenerateXP(String name, EntityStatMap statMap, Runnable onNewEntry) {
-        if (mobXPLookUpTable.containsKey(name)) {
-            return mobXPLookUpTable.get(name);
+    public int getOrGenerateXP(NPCEntity entity, EntityStatMap statMap, Runnable onNewEntry) {
+        String npcName = entity.getNPCTypeId();
+
+        if (mobXPLookUpTable.containsKey(npcName)) {
+            return mobXPLookUpTable.get(npcName);
         }
 
         EntityStatValue health = statMap.get(DefaultEntityStatTypes.getHealth());
         int defaultValue = (health != null) ? (int) health.getMax() : 10;
 
-        mobXPLookUpTable.put(name, defaultValue);
+        assert entity.getRole() != null;
+        boolean isHostile = entity.getRole().getWorldSupport().getDefaultPlayerAttitude() == Attitude.HOSTILE;
+
+        double xpMulti = (isHostile ? 1.3 : 0.8);
+
+        mobXPLookUpTable.put(npcName, (int) (defaultValue * xpMulti));
         onNewEntry.run();
         return defaultValue;
     }
