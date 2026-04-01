@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Roo
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.none.RunRootInteraction;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
+import dev.VoxelTales.Utils.VoxelMetadata;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,8 @@ public class RouterSignatureInteraction extends RunRootInteraction {
             context.execute(Objects.requireNonNull(RootInteraction.getAssetMap().getAsset(this.rootInteraction)));
             return;
         }
+
+        context.getMetaStore().putMetaObject(VoxelMetadata.INTERACTION_SOURCE_KEY, "Signature");
 
         context.execute(Objects.requireNonNull(RootInteraction.getAssetMap().getAsset(weaponHandlerComponent.getSelectedUltimate())));
     }

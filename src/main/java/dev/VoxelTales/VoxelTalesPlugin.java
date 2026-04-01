@@ -14,10 +14,6 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.VoxelTales.Commands.*;
-import dev.VoxelTales.Commands.AdminCommands.GiveXPCommand;
-import dev.VoxelTales.Commands.AdminCommands.SetBladeCommand;
-import dev.VoxelTales.Commands.AdminCommands.SetHandleCommand;
-import dev.VoxelTales.Commands.AdminCommands.SetSkillCommand;
 import dev.VoxelTales.Components.CombatTrackerComponent;
 import dev.VoxelTales.Components.VoxelPlayerComponent;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
@@ -28,6 +24,7 @@ import dev.VoxelTales.Events.PlayerDisconnect;
 import dev.VoxelTales.Events.PlayerReady;
 import dev.VoxelTales.Interactions.RouterSignatureInteraction;
 import dev.VoxelTales.Interactions.RouterSkillInteraction;
+import dev.VoxelTales.Interactions.VoxelDamageEntityInteraction;
 import dev.VoxelTales.PacketListeners.WeaponActivationListener;
 import dev.VoxelTales.PacketListeners.WeaponMoveListener;
 import dev.VoxelTales.Systems.DamageDealingSystem;
@@ -72,7 +69,8 @@ public class VoxelTalesPlugin extends JavaPlugin {
         this.weaponLookupConfig.save();
 
         //Register custom Metadata
-        VoxelMetadata.register(Damage.META_REGISTRY);
+        VoxelMetadata.registerDamage(Damage.META_REGISTRY);
+        VoxelMetadata.registerInteraction(Interaction.META_REGISTRY);
 
         //Register components
         this.weaponHandlerComponent = this.getEntityStoreRegistry().registerComponent(
@@ -113,7 +111,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
         //Register Interactions
         this.getCodecRegistry(Interaction.CODEC).register("RouterSignatureInteraction", RouterSignatureInteraction.class, RouterSignatureInteraction.CODEC);
         this.getCodecRegistry(Interaction.CODEC).register("RouterSkillInteraction", RouterSkillInteraction.class, RouterSkillInteraction.CODEC);
-
+        this.getCodecRegistry(Interaction.CODEC).register("DamageEntityInteraction", VoxelDamageEntityInteraction.class, VoxelDamageEntityInteraction.CODEC);
 
         //Register Caches
         VoxelCacheRegistry.register("WeaponConfigurationPage", WeaponConfigurationPage::new);

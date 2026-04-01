@@ -1,5 +1,6 @@
 package dev.VoxelTales.Systems;
 
+import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.common.util.RandomUtil;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
@@ -7,6 +8,7 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.damage.*;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.server.DamageEntityInteraction;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
@@ -52,6 +54,14 @@ public class DamageDealingSystem extends DamageEventSystem {
         }
 
         Float finalScaledDamage = calculateDamage(weapon, attackerStats, totalEffectiveBoost);
+        String interactionSource = damage.getMetaObject(VoxelMetadata.DAMAGE_SOURCE_KEY);
+
+        if (interactionSource != null) {
+            LoggerUtil.getLogger().info("The interactionSource is: " + interactionSource);
+        }
+        else {
+            LoggerUtil.getLogger().warning("No interactionSource found!");
+        }
 
         Map<String, Float> typeMap = weapon.getCalculatedDamageMap(); // e.g., {"Fire": 0.7, "Magic": 0.3}
         if (typeMap.isEmpty()) return;

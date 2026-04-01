@@ -9,8 +9,10 @@ import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.none.RunRootInteraction;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.server.DamageEntityInteraction;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
+import dev.VoxelTales.Utils.VoxelMetadata;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 import javax.annotation.Nonnull;
@@ -33,6 +35,8 @@ public class RouterSkillInteraction extends RunRootInteraction {
             context.execute(Objects.requireNonNull(RootInteraction.getAssetMap().getAsset(this.rootInteraction)));
             return;
         }
+
+        context.getMetaStore().putMetaObject(VoxelMetadata.INTERACTION_SOURCE_KEY, "Skill");
 
         context.execute(Objects.requireNonNull(RootInteraction.getAssetMap().getAsset(weaponHandlerComponent.getSelectedSkill())));
     }
