@@ -4,11 +4,15 @@ import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.common.util.RandomUtil;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
+import com.hypixel.hytale.protocol.SoundCategory;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.*;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
-import com.hypixel.hytale.server.core.modules.interaction.interaction.config.server.DamageEntityInteraction;
+import com.hypixel.hytale.server.core.universe.world.SoundUtil;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
@@ -18,9 +22,10 @@ import dev.VoxelTales.VoxelTalesPlugin;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
-import java.util.Objects;
 
 public class DamageDealingSystem extends DamageEventSystem {
+    private record DamageResult(float finalDamage, boolean isCrit) {}
+
     @Override
     public void handle(int index, @Nonnull ArchetypeChunk<EntityStore> chunk, @Nonnull Store<EntityStore> store,
                        @Nonnull CommandBuffer<EntityStore> buffer, @Nonnull Damage damage) {
@@ -53,7 +58,13 @@ public class DamageDealingSystem extends DamageEventSystem {
             totalEffectiveBoost += (scalingValue * statBoost);
         }
 
-        Float finalScaledDamage = calculateDamage(weapon, attackerStats, totalEffectiveBoost);
+        DamageResult result = calculateDamage(weapon, attackerStats, totalEffectiveBoost);
+        float finalScaledDamage = result.finalDamage();
+
+        if (result.isCrit()) {
+            this.applyCritFX(store, attackerRef);
+        }
+
         String interactionSource = damage.getMetaObject(VoxelMetadata.DAMAGE_SOURCE_KEY);
 
         if (interactionSource != null) {
@@ -120,8 +131,8 @@ public class DamageDealingSystem extends DamageEventSystem {
         }
     }
 
-    private Float calculateDamage(WeaponHandlerComponent weaponHandlerComponent, EntityStatMap attackerStats, Float totalEffectiveBoost) {
-        float baseDamage = 1.5f;
+    private DamageResult calculateDamage(WeaponHandlerComponent weaponHandlerComponent, EntityStatMap attackerStats, Float totalEffectiveBoost) {
+        float baseDamage = 0.8f;
 
         int weaponLevel = weaponHandlerComponent.getSwordInternalLevel();
         float levelMultiplier = 1.0f + (weaponLevel * 0.0125f);
@@ -131,26 +142,49 @@ public class DamageDealingSystem extends DamageEventSystem {
         speedMultiplier = Math.max(0.1f, speedMultiplier);
 
         float finalScaledDamage = (baseDamage * speedMultiplier) * levelMultiplier * (1.0f + totalEffectiveBoost);
+
+        // Return the result of the crit check
         return tryCrit(finalScaledDamage, attackerStats);
     }
 
-    private Float tryCrit(Float currentDamage, EntityStatMap statMap) {
+    private DamageResult tryCrit(Float currentDamage, EntityStatMap statMap) {
         int statIndex = VoxelStatsHelper.getStatIndex("Boost_Dexterity");
-        if (statIndex == -1) return currentDamage;
+        if (statIndex == -1) return new DamageResult(currentDamage, false);
 
         EntityStatValue dexStat = statMap.get(statIndex);
-        if (dexStat == null) return currentDamage;
+        if (dexStat == null) return new DamageResult(currentDamage, false);
 
         float dexBoostPercent = dexStat.get() * 100f;
         float critChance = dexBoostPercent / 10f;
         float critMultiplier = critChance / 100f;
 
-        if (critChance < 0.1f) return currentDamage;
+        if (critChance < 0.1f) return new DamageResult(currentDamage, false);
 
         if (RandomUtil.getSecureRandom().nextFloat(100f) <= critChance) {
-            return currentDamage * (1f + critMultiplier);
+            // It's a crit! Return the multiplied damage and TRUE
+            return new DamageResult(currentDamage * (1f + critMultiplier), true);
         }
 
-        return currentDamage;
+        // No crit, return base damage and FALSE
+        return new DamageResult(currentDamage, false);
+    }
+
+    private void applyCritFX(Store<EntityStore> store, Ref<EntityStore> ref) {
+        int soundIndex = SoundEvent.getAssetMap().getIndex("SFX_Critical_Generic");
+        World world = store.getExternalData().getWorld();
+
+        world.execute(() -> {
+            TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
+
+            if (transform != null) {
+                SoundUtil.playSoundEvent3dToPlayer(
+                        ref,
+                        soundIndex,
+                        SoundCategory.SFX,
+                        transform.getPosition(),
+                        store
+                );
+            }
+        });
     }
 }

@@ -21,6 +21,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.VoxelTales.Configs.VoxelWeaponLookup;
 import dev.VoxelTales.UI.Components.ModalUI;
+import dev.VoxelTales.UI.Default.VoxelEditorPageUI;
+import dev.VoxelTales.UI.Default.VoxelPageUI;
 import dev.VoxelTales.Utils.VoxelWeaponConfigsHelper;
 
 import java.util.*;
@@ -28,13 +30,9 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class WeaponConfigurationPage {
+public class WeaponConfigurationPage extends VoxelEditorPageUI {
     private static final List<String> TABS = List.of("overview", "blades", "handles");
     private static final List<String> TYPE_ENTRIES = List.of("damage", "scaling", "passive");
-
-    private final PlayerRef playerRef;
-    private Store<EntityStore> store;
-    private PageBuilder builder;
 
     //Currently selected data;
     private final HashMap<String, String> textBarFilter = new HashMap<>();
@@ -47,22 +45,15 @@ public class WeaponConfigurationPage {
     private Integer tier;
     private Float attackSpeed;
 
-    private boolean draftsPresent = false;
-
     private final Map<String, Set<UIElementBuilder<?>>> inspectionElements = new HashMap<>();
     private final Map<String, Set<UIElementBuilder<?>>> sideBarElements = new HashMap<>();
 
     public WeaponConfigurationPage(PlayerRef playerRef) {
-        this.playerRef = playerRef;
-        Ref<EntityStore> ref = this.playerRef.getReference();
-        if (ref != null && ref.isValid()) {
-            this.store = ref.getStore();
-        }
+        super(playerRef);
     }
 
     public void update() {
-        this.builder = PageBuilder.pageForPlayer(this.playerRef)
-                .loadHtml("Pages/WeaponConfigurator.html");
+        super.update("Pages/WeaponConfigurator.html");
 
         for (String tabId : List.of("blades", "handles")) {
             this.builder.getById(tabId + "-item-list", GroupBuilder.class)
@@ -70,14 +61,14 @@ public class WeaponConfigurationPage {
 
             this.builder.getById(tabId + "-tier-input", NumberFieldBuilder.class).ifPresent(el ->
                     el.addEventListener(CustomUIEventBindingType.ValueChanged, (newTier) -> {
-                        this.draftsPresent = true;
+                        this.isDirty = true;
                         this.tier = newTier.intValue();
                     })
             );
 
             this.builder.getById(tabId + "-atk-speed-input", NumberFieldBuilder.class).ifPresent(el ->
                     el.addEventListener(CustomUIEventBindingType.ValueChanged, (newSpd) -> {
-                        this.draftsPresent = true;
+                        this.isDirty = true;
                         this.attackSpeed = newSpd.floatValue();
                     })
             );
@@ -131,6 +122,12 @@ public class WeaponConfigurationPage {
         );
     }
 
+    @Override
+    public void open() {
+        this.isDirty = false;
+        super.open();
+    }
+
     private void refreshTabVisibility(String activeTab, UIContext context) {
         if (context != null) {
             context.getById("weapon-tabs", NativeTabNavigationBuilder.class)
@@ -147,14 +144,6 @@ public class WeaponConfigurationPage {
                 this.builder.getById(tabId, TabContentBuilder.class)
                         .ifPresent(el -> el.withVisible(isVisible));
             }
-        }
-    }
-
-    public void open() {
-        this.update();
-        this.draftsPresent = false;
-        if (this.store != null) {
-            this.builder.open(this.store);
         }
     }
 
@@ -230,7 +219,7 @@ public class WeaponConfigurationPage {
                             context.getById(type + "-editor-ui", GroupBuilder.class).ifPresent(el -> el.withVisible(false));
 
                             this.selectedName = null;
-                            this.draftsPresent = false;
+                            this.isDirty = false;
 
                             context.updatePage(true);
                         });
@@ -300,7 +289,7 @@ public class WeaponConfigurationPage {
 
                     VoxelWeaponConfigsHelper.saveStatsOf(type, this.selectedName, stats);
 
-                    this.draftsPresent = false;
+                    this.isDirty = false;
                     this.playSaveNotification(type, this.selectedName);
                 }));
     }
@@ -338,7 +327,7 @@ public class WeaponConfigurationPage {
                         String name = dataMap.get("Name").toString();
                         float value = Float.parseFloat(dataMap.get("Value").toString());
 
-                        this.draftsPresent = true;
+                        this.isDirty = true;
 
                         categories.get(categoryName).put(name, value);
                         buildSelectedSide(context, type);
@@ -413,7 +402,7 @@ public class WeaponConfigurationPage {
                 el.withValue(this.attackSpeed)
         );
 
-        this.draftsPresent = false;
+        this.isDirty = false;
         buildSelectedSide(context, type);
 
         context.updatePage(true);
@@ -432,7 +421,7 @@ public class WeaponConfigurationPage {
 
         categories.forEach((categoryName, dataMap) -> context.getById(type + "-" + categoryName + "-container", GroupBuilder.class).ifPresent(container -> dataMap.forEach((key, value) -> {
             GroupBuilder created = buildInspectionRow(key, value, (newVal) -> {
-                this.draftsPresent = true;
+                this.isDirty = true;
                 dataMap.put(key, newVal.floatValue());
             });
 
@@ -507,62 +496,7 @@ public class WeaponConfigurationPage {
         return btn;
     }
 
-    private void withDiscardConfirmation(UIContext context, Runnable onSafe) {
-        if (!this.draftsPresent) {
-            onSafe.run();
-            return;
-        }
-
-        ModalUI modal = new ModalUI("Unsaved Changes", "Confirm Discard", new LinkedHashMap<>());
-        modal.setDescription("Are you sure? You still have some changes unsaved!");
-        modal.setHeight(250);
-        modal.setWidth(300);
-        modal.setButtonDirection(ModalUI.ButtonDirection.VERTICAL);
-
-        this.builder.getById("page-root", GroupBuilder.class).ifPresent(root -> {
-            this.builder.getById("main-overlay", PageOverlayBuilder.class).ifPresent(overlay -> {
-                overlay.withVisible(false);
-                modal.onFinally(() -> overlay.withVisible(true));
-            });
-
-            modal.onConfirm(_ -> {
-                this.draftsPresent = false;
-                onSafe.run();
-                context.updatePage(true);
-            });
-
-            modal.open(this.builder, root);
-            context.updatePage(true);
-        });
-    }
-
     private void playSaveNotification(String type, String name) {
-        var primaryMessage = Message.raw("Success!").color("#00FF00");
-        var secondaryMessage = Message.raw("Successfully saved " + type + ": " + name).color("#FFFFFF");
-        var icon = new ItemStack("Weapon_Sword_Steel", 1).toPacket();
-
-        NotificationUtil.sendNotification(this.playerRef.getPacketHandler(), primaryMessage, secondaryMessage, icon);
-
-        if (this.store != null) {
-            World world = this.store.getExternalData().getWorld();
-            int soundIndex = SoundEvent.getAssetMap().getIndex("SFX_Level_Up_Generic");
-
-            world.execute(() -> {
-                Ref<EntityStore> ref = this.playerRef.getReference();
-                if (ref != null && ref.isValid()) {
-                    TransformComponent transform = this.store.getComponent(ref, TransformComponent.getComponentType());
-
-                    if (transform != null) {
-                        SoundUtil.playSoundEvent3dToPlayer(
-                                ref,
-                                soundIndex,
-                                SoundCategory.SFX,
-                                transform.getPosition(),
-                                this.store
-                        );
-                    }
-                }
-            });
-        }
+        super.notifySuccess("Success!", "Successfully saved " + type + ": " + name, "Weapon_Sword_Steel", "SFX_Level_Up_Generic");
     }
 }

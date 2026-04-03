@@ -2,6 +2,9 @@ package dev.VoxelTales.Commands;
 
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import dev.VoxelTales.Commands.AdminCommands.*;
+import dev.VoxelTales.Commands.Presets.OpenUICommand;
+import dev.VoxelTales.UI.WeaponConfigurationPage;
+import dev.VoxelTales.UI.WeaponForgerPage;
 
 public class VoxelAdminCommandCollection extends AbstractCommandCollection {
     public VoxelAdminCommandCollection() {
@@ -11,6 +14,19 @@ public class VoxelAdminCommandCollection extends AbstractCommandCollection {
         addSubCommand(new SetBladeCommand());
         addSubCommand(new SetHandleCommand());
         addSubCommand(new SetSkillCommand());
-        addSubCommand(new WeaponConfigurationCommand());
+
+        addSubCommand(new OpenUICommand<>(
+                "config",
+                "Command to open the mod configuration menu",
+                "WeaponConfigurationPage",
+                WeaponConfigurationPage.class
+        ));
+
+        addSubCommand(new OpenUICommand<>(
+                "forger",
+                "Command to open the weapon forger menu",
+                "WeaponForgerPage",
+                WeaponForgerPage.class
+        ));
     }
 }

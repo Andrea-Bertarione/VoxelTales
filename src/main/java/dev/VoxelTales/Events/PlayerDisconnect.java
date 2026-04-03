@@ -2,6 +2,7 @@ package dev.VoxelTales.Events;
 
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import dev.VoxelTales.Utils.VoxelCacheRegistry;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 public class PlayerDisconnect  {
@@ -10,5 +11,7 @@ public class PlayerDisconnect  {
 
         VoxelTalesPlugin.get().removeLockedSlot(playerRef.getUuid());
         VoxelTalesPlugin.get().removeWeaponHud(playerRef.getUuid());
+
+        VoxelCacheRegistry.cleanup(playerRef.getUuid());
     }
 }

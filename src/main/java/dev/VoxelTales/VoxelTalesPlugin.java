@@ -31,6 +31,7 @@ import dev.VoxelTales.Systems.DamageDealingSystem;
 import dev.VoxelTales.Systems.DamageTrackingSystem;
 import dev.VoxelTales.Systems.MobDeathXPSystem;
 import dev.VoxelTales.UI.WeaponConfigurationPage;
+import dev.VoxelTales.UI.WeaponForgerPage;
 import dev.VoxelTales.UI.WeaponHUD;
 import dev.VoxelTales.Utils.VoxelAssetPatcher;
 import dev.VoxelTales.Utils.VoxelCacheRegistry;
@@ -115,6 +116,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
 
         //Register Caches
         VoxelCacheRegistry.register("WeaponConfigurationPage", WeaponConfigurationPage::new);
+        VoxelCacheRegistry.register("WeaponForgerPage", WeaponForgerPage::new);
     }
 
     @Override
