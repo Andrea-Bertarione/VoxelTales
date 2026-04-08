@@ -93,6 +93,7 @@ public class DamageDealingSystem extends DamageEventSystem {
             }
 
             String kindId = "Voxel_" + typeName;
+            kindId = kindId.toUpperCase();
 
             if (isFirst) {
                 damage.setAmount(calculatedAmount);
@@ -100,8 +101,15 @@ public class DamageDealingSystem extends DamageEventSystem {
                 damage.putMetaObject(VoxelMetadata.PROCESSED_KEY, true);
                 damage.setCancelled(false);
 
-                DamageNumbers.markSkipCombatText(damage);
-                DamageNumbers.emit(store, targetRef, calculatedAmount, kindId);
+                LoggerUtil.getLogger().info(
+                        "DamageNumbers primary hit: target=" + targetRef +
+                        ", kind=" + kindId +
+                        ", type=" + typeName +
+                        ", amount=" + calculatedAmount +
+                        ", critical=" + isCritical
+                );
+                DamageNumbers.attachTarget(damage, targetRef);
+                DamageNumbers.markKind(damage, kindId);
 
                 buffer.ensureAndGetComponent(targetRef, VoxelTalesPlugin.get().getCombatTrackerComponent());
                 isFirst = false;
@@ -111,11 +119,23 @@ public class DamageDealingSystem extends DamageEventSystem {
                 extraHit.putMetaObject(VoxelMetadata.PROCESSED_KEY, true);
 
                 if (isCritical) {
+                    LoggerUtil.getLogger().info(
+                            "DamageNumbers marking extra hit as critical: target=" + targetRef +
+                            ", kind=" + kindId +
+                            ", type=" + typeName +
+                            ", amount=" + calculatedAmount
+                    );
                     DamageNumbers.markCritical(extraHit);
                 }
 
-                DamageNumbers.markSkipCombatText(extraHit);
-                DamageNumbers.emit(store, targetRef, calculatedAmount, kindId);
+                LoggerUtil.getLogger().info(
+                        "DamageNumbers extra hit: target=" + targetRef +
+                        ", kind=" + kindId +
+                        ", type=" + typeName +
+                        ", amount=" + calculatedAmount
+                );
+                DamageNumbers.attachTarget(extraHit, targetRef);
+                DamageNumbers.markKind(extraHit, kindId);
 
                 DamageSystems.executeDamage(targetRef, buffer, extraHit);
             }
@@ -149,7 +169,7 @@ public class DamageDealingSystem extends DamageEventSystem {
     }
 
     private DamageResult calculateDamage(WeaponHandlerComponent weaponHandlerComponent, EntityStatMap attackerStats, Float totalEffectiveBoost) {
-        float baseDamage = 0.8f;
+        float baseDamage = 5f;
 
         int weaponLevel = weaponHandlerComponent.getSwordInternalLevel();
         float levelMultiplier = 1.0f + (weaponLevel * 0.0125f);
