@@ -19,6 +19,7 @@ import dev.VoxelTales.Components.WeaponHandlerComponent;
 import dev.VoxelTales.Utils.VoxelMetadata;
 import dev.VoxelTales.Utils.VoxelStatsHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
+import irai.mod.DynamicFloatingDamageFormatter.DamageNumbers;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -61,8 +62,9 @@ public class DamageDealingSystem extends DamageEventSystem {
         DamageResult result = calculateDamage(weapon, attackerStats, totalEffectiveBoost);
         float finalScaledDamage = result.finalDamage();
 
-        if (result.isCrit()) {
-            this.applyCritFX(store, attackerRef);
+        boolean isCritical = result.isCrit();
+        if (isCritical) {
+            this.applyCritFX(store, targetRef);
         }
 
         String interactionSource = damage.getMetaObject(VoxelMetadata.DAMAGE_SOURCE_KEY);
@@ -85,7 +87,12 @@ public class DamageDealingSystem extends DamageEventSystem {
             float calculatedAmount = finalScaledDamage * typeMultiplier;
 
             DamageCause cause = DamageCause.getAssetMap().getAsset(typeName);
-            if (cause == null) continue;
+            if (cause == null) {
+                LoggerUtil.getLogger().warning("No DamageCause asset found for typeName=" + typeName);
+                continue;
+            }
+
+            String kindId = "Voxel_" + typeName;
 
             if (isFirst) {
                 damage.setAmount(calculatedAmount);
@@ -93,12 +100,22 @@ public class DamageDealingSystem extends DamageEventSystem {
                 damage.putMetaObject(VoxelMetadata.PROCESSED_KEY, true);
                 damage.setCancelled(false);
 
+                DamageNumbers.markSkipCombatText(damage);
+                DamageNumbers.emit(store, targetRef, calculatedAmount, kindId);
+
                 buffer.ensureAndGetComponent(targetRef, VoxelTalesPlugin.get().getCombatTrackerComponent());
                 isFirst = false;
             } else {
                 Damage extraHit = new Damage(damage.getSource(), cause, calculatedAmount);
                 copyDamageMeta(damage, extraHit);
                 extraHit.putMetaObject(VoxelMetadata.PROCESSED_KEY, true);
+
+                if (isCritical) {
+                    DamageNumbers.markCritical(extraHit);
+                }
+
+                DamageNumbers.markSkipCombatText(extraHit);
+                DamageNumbers.emit(store, targetRef, calculatedAmount, kindId);
 
                 DamageSystems.executeDamage(targetRef, buffer, extraHit);
             }
@@ -174,6 +191,10 @@ public class DamageDealingSystem extends DamageEventSystem {
         World world = store.getExternalData().getWorld();
 
         world.execute(() -> {
+            if (ref == null || !ref.isValid()) {
+                LoggerUtil.getLogger().warning("Attempted to play crit sound on invalid entity!");
+                return;
+            };
             TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
 
             if (transform != null) {

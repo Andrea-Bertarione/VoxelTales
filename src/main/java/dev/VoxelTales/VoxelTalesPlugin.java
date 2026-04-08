@@ -35,11 +35,15 @@ import dev.VoxelTales.UI.WeaponForgerPage;
 import dev.VoxelTales.UI.WeaponHUD;
 import dev.VoxelTales.Utils.VoxelAssetPatcher;
 import dev.VoxelTales.Utils.VoxelCacheRegistry;
+import dev.VoxelTales.Utils.VoxelDamageKindRegistry;
 import dev.VoxelTales.Utils.VoxelMetadata;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+
+import static com.hypixel.hytale.logger.HytaleLogger.getLogger;
 
 public class VoxelTalesPlugin extends JavaPlugin {
     private static VoxelTalesPlugin instance;
@@ -72,6 +76,10 @@ public class VoxelTalesPlugin extends JavaPlugin {
         //Register custom Metadata
         VoxelMetadata.registerDamage(Damage.META_REGISTRY);
         VoxelMetadata.registerInteraction(Interaction.META_REGISTRY);
+
+        //Register Damage Kinds
+        //VoxelDamageKindRegistry.registerDamageKinds();
+        this.disableBuiltinCombatText();
 
         //Register components
         this.weaponHandlerComponent = this.getEntityStoreRegistry().registerComponent(
@@ -161,4 +169,24 @@ public class VoxelTalesPlugin extends JavaPlugin {
         return hudCache.computeIfAbsent(playerRef.getUuid(), _ -> new WeaponHUD(playerRef));
     }
     public void removeWeaponHud(UUID playerUuid) { hudCache.remove(playerUuid); }
+
+
+    private void disableBuiltinCombatText() {
+        try {
+            Object proxy = this.getEntityStoreRegistry();
+            java.lang.reflect.Field registryField = proxy.getClass().getDeclaredField("registry");
+            registryField.setAccessible(true);
+            Object registryObj = registryField.get(proxy);
+            if (registryObj instanceof com.hypixel.hytale.component.ComponentRegistry<?> registry) {
+                @SuppressWarnings({"rawtypes"})
+                Class systemClass = Class.forName(
+                        "com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems$EntityUIEvents");
+
+                registry.unregisterSystem(systemClass);
+                getLogger().at(Level.INFO).log("Successfully disabled built-in combat text system.");
+            }
+        } catch (Throwable t) {
+            getLogger().at(Level.SEVERE).withCause(t).log("Unable to disable built-in combat text system.");
+        }
+    }
 }
