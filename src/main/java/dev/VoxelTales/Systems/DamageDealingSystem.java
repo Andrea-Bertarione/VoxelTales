@@ -5,6 +5,7 @@ import com.hypixel.hytale.common.util.RandomUtil;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.protocol.SoundCategory;
+import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
@@ -20,9 +21,11 @@ import dev.VoxelTales.Utils.VoxelMetadata;
 import dev.VoxelTales.Utils.VoxelStatsHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
 import irai.mod.DynamicFloatingDamageFormatter.DamageNumbers;
+import org.jline.utils.Log;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class DamageDealingSystem extends DamageEventSystem {
     private record DamageResult(float finalDamage, boolean isCrit) {}
@@ -31,7 +34,6 @@ public class DamageDealingSystem extends DamageEventSystem {
     public void handle(int index, @Nonnull ArchetypeChunk<EntityStore> chunk, @Nonnull Store<EntityStore> store,
                        @Nonnull CommandBuffer<EntityStore> buffer, @Nonnull Damage damage) {
 
-        if (Boolean.TRUE.equals(damage.getIfPresentMetaObject(VoxelMetadata.PROCESSED_KEY))) return;
         if (!(damage.getSource() instanceof Damage.EntitySource source)) return;
 
         Ref<EntityStore> attackerRef = source.getRef();
@@ -39,6 +41,14 @@ public class DamageDealingSystem extends DamageEventSystem {
 
         WeaponHandlerComponent weapon = store.getComponent(attackerRef, VoxelTalesPlugin.get().getWeaponHandlerComponent());
         EntityStatMap attackerStats = store.getComponent(attackerRef, EntityStatMap.getComponentType());
+
+        if (Boolean.TRUE.equals(damage.getIfPresentMetaObject(VoxelMetadata.PROCESSED_KEY))) {
+            //DamageCause cause = DamageCause.getAssetMap().getAsset(damage.getDamageCauseIndex());
+
+            //if (cause == null) { return; }
+            //DamageNumbers.emit(store, targetRef, damage.getAmount(), ("Voxel_" + cause.getId()).toUpperCase());
+            return;
+        }
 
         if (weapon == null || attackerStats == null) return;
 
@@ -108,8 +118,13 @@ public class DamageDealingSystem extends DamageEventSystem {
                         ", amount=" + calculatedAmount +
                         ", critical=" + isCritical
                 );
-                DamageNumbers.attachTarget(damage, targetRef);
-                DamageNumbers.markKind(damage, kindId);
+                //DamageNumbers.attachTarget(damage, targetRef);
+                //DamageNumbers.markKind(damage, kindId);
+                DamageNumbers.markSkipCombatText(damage);
+                DamageNumbers.emit(store, targetRef, calculatedAmount, kindId);
+
+                //LoggerUtil.getLogger().info("The kind resolved to: " +
+                 //       DamageNumbers.resolveKindId(damage));
 
                 buffer.ensureAndGetComponent(targetRef, VoxelTalesPlugin.get().getCombatTrackerComponent());
                 isFirst = false;
@@ -134,10 +149,19 @@ public class DamageDealingSystem extends DamageEventSystem {
                         ", type=" + typeName +
                         ", amount=" + calculatedAmount
                 );
-                DamageNumbers.attachTarget(extraHit, targetRef);
-                DamageNumbers.markKind(extraHit, kindId);
+                //DamageNumbers.attachTarget(extraHit, targetRef);
+                //DamageNumbers.markKind(extraHit, kindId);
+                DamageNumbers.markSkipCombatText(extraHit);
 
                 DamageSystems.executeDamage(targetRef, buffer, extraHit);
+
+                World world = store.getExternalData().getWorld();
+                String finalKindId = kindId;
+                HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
+                    world.execute(() -> {
+                        DamageNumbers.emit(store, targetRef, calculatedAmount, finalKindId);
+                    });
+                }, 33, TimeUnit.MILLISECONDS);
             }
         }
     }

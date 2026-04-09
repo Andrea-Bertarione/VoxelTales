@@ -39,3 +39,4 @@ build/
 .DS_Store
 /server/
 /server/Assets.zip
+/FileMover.ps1

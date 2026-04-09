@@ -33,10 +33,7 @@ import dev.VoxelTales.Systems.MobDeathXPSystem;
 import dev.VoxelTales.UI.WeaponConfigurationPage;
 import dev.VoxelTales.UI.WeaponForgerPage;
 import dev.VoxelTales.UI.WeaponHUD;
-import dev.VoxelTales.Utils.VoxelAssetPatcher;
-import dev.VoxelTales.Utils.VoxelCacheRegistry;
-import dev.VoxelTales.Utils.VoxelDamageKindRegistry;
-import dev.VoxelTales.Utils.VoxelMetadata;
+import dev.VoxelTales.Utils.*;
 
 import java.util.Map;
 import java.util.UUID;
@@ -78,8 +75,8 @@ public class VoxelTalesPlugin extends JavaPlugin {
         VoxelMetadata.registerInteraction(Interaction.META_REGISTRY);
 
         //Register Damage Kinds
-        //VoxelDamageKindRegistry.registerDamageKinds();
-        this.disableBuiltinCombatText();
+        VoxelDamageKindRegistry.registerDamageKinds();
+        VoxelDamageUIReflection.disableBuiltinCombatText(this);
 
         //Register components
         this.weaponHandlerComponent = this.getEntityStoreRegistry().registerComponent(
@@ -171,22 +168,5 @@ public class VoxelTalesPlugin extends JavaPlugin {
     public void removeWeaponHud(UUID playerUuid) { hudCache.remove(playerUuid); }
 
 
-    private void disableBuiltinCombatText() {
-        try {
-            Object proxy = this.getEntityStoreRegistry();
-            java.lang.reflect.Field registryField = proxy.getClass().getDeclaredField("registry");
-            registryField.setAccessible(true);
-            Object registryObj = registryField.get(proxy);
-            if (registryObj instanceof com.hypixel.hytale.component.ComponentRegistry<?> registry) {
-                @SuppressWarnings({"rawtypes"})
-                Class systemClass = Class.forName(
-                        "com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems$EntityUIEvents");
 
-                registry.unregisterSystem(systemClass);
-                getLogger().at(Level.INFO).log("Successfully disabled built-in combat text system.");
-            }
-        } catch (Throwable t) {
-            getLogger().at(Level.SEVERE).withCause(t).log("Unable to disable built-in combat text system.");
-        }
-    }
 }
