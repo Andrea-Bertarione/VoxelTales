@@ -1,12 +1,10 @@
 package dev.VoxelTales.PacketListeners;
 
-import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
-import com.hypixel.hytale.protocol.InventorySection;
 import com.hypixel.hytale.protocol.Packet;
 import com.hypixel.hytale.protocol.packets.inventory.*;
 import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;
 import dev.VoxelTales.VoxelTalesPlugin;
-import dev.VoxelTales.Utils.InventoryUtils;
+import dev.VoxelTales.Utils.VoxelInventoryHelper;
 
 import java.util.Objects;
 
@@ -18,7 +16,7 @@ public class WeaponMoveListener {
             boolean shouldBlock = isShouldBlock(packet, lockedSlot);
 
             if (shouldBlock) {
-                InventoryUtils.syncHotbar(playerRef, playerRef.getReference(),
+                VoxelInventoryHelper.syncHotbar(playerRef, playerRef.getReference(),
                         Objects.requireNonNull(playerRef.getReference()).getStore());
                 return true; // Cancel the restricted move
             }

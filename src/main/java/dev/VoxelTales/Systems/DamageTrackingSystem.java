@@ -10,7 +10,7 @@ import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
-import dev.VoxelTales.Components.CombatTrackerComponent;
+import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
 import dev.VoxelTales.VoxelTalesPlugin;
 import org.jetbrains.annotations.NotNull;
 

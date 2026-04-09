@@ -17,11 +17,10 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
-import dev.VoxelTales.Utils.VoxelMetadata;
+import dev.VoxelTales.Registries.MetaData.VoxelDamageMetadata;
 import dev.VoxelTales.Utils.VoxelStatsHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
 import irai.mod.DynamicFloatingDamageFormatter.DamageNumbers;
-import org.jline.utils.Log;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class DamageDealingSystem extends DamageEventSystem {
         WeaponHandlerComponent weapon = store.getComponent(attackerRef, VoxelTalesPlugin.get().getWeaponHandlerComponent());
         EntityStatMap attackerStats = store.getComponent(attackerRef, EntityStatMap.getComponentType());
 
-        if (Boolean.TRUE.equals(damage.getIfPresentMetaObject(VoxelMetadata.PROCESSED_KEY))) {
+        if (Boolean.TRUE.equals(damage.getIfPresentMetaObject(VoxelDamageMetadata.PROCESSED_KEY))) {
             //DamageCause cause = DamageCause.getAssetMap().getAsset(damage.getDamageCauseIndex());
 
             //if (cause == null) { return; }
@@ -77,7 +76,7 @@ public class DamageDealingSystem extends DamageEventSystem {
             this.applyCritFX(store, targetRef);
         }
 
-        String interactionSource = damage.getMetaObject(VoxelMetadata.DAMAGE_SOURCE_KEY);
+        String interactionSource = damage.getMetaObject(VoxelDamageMetadata.DAMAGE_SOURCE_KEY);
 
         if (interactionSource != null) {
             LoggerUtil.getLogger().info("The interactionSource is: " + interactionSource);
@@ -108,16 +107,9 @@ public class DamageDealingSystem extends DamageEventSystem {
             if (isFirst) {
                 damage.setAmount(calculatedAmount);
                 damage.setDamageCauseIndex(DamageCause.getAssetMap().getIndex(typeName));
-                damage.putMetaObject(VoxelMetadata.PROCESSED_KEY, true);
+                damage.putMetaObject(VoxelDamageMetadata.PROCESSED_KEY, true);
                 damage.setCancelled(false);
 
-                LoggerUtil.getLogger().info(
-                        "DamageNumbers primary hit: target=" + targetRef +
-                        ", kind=" + kindId +
-                        ", type=" + typeName +
-                        ", amount=" + calculatedAmount +
-                        ", critical=" + isCritical
-                );
                 //DamageNumbers.attachTarget(damage, targetRef);
                 //DamageNumbers.markKind(damage, kindId);
                 DamageNumbers.markSkipCombatText(damage);
@@ -131,24 +123,8 @@ public class DamageDealingSystem extends DamageEventSystem {
             } else {
                 Damage extraHit = new Damage(damage.getSource(), cause, calculatedAmount);
                 copyDamageMeta(damage, extraHit);
-                extraHit.putMetaObject(VoxelMetadata.PROCESSED_KEY, true);
+                extraHit.putMetaObject(VoxelDamageMetadata.PROCESSED_KEY, true);
 
-                if (isCritical) {
-                    LoggerUtil.getLogger().info(
-                            "DamageNumbers marking extra hit as critical: target=" + targetRef +
-                            ", kind=" + kindId +
-                            ", type=" + typeName +
-                            ", amount=" + calculatedAmount
-                    );
-                    DamageNumbers.markCritical(extraHit);
-                }
-
-                LoggerUtil.getLogger().info(
-                        "DamageNumbers extra hit: target=" + targetRef +
-                        ", kind=" + kindId +
-                        ", type=" + typeName +
-                        ", amount=" + calculatedAmount
-                );
                 //DamageNumbers.attachTarget(extraHit, targetRef);
                 //DamageNumbers.markKind(extraHit, kindId);
                 DamageNumbers.markSkipCombatText(extraHit);

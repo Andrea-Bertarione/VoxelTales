@@ -12,9 +12,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import dev.VoxelTales.Components.CombatTrackerComponent;
+import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
 import dev.VoxelTales.Controllers.LevelingController;
-import dev.VoxelTales.Utils.EntityXPConfigsHelper;
+import dev.VoxelTales.Utils.VoxelXPConfigsHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 import javax.annotation.Nonnull;
@@ -48,7 +48,7 @@ public class MobDeathXPSystem extends DeathSystems.OnDeathSystem {
         float totalDamage = 0;
         for (float d : damageMap.values()) totalDamage += d;
 
-        int totalXp = EntityXPConfigsHelper.getMobXP(npcEntity, entityStatMap);
+        int totalXp = VoxelXPConfigsHelper.getMobXP(npcEntity, entityStatMap);
 
         for (Map.Entry<UUID, Float> entry : damageMap.entrySet()) {
             float percentage = entry.getValue() / totalDamage;

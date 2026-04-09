@@ -37,6 +37,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### My Stuff ###
 /server/
 /server/Assets.zip
 /FileMover.ps1

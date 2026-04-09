@@ -15,8 +15,8 @@ import com.hypixel.hytale.server.core.util.NotificationUtil;
 
 import dev.VoxelTales.Components.WeaponHandlerComponent;
 import dev.VoxelTales.Configs.VoxelTalesConfigs;
-import dev.VoxelTales.UI.WeaponHUD;
-import dev.VoxelTales.Utils.WeaponMath;
+import dev.VoxelTales.UI.HUD.WeaponHUD;
+import dev.VoxelTales.Utils.VoxelWeaponMathHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 public class LevelingController {
@@ -47,7 +47,7 @@ public class LevelingController {
 
     private static int checkLevelUP(WeaponHandlerComponent weaponHandlerComponent) {
         int startingLevel = weaponHandlerComponent.getSwordInternalLevel();
-        int requiredXP = WeaponMath.getRequiredXP(startingLevel);
+        int requiredXP = VoxelWeaponMathHelper.getRequiredXP(startingLevel);
 
         VoxelTalesConfigs configs = VoxelTalesPlugin.get().getVoxelTalesConfigs().get();
         if (startingLevel >= configs.getMaxLevel()) { return 0; }
@@ -56,7 +56,7 @@ public class LevelingController {
             weaponHandlerComponent.incrementLevel();
             weaponHandlerComponent.incrementSP();
 
-            requiredXP = WeaponMath.getRequiredXP(weaponHandlerComponent.getSwordInternalLevel());
+            requiredXP = VoxelWeaponMathHelper.getRequiredXP(weaponHandlerComponent.getSwordInternalLevel());
         }
 
         return weaponHandlerComponent.getSwordInternalLevel() - startingLevel;

@@ -13,9 +13,14 @@ import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 
+import javax.annotation.Nullable;
+
 public abstract class VoxelPageUI {
     protected final PlayerRef playerRef;
+
+    @Nullable
     protected Store<EntityStore> store = null;
+    @Nullable
     protected PageBuilder builder = null;
 
     public VoxelPageUI(PlayerRef playerRef) {

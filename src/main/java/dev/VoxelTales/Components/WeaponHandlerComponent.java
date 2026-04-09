@@ -6,7 +6,7 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.validation.Validators;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.Configs.VoxelWeaponLookup;
+import dev.VoxelTales.Configs.VoxelWeaponConfigs;
 import dev.VoxelTales.Utils.VoxelWeaponConfigsHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -148,8 +148,8 @@ public class WeaponHandlerComponent implements Component<EntityStore> {
 
     public Map<String, Float> getCalculatedDamageMap() {
 
-        VoxelWeaponLookup.ComponentStats bladeStats = VoxelWeaponConfigsHelper.getBladeStats(this.currentBlade);
-        VoxelWeaponLookup.ComponentStats handleStats = VoxelWeaponConfigsHelper.getHandleStats(this.currentHandle);
+        VoxelWeaponConfigs.ComponentStats bladeStats = VoxelWeaponConfigsHelper.getBladeStats(this.currentBlade);
+        VoxelWeaponConfigs.ComponentStats handleStats = VoxelWeaponConfigsHelper.getHandleStats(this.currentHandle);
 
         Map<String, Float> resultMap = new HashMap<>(bladeStats.getBaseDamage());
 
@@ -162,8 +162,8 @@ public class WeaponHandlerComponent implements Component<EntityStore> {
 
     public Map<String, Float> getCalculatedScalingMap() {
 
-        VoxelWeaponLookup.ComponentStats bladeStats = VoxelWeaponConfigsHelper.getBladeStats(this.currentBlade);
-        VoxelWeaponLookup.ComponentStats handleStats = VoxelWeaponConfigsHelper.getHandleStats(this.currentHandle);
+        VoxelWeaponConfigs.ComponentStats bladeStats = VoxelWeaponConfigsHelper.getBladeStats(this.currentBlade);
+        VoxelWeaponConfigs.ComponentStats handleStats = VoxelWeaponConfigsHelper.getHandleStats(this.currentHandle);
 
         Map<String, Float> resultMap = new HashMap<>(bladeStats.getDamageScaling());
 
@@ -176,8 +176,8 @@ public class WeaponHandlerComponent implements Component<EntityStore> {
 
     public Map<String, Float> getCalculatedPassivesMap() {
 
-        VoxelWeaponLookup.ComponentStats bladeStats = VoxelWeaponConfigsHelper.getBladeStats(this.currentBlade);
-        VoxelWeaponLookup.ComponentStats handleStats = VoxelWeaponConfigsHelper.getHandleStats(this.currentHandle);
+        VoxelWeaponConfigs.ComponentStats bladeStats = VoxelWeaponConfigsHelper.getBladeStats(this.currentBlade);
+        VoxelWeaponConfigs.ComponentStats handleStats = VoxelWeaponConfigsHelper.getHandleStats(this.currentHandle);
 
         Map<String, Float> resultMap = new HashMap<>(bladeStats.getPassives());
 

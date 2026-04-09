@@ -3,8 +3,6 @@ package dev.VoxelTales;
 import javax.annotation.Nonnull;
 
 import com.hypixel.hytale.component.ComponentType;
-import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
-import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
@@ -13,34 +11,35 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
-import dev.VoxelTales.Commands.*;
-import dev.VoxelTales.Components.CombatTrackerComponent;
+import dev.VoxelTales.Assets.Commands.*;
+import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
 import dev.VoxelTales.Components.VoxelPlayerComponent;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
 import dev.VoxelTales.Configs.EntityXPConfigs;
 import dev.VoxelTales.Configs.VoxelTalesConfigs;
-import dev.VoxelTales.Configs.VoxelWeaponLookup;
-import dev.VoxelTales.Events.PlayerDisconnect;
-import dev.VoxelTales.Events.PlayerReady;
-import dev.VoxelTales.Interactions.RouterSignatureInteraction;
-import dev.VoxelTales.Interactions.RouterSkillInteraction;
-import dev.VoxelTales.Interactions.VoxelDamageEntityInteraction;
+import dev.VoxelTales.Configs.VoxelWeaponConfigs;
+import dev.VoxelTales.Events.PlayerDisconnectEvent;
+import dev.VoxelTales.Events.PlayerReadyEvent;
+import dev.VoxelTales.Assets.Interactions.RouterSignatureInteraction;
+import dev.VoxelTales.Assets.Interactions.RouterSkillInteraction;
+import dev.VoxelTales.Assets.Interactions.VoxelDamageEntityInteraction;
 import dev.VoxelTales.PacketListeners.WeaponActivationListener;
 import dev.VoxelTales.PacketListeners.WeaponMoveListener;
+import dev.VoxelTales.Registries.MetaData.VoxelDamageMetadata;
+import dev.VoxelTales.Registries.VoxelCacheRegistry;
+import dev.VoxelTales.Registries.VoxelDamageKindRegistry;
 import dev.VoxelTales.Systems.DamageDealingSystem;
 import dev.VoxelTales.Systems.DamageTrackingSystem;
 import dev.VoxelTales.Systems.MobDeathXPSystem;
-import dev.VoxelTales.UI.WeaponConfigurationPage;
-import dev.VoxelTales.UI.WeaponForgerPage;
-import dev.VoxelTales.UI.WeaponHUD;
-import dev.VoxelTales.Utils.*;
+import dev.VoxelTales.UI.Pages.WeaponConfigurationPage;
+import dev.VoxelTales.UI.Pages.WeaponForgerPage;
+import dev.VoxelTales.UI.HUD.WeaponHUD;
+import dev.VoxelTales.Utils.Reflections.VoxelAssetReflection;
+import dev.VoxelTales.Utils.Reflections.VoxelDamageUIReflection;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-
-import static com.hypixel.hytale.logger.HytaleLogger.getLogger;
 
 public class VoxelTalesPlugin extends JavaPlugin {
     private static VoxelTalesPlugin instance;
@@ -48,7 +47,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
     //Configs
     private final Config<VoxelTalesConfigs> voxelTalesConfigs = this.withConfig("VoxelTales_GeneralConfigs", VoxelTalesConfigs.CODEC);
     private final Config<EntityXPConfigs> entityXpConfigs = this.withConfig("VoxelTales_EntityXPConfigs", EntityXPConfigs.CODEC);
-    private final Config<VoxelWeaponLookup> weaponLookupConfig = this.withConfig("VoxelTales_WeaponLookupConfigs", VoxelWeaponLookup.CODEC);
+    private final Config<VoxelWeaponConfigs> weaponLookupConfig = this.withConfig("VoxelTales_WeaponLookupConfigs", VoxelWeaponConfigs.CODEC);
 
     //Caches
     private final Map<UUID, Short> slotCache = new ConcurrentHashMap<>();
@@ -71,8 +70,8 @@ public class VoxelTalesPlugin extends JavaPlugin {
         this.weaponLookupConfig.save();
 
         //Register custom Metadata
-        VoxelMetadata.registerDamage(Damage.META_REGISTRY);
-        VoxelMetadata.registerInteraction(Interaction.META_REGISTRY);
+        VoxelDamageMetadata.registerDamage(Damage.META_REGISTRY);
+        VoxelDamageMetadata.registerInteraction(Interaction.META_REGISTRY);
 
         //Register Damage Kinds
         VoxelDamageKindRegistry.registerDamageKinds();
@@ -98,8 +97,8 @@ public class VoxelTalesPlugin extends JavaPlugin {
         );
 
         //Register events
-        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, PlayerReady::onPlayerReady);
-        this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, PlayerDisconnect::onPlayerDisconnect);
+        this.getEventRegistry().registerGlobal(com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent.class, PlayerReadyEvent::onPlayerReady);
+        this.getEventRegistry().registerGlobal(com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent.class, PlayerDisconnectEvent::onPlayerDisconnect);
 
         //Register systems
         this.getEntityStoreRegistry().registerSystem(new DamageTrackingSystem());
@@ -127,7 +126,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
     @Override
     protected void start() {
         //Run asset patching AFTER everything loaded
-        VoxelAssetPatcher.patch();
+        VoxelAssetReflection.patch();
     }
 
     public static VoxelTalesPlugin get() {
@@ -142,7 +141,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
         return voxelTalesConfigs;
     }
 
-    public Config<VoxelWeaponLookup> getWeaponLookupConfig() { return weaponLookupConfig; }
+    public Config<VoxelWeaponConfigs> getWeaponLookupConfig() { return weaponLookupConfig; }
 
     public ComponentType<EntityStore, WeaponHandlerComponent> getWeaponHandlerComponent() {return this.weaponHandlerComponent;}
     public ComponentType<EntityStore, VoxelPlayerComponent> getVoxelPlayerComponent() { return this.voxelPlayerComponent; }

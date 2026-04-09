@@ -1,6 +1,5 @@
 package dev.VoxelTales.PacketListeners;
 
-import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.protocol.Packet;
 import com.hypixel.hytale.protocol.InteractionType;
@@ -10,7 +9,7 @@ import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.UI.WeaponHUD;
+import dev.VoxelTales.UI.HUD.WeaponHUD;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 import javax.annotation.Nonnull;
