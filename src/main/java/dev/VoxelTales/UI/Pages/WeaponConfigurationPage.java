@@ -10,7 +10,7 @@ import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.VoxelTales.Configs.VoxelWeaponConfigs;
 import dev.VoxelTales.UI.Components.ModalUI;
-import dev.VoxelTales.UI.Default.VoxelEditorPageUI;
+import dev.VoxelTales.UI.Pages.Default.VoxelEditorPageUI;
 import dev.VoxelTales.Utils.VoxelWeaponConfigsHelper;
 
 import java.util.*;
@@ -102,12 +102,10 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
             withDiscardConfirmation(context, navigationTask);
         });
 
-        this.builder.getById("quick-jump-blades", ButtonBuilder.class).ifPresent(btn ->
-                btn.onClick((_, context) -> {
-                    this.refreshTabVisibility("blades", context);
-                    context.updatePage(false);
-                })
-        );
+        bindButtonClick("quick-jump-blades", (_, context) -> {
+            this.refreshTabVisibility("blades", context);
+            context.updatePage(false);
+        });
     }
 
     @Override
@@ -144,193 +142,141 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
     }
 
     private void bindAddItemButton(String type) {
-        this.builder.getById(type + "-add-item", ButtonBuilder.class).ifPresent(btn ->
-                btn.onClick((_, context) -> {
-                    LinkedHashMap<String, ModalUI.FieldType> fields = new LinkedHashMap<>();
-                    fields.put("Name", ModalUI.FieldType.TEXT);
+        bindButtonClick(type + "-add-item", (_, context) -> {
+            LinkedHashMap<String, ModalUI.FieldType> fields = new LinkedHashMap<>();
+            fields.put("Name", ModalUI.FieldType.TEXT);
 
-                    ModalUI modal = new ModalUI("Create New " + type, "Create", fields);
-                    modal.setDescription("Enter a unique Name (e.g., 'Sharp').");
-                    modal.setHeight(200);
+            ModalUI modal = new ModalUI("Create New " + type, "Create", fields);
+            modal.setDescription("Enter a unique Name (e.g., 'Sharp').");
+            modal.setHeight(200);
 
-                    this.builder.getById("page-root", GroupBuilder.class).ifPresent(root -> {
-                        this.builder.getById("main-overlay", PageOverlayBuilder.class).ifPresent(overlay -> {
-                            overlay.withVisible(false);
-                            modal.onFinally(() -> overlay.withVisible(true));
-                        });
+            modalConfirmHelper(modal, (root, dataMap) -> {
+                    String newId = dataMap.get("Name").toString().trim();
+                    if (newId.isEmpty()) return;
 
-                        modal.onConfirm(dataMap -> {
-                            String newId = dataMap.get("Name").toString().trim();
-                            if (newId.isEmpty()) return;
+                    VoxelWeaponConfigs.ComponentStats newStats = new VoxelWeaponConfigs.ComponentStats();
+                    VoxelWeaponConfigsHelper.saveStatsOf(type, newId, newStats);
 
-                            VoxelWeaponConfigs.ComponentStats newStats = new VoxelWeaponConfigs.ComponentStats();
-                            VoxelWeaponConfigsHelper.saveStatsOf(type, newId, newStats);
-
-                            context.getById(type + "-item-list", GroupBuilder.class).ifPresent(group -> {
-                                this.populateSidebar(type, group);
-                            });
-
-                            this.selectEntry(type, newId, context);
-
-                            context.updatePage(true);
-                        });
-
-                        modal.open(this.builder, root);
+                    context.getById(type + "-item-list", GroupBuilder.class).ifPresent(group -> {
+                        this.populateSidebar(type, group);
                     });
+
+                    this.selectEntry(type, newId, context);
+
                     context.updatePage(true);
-                })
-        );
+            });
+            context.updatePage(true);
+        });
     }
 
     private void bindDeleteButton(String type) {
-        this.builder.getById(type + "-delete-item", ButtonBuilder.class).ifPresent(btn ->
-                btn.onClick((_, context) -> {
-                    ModalUI modal = new ModalUI("Confirm Deletion", "Delete Permanently", new LinkedHashMap<>());
-                    modal.setDescription("Are you sure you want to delete '" + this.selectedName + "'? This action cannot be undone!");
-                    modal.setHeight(230);
-                    modal.setButtonDirection(ModalUI.ButtonDirection.VERTICAL);
+        bindButtonClick(type + "-delete-item", (_, context) -> {
+            ModalUI modal = new ModalUI("Confirm Deletion", "Delete Permanently", new LinkedHashMap<>());
+            modal.setDescription("Are you sure you want to delete '" + this.selectedName + "'? This action cannot be undone!");
+            modal.setHeight(230);
+            modal.setButtonDirection(ModalUI.ButtonDirection.VERTICAL);
 
-                    this.builder.getById("page-root", GroupBuilder.class).ifPresent(root -> {
-                        this.builder.getById("main-overlay", PageOverlayBuilder.class).ifPresent(overlay -> {
-                            overlay.withVisible(false);
-                            modal.onFinally(() -> overlay.withVisible(true));
-                        });
+            modalConfirmHelper(modal, (_, _) -> {
+                    VoxelWeaponConfigsHelper.deleteEntry(type, this.selectedName);
 
-                        modal.onConfirm(_ -> {
-                            VoxelWeaponConfigsHelper.deleteEntry(type, this.selectedName);
-
-                            context.getById(type + "-item-list", GroupBuilder.class).ifPresent(group -> {
-                                this.populateSidebar(type, group);
-                            });
-
-                            context.getById(type + "-empty-state", GroupBuilder.class).ifPresent(el -> el.withVisible(true));
-                            context.getById(type + "-editor-ui", GroupBuilder.class).ifPresent(el -> el.withVisible(false));
-
-                            this.selectedName = null;
-                            this.isDirty = false;
-
-                            context.updatePage(true);
-                        });
-
-                        modal.open(this.builder, root);
+                    context.getById(type + "-item-list", GroupBuilder.class).ifPresent(group -> {
+                        this.populateSidebar(type, group);
                     });
+
+                    context.getById(type + "-empty-state", GroupBuilder.class).ifPresent(el -> el.withVisible(true));
+                    context.getById(type + "-editor-ui", GroupBuilder.class).ifPresent(el -> el.withVisible(false));
+
+                    this.selectedName = null;
+                    this.isDirty = false;
+
                     context.updatePage(true);
-                })
-        );
+            });
+            context.updatePage(true);
+        });
     }
 
     private void bindRenameButton(String type) {
-        this.builder.getById(type + "-rename-btn", ButtonBuilder.class).ifPresent(btn ->
-                btn.onClick((_, context) -> {
-                    LinkedHashMap<String, ModalUI.FieldType> renameFields = new LinkedHashMap<>();
-                    renameFields.put("New ID", ModalUI.FieldType.TEXT);
+        bindButtonClick(type + "-rename-btn", (_, context) -> {
+            LinkedHashMap<String, ModalUI.FieldType> renameFields = new LinkedHashMap<>();
+            renameFields.put("New ID", ModalUI.FieldType.TEXT);
 
-                    ModalUI modal = new ModalUI("Rename Item", "Apply", renameFields);
-                    modal.setHeight(250);
-                    modal.setButtonDirection(ModalUI.ButtonDirection.VERTICAL);
+            ModalUI modal = new ModalUI("Rename Item", "Apply", renameFields);
+            modal.setHeight(250);
+            modal.setButtonDirection(ModalUI.ButtonDirection.VERTICAL);
 
-                    this.builder.getById("page-root", GroupBuilder.class).ifPresent(root -> {
-                        this.builder.getById("main-overlay", PageOverlayBuilder.class).ifPresent(overlay -> {
-                            overlay.withVisible(false);
-                            modal.onFinally(() -> overlay.withVisible(true));
+            modalConfirmHelper(modal, (root, dataMap) -> {
+                    String newId = dataMap.get("New ID").toString();
+
+                    if (!newId.isEmpty()) {
+                        VoxelWeaponConfigsHelper.renameEntry(type, this.selectedName, newId);
+
+                        this.selectedName = newId;
+
+                        context.getById(type + "-display-name", LabelBuilder.class).ifPresent(el -> el.withText(newId));
+                        context.getById(type + "-internal-id", LabelBuilder.class).ifPresent(el -> el.withText("ID: " + newId));
+
+                        context.getById(type + "-item-list", GroupBuilder.class).ifPresent(group -> {
+                            this.populateSidebar(type, group);
                         });
+                    }
 
-                        modal.onConfirm(dataMap -> {
-                            String newId = dataMap.get("New ID").toString();
-
-                            if (!newId.isEmpty()) {
-                                VoxelWeaponConfigsHelper.renameEntry(type, this.selectedName, newId);
-
-                                this.selectedName = newId;
-
-                                context.getById(type + "-display-name", LabelBuilder.class).ifPresent(el -> el.withText(newId));
-                                context.getById(type + "-internal-id", LabelBuilder.class).ifPresent(el -> el.withText("ID: " + newId));
-
-                                context.getById(type + "-item-list", GroupBuilder.class).ifPresent(group -> {
-                                    this.populateSidebar(type, group);
-                                });
-                            }
-
-                            context.updatePage(false);
-                        });
-
-                        modal.open(this.builder, root);
-                    });
-                    context.updatePage(true);
-                })
-        );
+                    context.updatePage(false);
+            });
+            context.updatePage(true);
+        });
     }
 
     private void bindSaveButton(String type) {
-        this.builder.getById(type + "-save-btn", ButtonBuilder.class)
-                .ifPresent(btn -> btn.onClick((Void _, UIContext _) -> {
-                    VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(type, this.selectedName);
-                    if (stats == null) {
-                        stats = new VoxelWeaponConfigs.ComponentStats();
-                    }
+        bindButtonClick(type + "-save-btn", ( _,  _) -> {
+            VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(type, this.selectedName);
+            if (stats == null) {
+                stats = new VoxelWeaponConfigs.ComponentStats();
+            }
 
-                    stats.setBaseDamage(this.baseDamage);
-                    stats.setDamageScaling(this.damageScaling);
-                    stats.setPassives(this.passives);
-                    stats.setTier(this.tier);
-                    stats.setAttackSpeed(this.attackSpeed);
+            stats.setBaseDamage(this.baseDamage);
+            stats.setDamageScaling(this.damageScaling);
+            stats.setPassives(this.passives);
+            stats.setTier(this.tier);
+            stats.setAttackSpeed(this.attackSpeed);
 
-                    VoxelWeaponConfigsHelper.saveStatsOf(type, this.selectedName, stats);
+            VoxelWeaponConfigsHelper.saveStatsOf(type, this.selectedName, stats);
 
-                    this.isDirty = false;
-                    this.playSaveNotification(type, this.selectedName);
-                }));
+            this.isDirty = false;
+            this.playSaveNotification(type, this.selectedName);
+        });
     }
 
     private void bindResetButton(String type) {
-        this.builder.getById(type + "-reset-btn", ButtonBuilder.class)
-                .ifPresent(btn ->
-                        btn.onClick((Void _, UIContext context) ->
-                                this.withDiscardConfirmation(context, () ->
-                                        this.selectEntry(type, this.selectedName, context))));
+        bindButtonClick(type + "-reset-btn", ( _, context) ->
+                this.withDiscardConfirmation(context, () ->
+                        this.selectEntry(type, this.selectedName, context)));
     }
 
     private void bindAddButtons(String type) {
-        TYPE_ENTRIES.forEach(categoryName -> {
-            String buttonId = type + "-add-" + categoryName + "-btn";
+        TYPE_ENTRIES.forEach(categoryName -> bindButtonClick(type + "-add-" + categoryName + "-btn", (_, context) -> {
+            ModalUI modal = new ModalUI("Insert a new " + categoryName, "Confirm", getNewPairField());
+            modal.setHeight(230);
 
-            this.builder.getById(buttonId, ButtonBuilder.class).ifPresent(btn -> btn.onClick((_, context) -> {
-                ModalUI modal = new ModalUI("Insert a new " + categoryName, "Confirm", getNewPairField());
-                modal.setHeight(230);
+            modalConfirmHelper(modal, (_, dataMap) -> {
+                    Map<String, HashMap<String, Float>> categories = Map.of(
+                            "damage", this.baseDamage,
+                            "scaling", this.damageScaling,
+                            "passive", this.passives
+                    );
 
-                this.builder.getById("page-root", GroupBuilder.class).ifPresent(root -> {
-                    this.builder.getById("main-overlay", PageOverlayBuilder.class).ifPresent(overlay -> {
-                        overlay.withVisible(false);
+                    String name = dataMap.get("Name").toString();
+                    float value = Float.parseFloat(dataMap.get("Value").toString());
 
-                        modal.onFinally(() -> overlay.withVisible(true));
-                    });
+                    this.isDirty = true;
 
-                    modal.onConfirm(dataMap -> {
-                        Map<String, HashMap<String, Float>> categories = Map.of(
-                                "damage", this.baseDamage,
-                                "scaling", this.damageScaling,
-                                "passive", this.passives
-                        );
+                    categories.get(categoryName).put(name, value);
+                    buildSelectedSide(context, type);
 
-                        String name = dataMap.get("Name").toString();
-                        float value = Float.parseFloat(dataMap.get("Value").toString());
+                    context.updatePage(true);
+            });
 
-                        this.isDirty = true;
-
-                        categories.get(categoryName).put(name, value);
-                        buildSelectedSide(context, type);
-
-                        context.updatePage(true);
-                        //LoggerUtil.getLogger().info("Data received: \nName: " + name + "\nValue: " + value);
-                    });
-
-                    modal.open(this.builder, root);
-                });
-
-                context.updatePage(true);
-                //LoggerUtil.getLogger().info("Clicked Add " + categoryName + " for " + type);
-            }));
-        });
+            context.updatePage(true);
+        }));
     }
 
     private GroupBuilder buildInspectionRow(String key, Float value, Consumer<Double> valueChangedCallback) {
@@ -413,7 +359,6 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
                 dataMap.put(key, newVal.floatValue());
             });
 
-            // Add to the specific tab's set
             currentInspectionElements.add(created);
             container.addChild(created);
         })));
@@ -482,6 +427,31 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
         this.sideBarElements.computeIfAbsent(type, _ -> new HashSet<>()).add(btn);
 
         return btn;
+    }
+
+    private void inPageRoot(Consumer<GroupBuilder> callback) {
+        if (this.builder == null) return;
+
+        this.builder.getById("page-root", GroupBuilder.class).ifPresent(callback);
+    }
+
+    private void inMainOverlay(Consumer<PageOverlayBuilder> callback) {
+        if (this.builder == null) return;
+
+        this.builder.getById("main-overlay", PageOverlayBuilder.class).ifPresent(callback);
+    }
+
+    private void modalConfirmHelper(ModalUI modal, BiConsumer<GroupBuilder, Map<String, Object>> callback) {
+        inPageRoot(root -> {
+            inMainOverlay(overlay -> {
+                overlay.withVisible(false);
+                modal.onFinally(() -> overlay.withVisible(true));
+            });
+
+            modal.onConfirm(dataMap -> callback.accept(root, dataMap));
+
+            modal.open(this.builder, root);
+        });
     }
 
     private void playSaveNotification(String type, String name) {

@@ -1,6 +1,9 @@
-package dev.VoxelTales.UI.Default;
+package dev.VoxelTales.UI.Pages.Default;
 
+import au.ellie.hyui.builders.ButtonBuilder;
 import au.ellie.hyui.builders.PageBuilder;
+import au.ellie.hyui.builders.UIElementBuilder;
+import au.ellie.hyui.events.UIContext;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3d;
@@ -14,6 +17,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 
 import javax.annotation.Nullable;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public abstract class VoxelPageUI {
     protected final PlayerRef playerRef;
@@ -68,5 +73,21 @@ public abstract class VoxelPageUI {
                 SoundUtil.playSoundEvent3dToPlayer(ref, index, SoundCategory.SFX, Vector3d.ZERO, this.store);
             }
         });
+    }
+
+    protected void bindClick(String elementId, Consumer<UIElementBuilder<?>> callback) {
+        if (this.builder == null) return;
+
+        this.builder.getById(elementId, ButtonBuilder.class).ifPresent(element ->
+                element.onClick((_, context) -> callback.accept(element))
+        );
+    }
+
+    protected void bindButtonClick(String elementId, BiConsumer<ButtonBuilder, UIContext> callback) {
+        if (this.builder == null) return;
+
+        this.builder.getById(elementId, ButtonBuilder.class).ifPresent(btn ->
+                btn.onClick((_, context) -> callback.accept(btn, context))
+        );
     }
 }

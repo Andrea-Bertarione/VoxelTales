@@ -1,7 +1,7 @@
 package dev.VoxelTales.UI.Pages;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import dev.VoxelTales.UI.Default.VoxelPageUI;
+import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
 
 public class WeaponForgerPage extends VoxelPageUI {
     public WeaponForgerPage(PlayerRef playerRef) {

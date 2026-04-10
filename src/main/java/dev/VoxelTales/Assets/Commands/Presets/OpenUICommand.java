@@ -8,7 +8,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayer
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.UI.Default.VoxelPageUI;
+import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import org.jetbrains.annotations.NotNull;
 

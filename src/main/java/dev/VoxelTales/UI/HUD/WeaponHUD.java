@@ -6,31 +6,27 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.UI.HUD.Default.VoxelHudUI;
 import dev.VoxelTales.Utils.VoxelWeaponMathHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
 
 import java.util.Objects;
 
-public class WeaponHUD {
-    private final PlayerRef playerRef;
-    private HyUIHud hudResult;
-
+public class WeaponHUD extends VoxelHudUI {
     private float progressPercent = 0;
     private int currentXP = 0;
     private int requiredXP = 0;
     private int swordPoints = 0;
 
-    private boolean isActive = false; // Internal state: Should this be visible?
-
     public WeaponHUD(PlayerRef playerRef) {
-        this.playerRef = playerRef;
+        super(playerRef);
     }
 
     /**
      * Logic to determine what data goes into the HTML
      */
-    private void prepareValues() {
+    private void fetchValues() {
         Ref<EntityStore> ref = playerRef.getReference();
         if (ref == null || !ref.isValid()) return;
 
@@ -47,17 +43,12 @@ public class WeaponHUD {
      * The "Redraw" function. Wipes the old HUD and builds a fresh one.
      */
     public void update() {
-        if (!isActive) return;
-
-        World world = Objects.requireNonNull(playerRef.getReference()).getStore().getExternalData().getWorld();
-
-        world.execute(() -> {
-            // 1. Clean up the old instance if it exists
+        super.update(() -> {
             if (this.hudResult != null) {
                 this.hudResult.remove();
             }
 
-            this.prepareValues();
+            this.fetchValues();
 
             HudBuilder builder = HudBuilder.hudForPlayer(playerRef)
                     .enableRuntimeTemplateUpdates(true)
@@ -144,26 +135,7 @@ public class WeaponHUD {
         });
     }
 
-    /**
-     * Turns the HUD logic on and triggers an initial draw
-     */
     public void show() {
-        if (this.isActive) return;
-        this.isActive = true;
-        this.update();
-    }
-
-    /**
-     * Turns the HUD logic off and removes it from the screen
-     */
-    public void hide() {
-        this.isActive = false;
-        if (this.hudResult != null) {
-            World world = Objects.requireNonNull(playerRef.getReference()).getStore().getExternalData().getWorld();
-            world.execute(() -> {
-                this.hudResult.remove();
-                this.hudResult = null;
-            });
-        }
+        super.show(this::update);
     }
 }

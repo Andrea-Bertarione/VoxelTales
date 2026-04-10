@@ -1,10 +1,7 @@
-package dev.VoxelTales.UI.Default;
+package dev.VoxelTales.UI.Pages.Default;
 
 import au.ellie.hyui.builders.GroupBuilder;
 import au.ellie.hyui.builders.PageOverlayBuilder;
-import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.util.NotificationUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import au.ellie.hyui.events.UIContext;
 import dev.VoxelTales.UI.Components.ModalUI;
