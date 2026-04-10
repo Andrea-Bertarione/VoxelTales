@@ -13,14 +13,28 @@ public abstract class VoxelHudUI {
         this.playerRef = playerRef;
     }
 
+    /**
+     * Function that triggers the values fetch for the HUD
+     */
+    protected abstract void fetchValues();
+
+    /**
+     * The "Redraw" function. Wipes the old HUD and builds a fresh one.
+     */
     protected void update(Runnable task) {
         if (!isActive) return;
         if (playerRef.getReference() == null || !playerRef.getReference().isValid()) return;
 
         World world = playerRef.getReference().getStore().getExternalData().getWorld();
 
+        if (this.hudResult != null) {
+            this.hudResult.remove();
+        }
+
+        this.fetchValues();
+
         world.execute(task);
-    };
+    }
 
     /**
      * Turns the HUD logic on and triggers an initial draw

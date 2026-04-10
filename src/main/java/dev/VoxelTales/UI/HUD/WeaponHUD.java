@@ -23,10 +23,7 @@ public class WeaponHUD extends VoxelHudUI {
         super(playerRef);
     }
 
-    /**
-     * Logic to determine what data goes into the HTML
-     */
-    private void fetchValues() {
+    public void fetchValues() {
         Ref<EntityStore> ref = playerRef.getReference();
         if (ref == null || !ref.isValid()) return;
 
@@ -39,17 +36,8 @@ public class WeaponHUD extends VoxelHudUI {
         this.progressPercent = VoxelWeaponMathHelper.getXPProgress(handler.getSwordXP(), handler.getSwordInternalLevel());
     }
 
-    /**
-     * The "Redraw" function. Wipes the old HUD and builds a fresh one.
-     */
     public void update() {
         super.update(() -> {
-            if (this.hudResult != null) {
-                this.hudResult.remove();
-            }
-
-            this.fetchValues();
-
             HudBuilder builder = HudBuilder.hudForPlayer(playerRef)
                     .enableRuntimeTemplateUpdates(true)
                     .loadHtml("HUD/WeaponHUD.html");

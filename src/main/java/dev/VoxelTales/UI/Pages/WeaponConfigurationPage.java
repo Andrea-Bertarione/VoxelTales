@@ -429,31 +429,6 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
         return btn;
     }
 
-    private void inPageRoot(Consumer<GroupBuilder> callback) {
-        if (this.builder == null) return;
-
-        this.builder.getById("page-root", GroupBuilder.class).ifPresent(callback);
-    }
-
-    private void inMainOverlay(Consumer<PageOverlayBuilder> callback) {
-        if (this.builder == null) return;
-
-        this.builder.getById("main-overlay", PageOverlayBuilder.class).ifPresent(callback);
-    }
-
-    private void modalConfirmHelper(ModalUI modal, BiConsumer<GroupBuilder, Map<String, Object>> callback) {
-        inPageRoot(root -> {
-            inMainOverlay(overlay -> {
-                overlay.withVisible(false);
-                modal.onFinally(() -> overlay.withVisible(true));
-            });
-
-            modal.onConfirm(dataMap -> callback.accept(root, dataMap));
-
-            modal.open(this.builder, root);
-        });
-    }
-
     private void playSaveNotification(String type, String name) {
         super.notifySuccess("Success!", "Successfully saved " + type + ": " + name, "Weapon_Sword_Steel", "SFX_Level_Up_Generic");
     }

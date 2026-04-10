@@ -1,8 +1,6 @@
 package dev.VoxelTales.UI.Pages.Default;
 
-import au.ellie.hyui.builders.ButtonBuilder;
-import au.ellie.hyui.builders.PageBuilder;
-import au.ellie.hyui.builders.UIElementBuilder;
+import au.ellie.hyui.builders.*;
 import au.ellie.hyui.events.UIContext;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -75,12 +73,16 @@ public abstract class VoxelPageUI {
         });
     }
 
-    protected void bindClick(String elementId, Consumer<UIElementBuilder<?>> callback) {
+    protected void inPageRoot(Consumer<GroupBuilder> callback) {
         if (this.builder == null) return;
 
-        this.builder.getById(elementId, ButtonBuilder.class).ifPresent(element ->
-                element.onClick((_, context) -> callback.accept(element))
-        );
+        this.builder.getById("page-root", GroupBuilder.class).ifPresent(callback);
+    }
+
+    protected void inMainOverlay(Consumer<PageOverlayBuilder> callback) {
+        if (this.builder == null) return;
+
+        this.builder.getById("main-overlay", PageOverlayBuilder.class).ifPresent(callback);
     }
 
     protected void bindButtonClick(String elementId, BiConsumer<ButtonBuilder, UIContext> callback) {
