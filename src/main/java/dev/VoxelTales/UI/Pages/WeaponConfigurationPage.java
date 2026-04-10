@@ -19,10 +19,64 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class WeaponConfigurationPage extends VoxelEditorPageUI {
-    private static final List<String> TABS = List.of("overview", "blades", "handles");
-    private static final List<String> TYPE_ENTRIES = List.of("damage", "scaling", "passive");
+    private static final String HTML_PATH = "Pages/WeaponConfigurator.html";
 
-    //Currently selected data;
+    private static final class Tabs {
+        private static final String OVERVIEW = "overview";
+        private static final String BLADES = "blades";
+        private static final String HANDLES = "handles";
+        private static final String NAVIGATION = "weapon-tabs";
+        private static final String QUICK_JUMP_BLADES = "quick-jump-blades";
+    }
+
+    private static final class Categories {
+        private static final String DAMAGE = "damage";
+        private static final String SCALING = "scaling";
+        private static final String PASSIVE = "passive";
+    }
+
+    private static final class Fields {
+        private static final String NAME = "Name";
+        private static final String VALUE = "Value";
+        private static final String NEW_ID = "New ID";
+    }
+
+    private static final class ModalText {
+        private static final String CREATE_NEW_PREFIX = "Create New ";
+        private static final String INSERT_NEW_PREFIX = "Insert a new ";
+        private static final String CONFIRM_DELETION = "Confirm Deletion";
+        private static final String RENAME_ITEM = "Rename Item";
+        private static final String CREATE = "Create";
+        private static final String APPLY = "Apply";
+        private static final String DELETE_PERMANENTLY = "Delete Permanently";
+        private static final String CONFIRM = "Confirm";
+    }
+
+    private static final class ElementIds {
+        private static final String ITEM_LIST_SUFFIX = "-item-list";
+        private static final String TIER_INPUT_SUFFIX = "-tier-input";
+        private static final String ATK_SPEED_INPUT_SUFFIX = "-atk-speed-input";
+        private static final String SEARCH_BAR_SUFFIX = "-search-bar";
+        private static final String TIER_FILTER_SUFFIX = "-tier-filter";
+        private static final String EMPTY_STATE_SUFFIX = "-empty-state";
+        private static final String EDITOR_UI_SUFFIX = "-editor-ui";
+        private static final String DISPLAY_NAME_SUFFIX = "-display-name";
+        private static final String INTERNAL_ID_SUFFIX = "-internal-id";
+        private static final String ADD_ITEM_SUFFIX = "-add-item";
+        private static final String DELETE_ITEM_SUFFIX = "-delete-item";
+        private static final String RENAME_BTN_SUFFIX = "-rename-btn";
+        private static final String SAVE_BTN_SUFFIX = "-save-btn";
+        private static final String RESET_BTN_SUFFIX = "-reset-btn";
+        private static final String ADD_CATEGORY_BTN_SUFFIX = "-add-";
+        private static final String CATEGORY_BTN_SUFFIX = "-btn";
+        private static final String ITEM_PREFIX = "-item-";
+    }
+
+    private static final List<String> TABS = List.of(Tabs.OVERVIEW, Tabs.BLADES, Tabs.HANDLES);
+    private static final List<String> TYPES = List.of(Tabs.BLADES, Tabs.HANDLES);
+    private static final List<String> TYPE_ENTRIES = List.of(Categories.DAMAGE, Categories.SCALING, Categories.PASSIVE);
+
+    // Currently selected data
     private final HashMap<String, String> textBarFilter = new HashMap<>();
     private final HashMap<String, String> tierFilter = new HashMap<>();
 
@@ -41,40 +95,40 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
     }
 
     public void update() {
-        super.update("Pages/WeaponConfigurator.html");
+        super.update(HTML_PATH);
 
-        for (String tabId : List.of("blades", "handles")) {
-            this.builder.getById(tabId + "-item-list", GroupBuilder.class)
+        for (String tabId : TYPES) {
+            this.builder.getById(tabId + ElementIds.ITEM_LIST_SUFFIX, GroupBuilder.class)
                     .ifPresent(group -> populateSidebar(tabId, group));
 
-            this.builder.getById(tabId + "-tier-input", NumberFieldBuilder.class).ifPresent(el ->
+            this.builder.getById(tabId + ElementIds.TIER_INPUT_SUFFIX, NumberFieldBuilder.class).ifPresent(el ->
                     el.addEventListener(CustomUIEventBindingType.ValueChanged, (newTier) -> {
                         this.isDirty = true;
                         this.tier = newTier.intValue();
                     })
             );
 
-            this.builder.getById(tabId + "-atk-speed-input", NumberFieldBuilder.class).ifPresent(el ->
+            this.builder.getById(tabId + ElementIds.ATK_SPEED_INPUT_SUFFIX, NumberFieldBuilder.class).ifPresent(el ->
                     el.addEventListener(CustomUIEventBindingType.ValueChanged, (newSpd) -> {
                         this.isDirty = true;
                         this.attackSpeed = newSpd.floatValue();
                     })
             );
 
-            this.builder.getById(tabId + "-search-bar", TextFieldBuilder.class).ifPresent(el -> {
-                el.addEventListener(CustomUIEventBindingType.FocusLost, (newVal, context) -> {
+            this.builder.getById(tabId + ElementIds.SEARCH_BAR_SUFFIX, TextFieldBuilder.class).ifPresent(el -> {
+                        el.addEventListener(CustomUIEventBindingType.FocusLost, (newVal, context) -> {
                             this.textBarFilter.put(tabId, newVal);
-                            context.getById(tabId + "-item-list", GroupBuilder.class)
+                            context.getById(tabId + ElementIds.ITEM_LIST_SUFFIX, GroupBuilder.class)
                                     .ifPresent(group -> populateSidebar(tabId, group));
 
                             context.updatePage(true);
                         });
                     }
             );
-            this.builder.getById(tabId + "-tier-filter", DropdownBoxBuilder.class).ifPresent(el -> {
+            this.builder.getById(tabId + ElementIds.TIER_FILTER_SUFFIX, DropdownBoxBuilder.class).ifPresent(el -> {
                 el.addEventListener(CustomUIEventBindingType.ValueChanged, (newVal, context) -> {
                     this.tierFilter.put(tabId, newVal);
-                    context.getById(tabId + "-item-list", GroupBuilder.class)
+                    context.getById(tabId + ElementIds.ITEM_LIST_SUFFIX, GroupBuilder.class)
                             .ifPresent(group -> populateSidebar(tabId, group));
 
                     el.withValue(newVal);
@@ -90,8 +144,8 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
             this.bindSaveButton(tabId);
         }
 
-        this.refreshTabVisibility("overview", null);
-        this.builder.addEventListener("weapon-tabs", CustomUIEventBindingType.SelectedTabChanged, (data, context) -> {
+        this.refreshTabVisibility(Tabs.OVERVIEW, null);
+        this.builder.addEventListener(Tabs.NAVIGATION, CustomUIEventBindingType.SelectedTabChanged, (data, context) -> {
             String selected = ((SelectedTabChangedEventData) data).getSelectedTab();
 
             Runnable navigationTask = () -> {
@@ -102,8 +156,8 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
             withDiscardConfirmation(context, navigationTask);
         });
 
-        bindButtonClick("quick-jump-blades", (_, context) -> {
-            this.refreshTabVisibility("blades", context);
+        bindButtonClick(Tabs.QUICK_JUMP_BLADES, (_, context) -> {
+            this.refreshTabVisibility(Tabs.BLADES, context);
             context.updatePage(false);
         });
     }
@@ -115,7 +169,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
 
     private void refreshTabVisibility(String activeTab, UIContext context) {
         if (context != null) {
-            context.getById("weapon-tabs", NativeTabNavigationBuilder.class)
+            context.getById(Tabs.NAVIGATION, NativeTabNavigationBuilder.class)
                     .ifPresent(nav -> nav.withSelectedTab(activeTab));
         }
 
@@ -134,99 +188,99 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
 
     private LinkedHashMap<String, ModalUI.FieldType> getNewPairField() {
         LinkedHashMap<String, ModalUI.FieldType> newWeaponFields = new LinkedHashMap<>();
-        newWeaponFields.put("Name", ModalUI.FieldType.TEXT);
-        newWeaponFields.put("Value", ModalUI.FieldType.NUMBER);
+        newWeaponFields.put(Fields.NAME, ModalUI.FieldType.TEXT);
+        newWeaponFields.put(Fields.VALUE, ModalUI.FieldType.NUMBER);
 
         return newWeaponFields;
     }
 
     private void bindAddItemButton(String type) {
-        bindButtonClick(type + "-add-item", (_, context) -> {
+        bindButtonClick(type + ElementIds.ADD_ITEM_SUFFIX, (_, context) -> {
             LinkedHashMap<String, ModalUI.FieldType> fields = new LinkedHashMap<>();
-            fields.put("Name", ModalUI.FieldType.TEXT);
+            fields.put(Fields.NAME, ModalUI.FieldType.TEXT);
 
-            ModalUI modal = new ModalUI("Create New " + type, "Create", fields);
+            ModalUI modal = new ModalUI(ModalText.CREATE_NEW_PREFIX + type, ModalText.CREATE, fields);
             modal.setDescription("Enter a unique Name (e.g., 'Sharp').");
             modal.setHeight(200);
 
             modalConfirmHelper(modal, (root, dataMap) -> {
-                    String newId = dataMap.get("Name").toString().trim();
-                    if (newId.isEmpty()) return;
+                String newId = dataMap.get(Fields.NAME).toString().trim();
+                if (newId.isEmpty()) return;
 
-                    VoxelWeaponConfigs.ComponentStats newStats = new VoxelWeaponConfigs.ComponentStats();
-                    VoxelWeaponConfigsHelper.saveStatsOf(type, newId, newStats);
+                VoxelWeaponConfigs.ComponentStats newStats = new VoxelWeaponConfigs.ComponentStats();
+                VoxelWeaponConfigsHelper.saveStatsOf(type, newId, newStats);
 
-                    context.getById(type + "-item-list", GroupBuilder.class).ifPresent(group -> {
-                        this.populateSidebar(type, group);
-                    });
+                context.getById(type + ElementIds.ITEM_LIST_SUFFIX, GroupBuilder.class).ifPresent(group -> {
+                    this.populateSidebar(type, group);
+                });
 
-                    this.selectEntry(type, newId, context);
+                this.selectEntry(type, newId, context);
 
-                    context.updatePage(true);
+                context.updatePage(true);
             });
             context.updatePage(true);
         });
     }
 
     private void bindDeleteButton(String type) {
-        bindButtonClick(type + "-delete-item", (_, context) -> {
-            ModalUI modal = new ModalUI("Confirm Deletion", "Delete Permanently", new LinkedHashMap<>());
+        bindButtonClick(type + ElementIds.DELETE_ITEM_SUFFIX, (_, context) -> {
+            ModalUI modal = new ModalUI(ModalText.CONFIRM_DELETION, ModalText.DELETE_PERMANENTLY, new LinkedHashMap<>());
             modal.setDescription("Are you sure you want to delete '" + this.selectedName + "'? This action cannot be undone!");
             modal.setHeight(230);
             modal.setButtonDirection(ModalUI.ButtonDirection.VERTICAL);
 
             modalConfirmHelper(modal, (_, _) -> {
-                    VoxelWeaponConfigsHelper.deleteEntry(type, this.selectedName);
+                VoxelWeaponConfigsHelper.deleteEntry(type, this.selectedName);
 
-                    context.getById(type + "-item-list", GroupBuilder.class).ifPresent(group -> {
-                        this.populateSidebar(type, group);
-                    });
+                context.getById(type + ElementIds.ITEM_LIST_SUFFIX, GroupBuilder.class).ifPresent(group -> {
+                    this.populateSidebar(type, group);
+                });
 
-                    context.getById(type + "-empty-state", GroupBuilder.class).ifPresent(el -> el.withVisible(true));
-                    context.getById(type + "-editor-ui", GroupBuilder.class).ifPresent(el -> el.withVisible(false));
+                context.getById(type + ElementIds.EMPTY_STATE_SUFFIX, GroupBuilder.class).ifPresent(el -> el.withVisible(true));
+                context.getById(type + ElementIds.EDITOR_UI_SUFFIX, GroupBuilder.class).ifPresent(el -> el.withVisible(false));
 
-                    this.selectedName = null;
-                    this.isDirty = false;
+                this.selectedName = null;
+                this.isDirty = false;
 
-                    context.updatePage(true);
+                context.updatePage(true);
             });
             context.updatePage(true);
         });
     }
 
     private void bindRenameButton(String type) {
-        bindButtonClick(type + "-rename-btn", (_, context) -> {
+        bindButtonClick(type + ElementIds.RENAME_BTN_SUFFIX, (_, context) -> {
             LinkedHashMap<String, ModalUI.FieldType> renameFields = new LinkedHashMap<>();
-            renameFields.put("New ID", ModalUI.FieldType.TEXT);
+            renameFields.put(Fields.NEW_ID, ModalUI.FieldType.TEXT);
 
-            ModalUI modal = new ModalUI("Rename Item", "Apply", renameFields);
+            ModalUI modal = new ModalUI(ModalText.RENAME_ITEM, ModalText.APPLY, renameFields);
             modal.setHeight(250);
             modal.setButtonDirection(ModalUI.ButtonDirection.VERTICAL);
 
             modalConfirmHelper(modal, (root, dataMap) -> {
-                    String newId = dataMap.get("New ID").toString();
+                String newId = dataMap.get(Fields.NEW_ID).toString();
 
-                    if (!newId.isEmpty()) {
-                        VoxelWeaponConfigsHelper.renameEntry(type, this.selectedName, newId);
+                if (!newId.isEmpty()) {
+                    VoxelWeaponConfigsHelper.renameEntry(type, this.selectedName, newId);
 
-                        this.selectedName = newId;
+                    this.selectedName = newId;
 
-                        context.getById(type + "-display-name", LabelBuilder.class).ifPresent(el -> el.withText(newId));
-                        context.getById(type + "-internal-id", LabelBuilder.class).ifPresent(el -> el.withText("ID: " + newId));
+                    context.getById(type + ElementIds.DISPLAY_NAME_SUFFIX, LabelBuilder.class).ifPresent(el -> el.withText(newId));
+                    context.getById(type + ElementIds.INTERNAL_ID_SUFFIX, LabelBuilder.class).ifPresent(el -> el.withText("ID: " + newId));
 
-                        context.getById(type + "-item-list", GroupBuilder.class).ifPresent(group -> {
-                            this.populateSidebar(type, group);
-                        });
-                    }
+                    context.getById(type + ElementIds.ITEM_LIST_SUFFIX, GroupBuilder.class).ifPresent(group -> {
+                        this.populateSidebar(type, group);
+                    });
+                }
 
-                    context.updatePage(false);
+                context.updatePage(false);
             });
             context.updatePage(true);
         });
     }
 
     private void bindSaveButton(String type) {
-        bindButtonClick(type + "-save-btn", ( _,  _) -> {
+        bindButtonClick(type + ElementIds.SAVE_BTN_SUFFIX, (_, _) -> {
             VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(type, this.selectedName);
             if (stats == null) {
                 stats = new VoxelWeaponConfigs.ComponentStats();
@@ -246,32 +300,32 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
     }
 
     private void bindResetButton(String type) {
-        bindButtonClick(type + "-reset-btn", ( _, context) ->
+        bindButtonClick(type + ElementIds.RESET_BTN_SUFFIX, (_, context) ->
                 this.withDiscardConfirmation(context, () ->
                         this.selectEntry(type, this.selectedName, context)));
     }
 
     private void bindAddButtons(String type) {
-        TYPE_ENTRIES.forEach(categoryName -> bindButtonClick(type + "-add-" + categoryName + "-btn", (_, context) -> {
-            ModalUI modal = new ModalUI("Insert a new " + categoryName, "Confirm", getNewPairField());
+        TYPE_ENTRIES.forEach(categoryName -> bindButtonClick(type + ElementIds.ADD_CATEGORY_BTN_SUFFIX + categoryName + ElementIds.CATEGORY_BTN_SUFFIX, (_, context) -> {
+            ModalUI modal = new ModalUI(ModalText.INSERT_NEW_PREFIX + categoryName, ModalText.CONFIRM, getNewPairField());
             modal.setHeight(230);
 
             modalConfirmHelper(modal, (_, dataMap) -> {
-                    Map<String, HashMap<String, Float>> categories = Map.of(
-                            "damage", this.baseDamage,
-                            "scaling", this.damageScaling,
-                            "passive", this.passives
-                    );
+                Map<String, HashMap<String, Float>> categories = Map.of(
+                        Categories.DAMAGE, this.baseDamage,
+                        Categories.SCALING, this.damageScaling,
+                        Categories.PASSIVE, this.passives
+                );
 
-                    String name = dataMap.get("Name").toString();
-                    float value = Float.parseFloat(dataMap.get("Value").toString());
+                String name = dataMap.get(Fields.NAME).toString();
+                float value = Float.parseFloat(dataMap.get(Fields.VALUE).toString());
 
-                    this.isDirty = true;
+                this.isDirty = true;
 
-                    categories.get(categoryName).put(name, value);
-                    buildSelectedSide(context, type);
+                categories.get(categoryName).put(name, value);
+                buildSelectedSide(context, type);
 
-                    context.updatePage(true);
+                context.updatePage(true);
             });
 
             context.updatePage(true);
@@ -307,7 +361,9 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
 
     private void selectEntry(String type, String name, UIContext context) {
         VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(type, name);
-        if (stats == null) { return; }
+        if (stats == null) {
+            return;
+        }
 
         this.selectedName = name;
         this.tier = stats.getTier();
@@ -317,21 +373,21 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
         this.passives = new HashMap<>(stats.getPassives());
 
         if (this.selectedName != null && !this.selectedName.equals(name)) {
-            String oldSafeId = (type + "-item-" + this.selectedName).toLowerCase().replaceAll("[^a-z0-9]", "");
+            String oldSafeId = (type + ElementIds.ITEM_PREFIX + this.selectedName).toLowerCase().replaceAll("[^a-z0-9]", "");
             context.getById(oldSafeId, ButtonBuilder.class)
                     .ifPresent(el -> el.withStyle(ButtonBuilder.tertiaryTextButton().getHyUIStyle()));
         }
 
-        context.getById(type + "-empty-state", GroupBuilder.class).ifPresent(el -> el.withVisible(false));
-        context.getById(type + "-editor-ui", GroupBuilder.class).ifPresent(el -> el.withVisible(true));
-        context.getById(type + "-display-name", LabelBuilder.class).ifPresent(el -> el.withText(name));
-        context.getById(type + "-internal-id", LabelBuilder.class).ifPresent(el -> el.withText("ID: " + name));
+        context.getById(type + ElementIds.EMPTY_STATE_SUFFIX, GroupBuilder.class).ifPresent(el -> el.withVisible(false));
+        context.getById(type + ElementIds.EDITOR_UI_SUFFIX, GroupBuilder.class).ifPresent(el -> el.withVisible(true));
+        context.getById(type + ElementIds.DISPLAY_NAME_SUFFIX, LabelBuilder.class).ifPresent(el -> el.withText(name));
+        context.getById(type + ElementIds.INTERNAL_ID_SUFFIX, LabelBuilder.class).ifPresent(el -> el.withText("ID: " + name));
 
-        context.getById(type + "-tier-input", NumberFieldBuilder.class).ifPresent(el ->
+        context.getById(type + ElementIds.TIER_INPUT_SUFFIX, NumberFieldBuilder.class).ifPresent(el ->
                 el.withValue(this.tier)
         );
 
-        context.getById(type + "-atk-speed-input", NumberFieldBuilder.class).ifPresent(el ->
+        context.getById(type + ElementIds.ATK_SPEED_INPUT_SUFFIX, NumberFieldBuilder.class).ifPresent(el ->
                 el.withValue(this.attackSpeed)
         );
 
@@ -347,9 +403,9 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
         currentInspectionElements.clear();
 
         Map<String, HashMap<String, Float>> categories = Map.of(
-                "damage", this.baseDamage,
-                "scaling", this.damageScaling,
-                "passive", this.passives
+                Categories.DAMAGE, this.baseDamage,
+                Categories.SCALING, this.damageScaling,
+                Categories.PASSIVE, this.passives
         );
 
         categories.forEach((categoryName, dataMap) -> context.getById(type + "-" + categoryName + "-container", GroupBuilder.class).ifPresent(container -> dataMap.forEach((key, value) -> {
@@ -390,6 +446,8 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
                             }
                         } catch (NumberFormatException e) {
                             LoggerUtil.getLogger().warning("Tier filter value wasn't a number!\n" + Arrays.toString(e.getStackTrace()));
+
+                            return false;
                         }
                     }
 
@@ -399,7 +457,9 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
                 .toList();
 
         for (String name : sortedNames) {
-            if (name.equals("default")) continue;
+            if (name.equals("default")) {
+                continue;
+            }
 
             ButtonBuilder btn = buildSideButton(type, name, (Void _, UIContext ctx) ->
                     withDiscardConfirmation(ctx, () -> selectEntry(type, name, ctx))
@@ -414,7 +474,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
     }
 
     private ButtonBuilder buildSideButton(String type, String name, BiConsumer<Void, UIContext> callback) {
-        String safeId = (type + "-item-" + name).toLowerCase().replaceAll("[^a-z0-9]", "");
+        String safeId = (type + ElementIds.ITEM_PREFIX + name).toLowerCase().replaceAll("[^a-z0-9]", "");
 
         var btn = ButtonBuilder.tertiaryTextButton()
                 .withId(safeId)
