@@ -108,7 +108,6 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
         });
     }
 
-    @Override
     public void open() {
         this.isDirty = false;
         super.open();

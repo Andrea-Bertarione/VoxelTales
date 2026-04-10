@@ -12,7 +12,6 @@ public class WeaponForgerPage extends VoxelPageUI {
         super.update("Pages/WeaponForger.html");
     }
 
-    @Override
     public void open() {
         //Do custom stuff before opening!
         super.open();
