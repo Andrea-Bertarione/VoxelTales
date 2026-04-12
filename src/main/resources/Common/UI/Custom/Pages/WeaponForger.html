@@ -71,7 +71,7 @@
 
         background-color: rgba(0, 0, 0, 0.2);
         anchor-width: 700;
-        anchor-height: 200;
+        anchor-height: 400;
     }
 
     .side-panel {
@@ -97,32 +97,16 @@
     /* The Container for your Java-appended rows */
     .dynamic-stat-list {
         layout-mode: top;
-        margin-bottom: 10;
-    }
-
-    /* Individual Row Styling */
-    .stat-row {
-        layout-mode: left;
-        margin-bottom: 2;
-        padding-left: 5;
-        padding-right: 5;
-    }
-
-    .stat-key {
-        color: #aaaaaa;
-        flex-weight: 1;
-    }
-
-    .stat-val {
-        color: #ffffff;
-        text-align: right;
+        margin-left: 10;
+        margin-top: 5;
+        margin-bottom: 5;
     }
 </style>
 
 <div id="page-root">
     <div class="page-overlay" id="main-overlay">
         <div class="window-wrapper">
-            <div id="blades-stats-panel" class="container side-panel side-panel-left" data-hyui-title="Blade Stats">
+            <div id="blades-stats-panel" class="container side-panel side-panel-left" style="display: none;" data-hyui-title="Blade Stats">
                 <div class="container-contents" style="layout-mode: topscrolling; padding: 10;">
 
                     <p class="stat-category-title" data-hyui-bold="true">BASE DAMAGE</p>
@@ -144,31 +128,54 @@
 
                         <div class="pane-left-list">
                             <div style="layout-mode: left;">
-                                <p id="blades-list-label" style="color: #aaaaaa; margin-top: 15; margin-left: 10;">Blades</p>
-                                <button id="blades-show-stats" class="secondary-button" style="margin-top: 15; anchor-left: 15;">
+                                <p id="blades-list-label" style="font-size: 20; color: #aaaaaa; margin-top: 15; margin-left: 10;">Blades</p>
+                                <button id="blades-show-stats" class="raw-button" style="margin-top: 15; anchor-left: 15;">
                                     [+]
                                 </button>
                             </div>
-                            <div id="blades-item-list" class="list-entry" data-hyui-scrollbar-style="DefaultScrollbarStyle">
-                            </div>
+                            <div id="blades-item-list" class="list-entry" data-hyui-scrollbar-style="DefaultScrollbarStyle"></div>
                         </div>
 
                         <div class="ui-menu-divider"></div>
 
                         <div id="main-show-pane" class="pane-center-editor">
-                            <div id="empty-state" style="layout-mode: centermiddle; flex-weight: 1;">
-                                <p style="color: #666666;">Placeholder text!</p>
+                            <div id="forge-preview-equation" style="layout-mode: middlecenter; flex-weight: 1; margin-bottom: 120;">
+                                <div style="layout-mode: left;">
+
+                                    <div id="preview-slot-blade" style="anchor-width: 100; anchor-height: 100; background-color: rgba(0, 0, 0, 0.6); layout-mode: centermiddle;">
+                                        <p id="blade-slot-placeholder" style="color: #444444; font-size: 14;">Blade</p>
+                                    </div>
+
+                                    <div style="layout-mode: centermiddle; margin-left: 20; margin-right: 20;">
+                                        <p style="color: #ffffff; font-size: 36; font-weight: bold;">+</p>
+                                    </div>
+
+                                    <div id="preview-slot-handle" style="anchor-width: 100; anchor-height: 100; background-color: rgba(0, 0, 0, 0.6); layout-mode: centermiddle;">
+                                        <p id="handle-slot-placeholder" style="color: #444444; font-size: 14;">Handle</p>
+                                    </div>
+
+                                </div>
                             </div>
                             <div style="layout-mode: bottom; flex-weight: 1; justify-content: center;">
-                                <div class="stats-hero" style="">
-                                    <p style="horizontal-align: center; text-align: center; color: #ffffff; font-size: 18; anchor-top: 15;">
+                                <div class="stats-hero">
+                                    <p style="horizontal-align: center; text-align: center; color: #ffffff; font-size: 18; margin-top: 15; margin-bottom: 10;">
                                         Forged stats
                                     </p>
-                                    <div id="forged-stats">
+
+                                    <div id="forged-stats" style="layout-mode: topscrolling; flex-weight: 1; padding-left: 20; padding-right: 20;" data-hyui-scrollbar-style="DefaultScrollbarStyle">
+
+                                        <p class="stat-category-title" data-hyui-bold="true">BASE DAMAGE</p>
+                                        <div id="total-base-damage-list" class="dynamic-stat-list"></div>
+
+                                        <p class="stat-category-title" data-hyui-bold="true">SCALING</p>
+                                        <div id="total-scaling-list" class="dynamic-stat-list"></div>
+
+                                        <p class="stat-category-title" data-hyui-bold="true">PASSIVES</p>
+                                        <div id="total-passives-list" class="dynamic-stat-list"></div>
 
                                     </div>
                                 </div>
-                                <button class="primary-button" style="anchor-width: 200; anchor-height: 60; margin-bottom: 20;">Forge</button>
+                                <button id="confirm-forge-button" class="primary-button" style="anchor-width: 200; anchor-height: 60; margin-bottom: 20;">Forge</button>
                             </div>
                         </div>
 
@@ -176,22 +183,26 @@
 
                         <div class="pane-right-list">
                             <div style="layout-mode: right;">
-                                <button id="handles-show-stats" class="secondary-button" style="margin-top: 15; anchor-right: 15;">
+                                <button id="handles-show-stats" class="raw-button" style="margin-top: 15; anchor-right: 15;">
                                     [+]
                                 </button>
-                                <p id="handles-list-label" style="color: #aaaaaa; margin-top: 15; margin-right: 10;">Handles</p>
+                                <p id="handles-list-label" style="font-size: 20; color: #aaaaaa; margin-top: 15; margin-right: 10;">Handles</p>
                             </div>
+                            <div id="handles-item-list" class="list-entry" style="" data-hyui-scrollbar-style="DefaultScrollbarStyle"></div>
                         </div>
 
                     </div>
                 </div>
             </div>
 
-            <div id="handles-stats-panel" class="container side-panel side-panel-right" data-hyui-title="Handle Stats">
+            <div id="handles-stats-panel" class="container side-panel side-panel-right" style="display: none;" data-hyui-title="Handle Stats">
                 <div class="container-contents" style="layout-mode: topscrolling; padding: 10;">
 
                     <p class="stat-category-title" data-hyui-bold="true">BASE STATS</p>
                     <div id="handle-base-list" class="dynamic-stat-list"></div>
+
+                    <p class="stat-category-title" data-hyui-bold="true">SCALING</p>
+                    <div id="handle-scaling-list" class="dynamic-stat-list"></div>
 
                     <p class="stat-category-title" data-hyui-bold="true">PASSIVES</p>
                     <div id="handle-passives-list" class="dynamic-stat-list"></div>

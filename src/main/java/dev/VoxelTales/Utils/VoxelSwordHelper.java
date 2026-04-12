@@ -19,6 +19,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 
 public class VoxelSwordHelper {
+    public static void equipNewWeapon(PlayerRef playerRef, String blade, String handle) {
+        Ref<EntityStore> ref = playerRef.getReference();
+        if (ref == null || !ref.isValid()) return;
+
+        Store<EntityStore> store = ref.getStore();
+
+        store.getExternalData().getWorld().execute(() -> {
+            WeaponHandlerComponent weaponHandlerComponent = store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getWeaponHandlerComponent());
+            VoxelPlayerComponent playerComponent = store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getVoxelPlayerComponent());
+            weaponHandlerComponent.setCurrentBlade(blade);
+            weaponHandlerComponent.setCurrentHandle(handle);
+
+            VoxelSwordHelper.setVoxelWeaponStack(store, ref, playerComponent, weaponHandlerComponent);
+        });
+    }
+
     public static void setVoxelWeaponStack(@NotNull Store<EntityStore> store, @NotNull Ref<EntityStore> ref, VoxelPlayerComponent playerComponent, WeaponHandlerComponent weaponHandlerComponent) {
         Player player = store.getComponent(ref, Player.getComponentType());
         assert player != null;

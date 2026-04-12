@@ -154,7 +154,7 @@ public class WeaponHandlerComponent implements Component<EntityStore> {
         Map<String, Float> resultMap = new HashMap<>(bladeStats.getBaseDamage());
 
         handleStats.getBaseDamage().forEach((key, value) ->
-                resultMap.merge(key, value, Float::max)
+                resultMap.merge(key, value, (val1, val2) -> (val1 + val2) / 2)
         );
 
         return resultMap;

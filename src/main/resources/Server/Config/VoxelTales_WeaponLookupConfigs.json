@@ -1,0 +1,115 @@
+{
+  "Blades": {
+    "Sharp": {
+      "DamageScaling": {
+        "Physical": 0.30000001192092896,
+        "Dexterity": 0.30000001192092896
+      },
+      "BaseDamage": {
+        "Physical": 1.0,
+        "Fire": 0.20000000298023224
+      },
+      "Passives": {
+        "Boost_Physical": 0.05000000074505806
+      },
+      "Tier": 2,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
+    "Quick": {
+      "DamageScaling": {
+        "Dexterity": 0.4000000059604645
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {
+        "Boost_Dexterity": 0.05000000074505806
+      },
+      "Tier": 2,
+      "AttackSpeed": 1.100000023841858,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
+    "default": {
+      "DamageScaling": {
+        "Strength": 1.0
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {},
+      "Tier": 1,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
+    "Old": {
+      "DamageScaling": {
+        "Physical": 0.15000000596046448,
+        "Dexterity": 0.15000000596046448
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {},
+      "Tier": 1,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    }
+  },
+  "Handles": {
+    "Sharp": {
+      "DamageScaling": {
+        "Physical": 0.30000001192092896,
+        "Dexterity": 0.30000001192092896
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {
+        "Boost_Physical": 0.05000000074505806
+      },
+      "Tier": 2,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
+    "Quick": {
+      "DamageScaling": {
+        "Dexterity": 0.4000000059604645
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {
+        "Boost_Dexterity": 0.05000000074505806
+      },
+      "Tier": 2,
+      "AttackSpeed": 1.100000023841858,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
+    "default": {
+      "DamageScaling": {
+        "Strength": 1.0
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {},
+      "Tier": 1,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
+    "Old": {
+      "DamageScaling": {
+        "Physical": 0.15000000596046448,
+        "Dexterity": 0.15000000596046448
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {},
+      "Tier": 1,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    }
+  }
+}
