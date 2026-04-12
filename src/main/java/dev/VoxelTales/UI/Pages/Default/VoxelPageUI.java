@@ -39,6 +39,8 @@ public abstract class VoxelPageUI {
 
     //Default implementation
     public void update(String pathHTML) {
+        if (pathHTML == null) return;
+
         this.builder = PageBuilder.pageForPlayer(this.playerRef)
                 .loadHtml(pathHTML);
     }
