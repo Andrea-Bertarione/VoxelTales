@@ -3,6 +3,8 @@ package dev.VoxelTales;
 import javax.annotation.Nonnull;
 
 import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
@@ -13,6 +15,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.VoxelTales.Assets.Commands.*;
 import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
+import dev.VoxelTales.Components.PlayerWeaponProgressComponent;
 import dev.VoxelTales.Components.VoxelPlayerComponent;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
 import dev.VoxelTales.Configs.EntityXPConfigs;
@@ -37,8 +40,7 @@ import dev.VoxelTales.UI.HUD.WeaponHUD;
 import dev.VoxelTales.Utils.Reflections.VoxelAssetReflection;
 import dev.VoxelTales.Utils.Reflections.VoxelDamageUIReflection;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VoxelTalesPlugin extends JavaPlugin {
@@ -57,6 +59,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
     private ComponentType<EntityStore, WeaponHandlerComponent> weaponHandlerComponent;
     private ComponentType<EntityStore, VoxelPlayerComponent> voxelPlayerComponent;
     private ComponentType<EntityStore, CombatTrackerComponent> combatTrackerComponent;
+    private ComponentType<EntityStore, PlayerWeaponProgressComponent> playerWeaponProgressComponent;
 
     public VoxelTalesPlugin(@Nonnull JavaPluginInit init) {
         super(init);
@@ -96,6 +99,12 @@ public class VoxelTalesPlugin extends JavaPlugin {
                 CombatTrackerComponent.CODEC
         );
 
+        this.playerWeaponProgressComponent = this.getEntityStoreRegistry().registerComponent(
+                PlayerWeaponProgressComponent.class,
+                "VoxelTales:PlayerWeaponProgressComponent",
+                PlayerWeaponProgressComponent.CODEC
+        );
+
         //Register events
         this.getEventRegistry().registerGlobal(com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent.class, PlayerReadyEvent::onPlayerReady);
         this.getEventRegistry().registerGlobal(com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent.class, PlayerDisconnectEvent::onPlayerDisconnect);
@@ -121,6 +130,26 @@ public class VoxelTalesPlugin extends JavaPlugin {
         //Register Caches
         VoxelCacheRegistry.register("WeaponConfigurationPage", WeaponConfigurationPage::new);
         VoxelCacheRegistry.register("WeaponForgerPage", WeaponForgerPage::new);
+        VoxelCacheRegistry.register("VoxelPlayerWeaponProgressCache", playerRef -> {
+            Ref<EntityStore> ref = playerRef.getReference();
+            if (ref == null || !ref.isValid()) {
+                Map<String, Set<String>> unlocks = new HashMap<>();
+                unlocks.put("blades", Collections.emptySet());
+                unlocks.put("handles", Collections.emptySet());
+
+                return unlocks;
+            };
+
+            Store<EntityStore> store = ref.getStore();
+            PlayerWeaponProgressComponent component =
+                    store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getPlayerWeaponProgressComponent());
+
+            Map<String, Set<String>> unlocks = new HashMap<>();
+            unlocks.put("blades", component.getUnlockedBlades());
+            unlocks.put("handles", component.getUnlockedHandles());
+
+            return unlocks;
+        });
     }
 
     @Override
@@ -146,6 +175,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
     public ComponentType<EntityStore, WeaponHandlerComponent> getWeaponHandlerComponent() {return this.weaponHandlerComponent;}
     public ComponentType<EntityStore, VoxelPlayerComponent> getVoxelPlayerComponent() { return this.voxelPlayerComponent; }
     public ComponentType<EntityStore, CombatTrackerComponent> getCombatTrackerComponent() { return this.combatTrackerComponent; }
+    public ComponentType<EntityStore, PlayerWeaponProgressComponent> getPlayerWeaponProgressComponent() { return this.playerWeaponProgressComponent; }
 
     public Map<UUID, Short> getSlotCache() {
         return slotCache;

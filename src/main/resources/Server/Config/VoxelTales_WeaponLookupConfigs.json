@@ -6,8 +6,7 @@
         "Dexterity": 0.30000001192092896
       },
       "BaseDamage": {
-        "Physical": 1.0,
-        "Fire": 0.20000000298023224
+        "Physical": 1.0
       },
       "Passives": {
         "Boost_Physical": 0.05000000074505806

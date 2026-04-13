@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.Components.PlayerWeaponProgressComponent;
 import dev.VoxelTales.Components.VoxelPlayerComponent;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
 import dev.VoxelTales.UI.HUD.WeaponHUD;
@@ -17,6 +18,9 @@ import dev.VoxelTales.VoxelTalesPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class VoxelSwordHelper {
     public static void equipNewWeapon(PlayerRef playerRef, String blade, String handle) {
@@ -33,6 +37,48 @@ public class VoxelSwordHelper {
 
             VoxelSwordHelper.setVoxelWeaponStack(store, ref, playerComponent, weaponHandlerComponent);
         });
+    }
+
+    public static CompletableFuture<Set<String>> getAvailableBlades(PlayerRef playerRef) {
+        CompletableFuture<Set<String>> future = new CompletableFuture<>();
+
+        Ref<EntityStore> ref = playerRef.getReference();
+        if (ref == null || !ref.isValid()) {
+            future.complete(java.util.Collections.emptySet());
+            return future;
+        }
+
+        Store<EntityStore> store = ref.getStore();
+
+        store.getExternalData().getWorld().execute(() -> {
+            PlayerWeaponProgressComponent component =
+                    store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getPlayerWeaponProgressComponent());
+
+            future.complete(new HashSet<>(component.getUnlockedBlades()));
+        });
+
+        return future;
+    }
+
+    public static CompletableFuture<Set<String>> getAvailableHandles(PlayerRef playerRef) {
+        CompletableFuture<Set<String>> future = new CompletableFuture<>();
+
+        Ref<EntityStore> ref = playerRef.getReference();
+        if (ref == null || !ref.isValid()) {
+            future.complete(java.util.Collections.emptySet());
+            return future;
+        }
+
+        Store<EntityStore> store = ref.getStore();
+
+        store.getExternalData().getWorld().execute(() -> {
+            PlayerWeaponProgressComponent component =
+                    store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getPlayerWeaponProgressComponent());
+
+            future.complete(new HashSet<>(component.getUnlockedHandles()));
+        });
+
+        return future;
     }
 
     public static void setVoxelWeaponStack(@NotNull Store<EntityStore> store, @NotNull Ref<EntityStore> ref, VoxelPlayerComponent playerComponent, WeaponHandlerComponent weaponHandlerComponent) {

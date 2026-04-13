@@ -5,14 +5,17 @@ import au.ellie.hyui.elements.LayoutModeSupported;
 import au.ellie.hyui.events.UIContext;
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
 import dev.VoxelTales.Utils.VoxelSwordHelper;
 import dev.VoxelTales.Utils.VoxelWeaponConfigsHelper;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class WeaponForgerPage extends VoxelPageUI {
@@ -46,6 +49,8 @@ public class WeaponForgerPage extends VoxelPageUI {
     private static final String BLADE_STATS_PANEL_ID = "blades-stats-panel";
     private static final String HANDLE_STATS_PANEL_ID = "handles-stats-panel";
 
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.00");
+
     private String selectedBlade = null;
     private String selectedHandle = null;
     private boolean isBladeStatsShown = false;
@@ -58,8 +63,13 @@ public class WeaponForgerPage extends VoxelPageUI {
     private final Map<String, UIElementBuilder<?>> handleStatElements = new HashMap<>();
     private final Map<String, UIElementBuilder<?>> forgedStatElements = new HashMap<>();
 
+    private Set<String> availableBlades = java.util.Collections.emptySet();
+    private Set<String> availableHandles = java.util.Collections.emptySet();
+
     public WeaponForgerPage(PlayerRef playerRef) {
         super(playerRef);
+
+        this.loadWeaponLists();
     }
 
     public void update() {
@@ -67,17 +77,20 @@ public class WeaponForgerPage extends VoxelPageUI {
 
         LoggerUtil.getLogger().info("WeaponForgerPage.update()");
 
-        this.drawBladeList();
-        this.drawHandleList();
+        this.loadWeaponLists();
 
         this.bindShowStatsButtons();
         this.refreshStatsPanelsVisibility();
+
+        this.drawBladeList();
+        this.drawHandleList();
 
         if (this.isBladeStatsShown) this.drawBladeStats();
         if (this.isHandleStatsShown) this.drawHandleStats();
         this.drawForgedStats();
         this.drawPreviewEquation();
 
+        this.drawForgeButton();
         this.bindConfirmForgeButton();
     }
 
@@ -85,9 +98,31 @@ public class WeaponForgerPage extends VoxelPageUI {
         super.open();
     }
 
+    private void loadWeaponLists() {
+        HashMap<String, Set<String>> weaponProgressCache = VoxelCacheRegistry.getSynced("VoxelPlayerWeaponProgressCache", this.playerRef.getUuid(), HashMap.class);
+        this.availableBlades = weaponProgressCache.getOrDefault("blades", new HashSet<>());
+        this.availableHandles = weaponProgressCache.getOrDefault("handles", new HashSet<>());
+    }
+
+
     private void bindConfirmForgeButton() {
         this.builder.getById(CONFIRM_FORGE_BUTTON_ID, ButtonBuilder.class).ifPresent(button ->
-                button.onClick(_ -> VoxelSwordHelper.equipNewWeapon(this.playerRef, this.selectedBlade, this.selectedHandle))
+                button.onClick((_, context) -> {
+                    VoxelSwordHelper.equipNewWeapon(this.playerRef, this.selectedBlade, this.selectedHandle);
+
+                    super.notifySuccess("Success!", "Successfully forged " + this.selectedBlade + " - " + this.selectedHandle, "Weapon_Heirloom_" + this.selectedBlade + "_" + this.selectedHandle, "SFX_Level_Up_Generic");
+
+                    context.getPage().ifPresent(page -> {
+                        page.close();
+                        context.updatePage(true);
+                    });
+                })
+        );
+    }
+
+    private void drawForgeButton() {
+        this.builder.getById(CONFIRM_FORGE_BUTTON_ID, ButtonBuilder.class).ifPresent(button ->
+                button.withDisabled( this.selectedBlade == null || this.selectedHandle == null)
         );
     }
 
@@ -104,13 +139,13 @@ public class WeaponForgerPage extends VoxelPageUI {
 
     private void drawBladeList() {
         this.builder.getById(BLADE_LIST_SELECTOR_ID, GroupBuilder.class).ifPresent(group ->
-                this.syncSidebar(group, this.bladesList, this.getAvailableBlades(), this.selectedBlade, this::buildBladeButton)
+                this.syncSidebar(group, this.bladesList, this.availableBlades, this.selectedBlade, this::buildBladeButton)
         );
     }
 
     private void drawHandleList() {
         this.builder.getById(HANDLE_LIST_SELECTOR_ID, GroupBuilder.class).ifPresent(group ->
-                this.syncSidebar(group, this.handlesList, this.getAvailableHandles(), this.selectedHandle, this::buildHandleButton)
+                this.syncSidebar(group, this.handlesList, this.availableHandles, this.selectedHandle, this::buildHandleButton)
         );
     }
 
@@ -216,13 +251,13 @@ public class WeaponForgerPage extends VoxelPageUI {
                 .withAnchor(new HyUIAnchor().setHeight(26))
                 .addChild(
                         new LabelBuilder()
-                                .withFlexWeight(1)
+                                .withFlexWeight(2)
                                 .withText(key)
                 )
                 .addChild(
                         new LabelBuilder()
                                 .withFlexWeight(1)
-                                .withText(String.valueOf(value))
+                                .withText(DECIMAL_FORMAT.format(value))
                 );
     }
 
@@ -231,6 +266,7 @@ public class WeaponForgerPage extends VoxelPageUI {
         this.drawForgedStats();
         this.drawBladeStats();
         this.drawPreviewEquation();
+        this.drawForgeButton();
     }
 
     private void setSelectedHandle(String handle) {
@@ -238,6 +274,7 @@ public class WeaponForgerPage extends VoxelPageUI {
         this.drawForgedStats();
         this.drawHandleStats();
         this.drawPreviewEquation();
+        this.drawForgeButton();
     }
 
     private void syncSidebar(
@@ -304,7 +341,7 @@ public class WeaponForgerPage extends VoxelPageUI {
         this.builder.getById(buttonId, ButtonBuilder.class).ifPresent(btn ->
                 btn.onClick((_, ctx) -> {
                     toggleAction.run();
-                    btn.withText(currentlyShown ? "[+]" : "[-]");
+                    btn.withText(currentlyShown ? "+" : "-");
                     this.refreshStatsPanelsVisibility();
                     ctx.updatePage(true);
                 })
@@ -337,18 +374,6 @@ public class WeaponForgerPage extends VoxelPageUI {
 
     private String buildSafeId(String prefix, String name) {
         return (prefix + "-item-" + name).toLowerCase().replaceAll("[^a-z0-9]", "");
-    }
-
-    private Set<String> getAvailableBlades() {
-        return VoxelWeaponConfigsHelper.getListOfNames("blades").stream()
-                .filter(name -> !name.equalsIgnoreCase("default"))
-                .collect(Collectors.toSet());
-    }
-
-    private Set<String> getAvailableHandles() {
-        return VoxelWeaponConfigsHelper.getListOfNames("handles").stream()
-                .filter(name -> !name.equalsIgnoreCase("default"))
-                .collect(Collectors.toSet());
     }
 
     private Map<String, Float> getBladeBaseStats() {

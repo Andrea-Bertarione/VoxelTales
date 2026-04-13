@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
@@ -23,7 +24,6 @@ public abstract class VoxelPageUI {
 
     @Nullable
     protected Store<EntityStore> store = null;
-    @Nullable
     protected PageBuilder builder = null;
 
     public VoxelPageUI(PlayerRef playerRef) {
