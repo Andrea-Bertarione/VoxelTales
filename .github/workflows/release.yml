@@ -1,0 +1,32 @@
+name: Publish Release
+
+# This triggers the action only when a tag starting with 'v' is pushed
+on:
+  push:
+    tags:
+      - 'v*' # Example: v1.0.0, v2.1.3-beta
+
+# We need permission to write to the repository to create the release
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # (Optional) Add your build steps here! 
+      # e.g., npm ci && npm run build
+      
+      # - name: Zip build files (Example)
+      #   run: zip -r my-build.zip ./dist
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true # Automatically generates a changelog based on PRs
+          # files: my-build.zip # Uncomment to upload specific compiled files
