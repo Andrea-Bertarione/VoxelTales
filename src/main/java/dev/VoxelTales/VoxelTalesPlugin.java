@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Int
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.events.StartWorldEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.VoxelTales.Assets.Commands.*;
@@ -26,6 +27,7 @@ import dev.VoxelTales.Events.PlayerReadyEvent;
 import dev.VoxelTales.Assets.Interactions.RouterSignatureInteraction;
 import dev.VoxelTales.Assets.Interactions.RouterSkillInteraction;
 import dev.VoxelTales.Assets.Interactions.VoxelDamageEntityInteraction;
+import dev.VoxelTales.Events.VoxelStartWorldEvent;
 import dev.VoxelTales.PacketListeners.WeaponActivationListener;
 import dev.VoxelTales.PacketListeners.WeaponMoveListener;
 import dev.VoxelTales.Registries.MetaData.VoxelDamageMetadata;
@@ -108,6 +110,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
         //Register events
         this.getEventRegistry().registerGlobal(com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent.class, PlayerReadyEvent::onPlayerReady);
         this.getEventRegistry().registerGlobal(com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent.class, PlayerDisconnectEvent::onPlayerDisconnect);
+        this.getEventRegistry().registerGlobal(StartWorldEvent.class, VoxelStartWorldEvent::onStartWorld);
 
         //Register systems
         this.getEntityStoreRegistry().registerSystem(new DamageTrackingSystem());
