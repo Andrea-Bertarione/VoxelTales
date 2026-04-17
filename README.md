@@ -10,17 +10,36 @@
 
 ---
 
-VoxelTales is a Hytale mod/plugin that takes inspiration from the hit roblox game [VoxlBlade](https://www.roblox.com/it/games/8651781069/Voxlblade).
+VoxelTales is a Hytale mod/plugin inspired by the Roblox game [VoxlBlade](https://www.roblox.com/it/games/8651781069/Voxlblade).
 
-It is a work-in-progress mod that aims to provide a different style of combat progression for players in Hytale.
+It is a work-in-progress project aiming to deliver a more progression-focused combat experience in Hytale, with custom weapons, UI flows, and data-driven gameplay systems.
 
 ## Features
 - Custom weapon and stats systems
-- Player XP / leveling related logic
+- Player XP / leveling logic
 - UI pages for weapon configuration and forging
 - HUD support for weapon progression
 - Config-driven weapon/stat data
 - Packet listeners, events, and registries for gameplay integration
+- NPC-driven interaction systems
+
+## Roadmap
+### Near-term
+- Expand the Sword Sage into a proper in-world guide NPC
+- Add dialogue options and lore-driven interactions
+- Add a command to open the forging UI directly
+- Add a skill selector flow to the Sword Sage UI
+
+### Weapon Progression
+- Add upgrade paths and unlock trees for weapons
+- Support upgrade chains such as blade variants unlocking new forms
+- Add configuration support for weapon unlock relationships
+- Add weapon compatibility rules for future forging paths
+
+### Skills and Content Expansion
+- Add skill pools to blades and handles
+- Filter skills based on weapon type and forge result compatibility
+- Add more blades, handles, and skills once the progression systems are in place
 
 ## Project Structure
 - `Components` — entity/player state components
@@ -41,7 +60,9 @@ It is a work-in-progress mod that aims to provide a different style of combat pr
 
 ## Notes
 This project is still under active development.
-More documentation will be added as the codebase settles.
+Documentation will continue to evolve as the codebase settles and more systems are finalized.
 
 ## License
-No license has been defined yet.
+This project is proprietary and all rights are reserved.
+
+Source code is provided for viewing only. You may not copy, modify, redistribute, sublicense, or use this code without prior written permission from the copyright holder.
