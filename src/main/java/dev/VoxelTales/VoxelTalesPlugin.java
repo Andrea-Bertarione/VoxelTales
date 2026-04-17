@@ -113,7 +113,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
         //Register events
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, VoxelPlayerReadyEvent::onPlayerReady);
         this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, VoxelPlayerDisconnectEvent::onPlayerDisconnect);
-        this.getEventRegistry().registerGlobal(AddWorldEvent.class, VoxelAddWorldEvent::onAddWorld);
+        this.getEventRegistry().registerGlobal(AddWorldEvent.class, VoxelAddWorldEvent::onAddWorldEvent);
 
         //Register systems
         this.getEntityStoreRegistry().registerSystem(new DamageTrackingSystem());
