@@ -3,9 +3,9 @@ package dev.VoxelTales.Events;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.Components.PlayerWeaponProgressComponent;
 import dev.VoxelTales.Components.VoxelPlayerComponent;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
 import dev.VoxelTales.Controllers.CharacterStatsController;
@@ -15,8 +15,8 @@ import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.HashMap;
 
-public class PlayerReadyEvent {
-    public static void onPlayerReady(com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent event) {
+public class VoxelPlayerReadyEvent {
+    public static void onPlayerReady(PlayerReadyEvent event) {
         Player player = event.getPlayer();
 
         Ref<EntityStore> ref = player.getReference();

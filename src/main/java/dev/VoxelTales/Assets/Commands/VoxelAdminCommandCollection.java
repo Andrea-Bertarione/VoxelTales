@@ -14,6 +14,7 @@ public class VoxelAdminCommandCollection extends AbstractCommandCollection {
         addSubCommand(new SetBladeCommand());
         addSubCommand(new SetHandleCommand());
         addSubCommand(new SetSkillCommand());
+        addSubCommand(new SpawnSwordSage());
 
         addSubCommand(new OpenUICommand<>(
                 "config",

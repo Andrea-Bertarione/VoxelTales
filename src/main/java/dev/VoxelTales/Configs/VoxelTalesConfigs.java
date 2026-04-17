@@ -4,6 +4,8 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 
+import java.util.UUID;
+
 public class VoxelTalesConfigs {
     private float globalXpMultiplier = 1.0f;
     private int maxLevel = 50;
@@ -13,6 +15,8 @@ public class VoxelTalesConfigs {
     private int xpBaseValue = 100;
     private float xpExponent = 1.5f;
 
+    private boolean serverSetUP = false;
+
     public VoxelTalesConfigs() {}
 
     // Getters for your LevelingController to use
@@ -21,6 +25,8 @@ public class VoxelTalesConfigs {
     public int getSpPerLevel() { return spPerLevel; }
     public int getXpBaseValue() { return xpBaseValue; }
     public float getXpExponent() { return xpExponent; }
+    public boolean isServerSetUP() { return serverSetUP; }
+    public void setServerSetUP(boolean serverSetUP) { this.serverSetUP = serverSetUP; }
 
     public static final BuilderCodec<VoxelTalesConfigs> CODEC = BuilderCodec.builder(VoxelTalesConfigs.class, VoxelTalesConfigs::new)
             .append(new KeyedCodec<>("GlobalXpMultiplier", Codec.FLOAT),
@@ -37,5 +43,7 @@ public class VoxelTalesConfigs {
 
             .append(new KeyedCodec<>("XpExponent", Codec.FLOAT),
                     (c, v) -> c.xpExponent = v, (c) -> c.xpExponent).add()
+            .append(new KeyedCodec<>("ServerSetUP", Codec.BOOLEAN),
+                    (c, v) -> c.serverSetUP = v, (c) -> c.serverSetUP).add()
             .build();
 }

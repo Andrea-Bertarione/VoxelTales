@@ -57,6 +57,8 @@ public abstract class VoxelHudUI {
 
         World world = playerRef.getReference().getStore().getExternalData().getWorld();
         world.execute(() -> {
+            if (this.hudResult == null) return;
+
             this.hudResult.remove();
             this.hudResult = null;
         });

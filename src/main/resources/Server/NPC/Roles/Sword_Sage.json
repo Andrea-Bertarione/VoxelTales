@@ -1,0 +1,10 @@
+{
+  "Type": "Variant",
+  "Reference": "Template_Temple",
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "Voxel_NPCs.Sword_Sage.name",
+      "Description": "Translation key for NPC name display"
+    }
+  }
+}
