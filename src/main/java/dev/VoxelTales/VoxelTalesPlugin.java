@@ -17,6 +17,7 @@ import com.hypixel.hytale.server.core.universe.world.events.AddWorldEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.VoxelTales.Assets.Commands.*;
+import dev.VoxelTales.Assets.Dialogues.SwordSageDialogue;
 import dev.VoxelTales.Assets.Interactions.OpenForgeUIInteraction;
 import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
 import dev.VoxelTales.Components.PlayerWeaponProgressComponent;
@@ -39,6 +40,7 @@ import dev.VoxelTales.Registries.VoxelDamageKindRegistry;
 import dev.VoxelTales.Systems.DamageDealingSystem;
 import dev.VoxelTales.Systems.DamageTrackingSystem;
 import dev.VoxelTales.Systems.MobDeathXPSystem;
+import dev.VoxelTales.UI.Pages.DialoguePage;
 import dev.VoxelTales.UI.Pages.WeaponConfigurationPage;
 import dev.VoxelTales.UI.Pages.WeaponForgerPage;
 import dev.VoxelTales.UI.HUD.WeaponHUD;
@@ -137,6 +139,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
         //Register Caches
         VoxelCacheRegistry.register("WeaponConfigurationPage", WeaponConfigurationPage::new);
         VoxelCacheRegistry.register("WeaponForgerPage", WeaponForgerPage::new);
+        VoxelCacheRegistry.register("DialoguePage", DialoguePage::new);
         VoxelCacheRegistry.register("VoxelPlayerWeaponProgressCache", playerRef -> {
             Ref<EntityStore> ref = playerRef.getReference();
             if (ref == null || !ref.isValid()) {
@@ -157,6 +160,9 @@ public class VoxelTalesPlugin extends JavaPlugin {
 
             return unlocks;
         });
+
+        //Register Dialogues
+        SwordSageDialogue.register();
     }
 
     @Override

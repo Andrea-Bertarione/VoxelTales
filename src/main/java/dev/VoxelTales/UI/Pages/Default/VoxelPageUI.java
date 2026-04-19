@@ -10,7 +10,6 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
@@ -25,6 +24,7 @@ public abstract class VoxelPageUI {
     @Nullable
     protected Store<EntityStore> store = null;
     protected PageBuilder builder = null;
+    protected UIContext ctx = null;
 
     public VoxelPageUI(PlayerRef playerRef) {
         this.playerRef = playerRef;
@@ -43,6 +43,14 @@ public abstract class VoxelPageUI {
 
         this.builder = PageBuilder.pageForPlayer(this.playerRef)
                 .loadHtml(pathHTML);
+
+        this.builder.onBuild(((context, _) -> {
+            this.ctx = context;
+        }));
+
+        this.builder.onDismiss((_, _) -> {
+            this.ctx = null;
+        });
     }
 
     public void open() {
@@ -50,6 +58,12 @@ public abstract class VoxelPageUI {
         if (store != null && builder != null) {
             builder.open(store);
         }
+    }
+
+    public void close() {
+        if (this.ctx == null) { return; }
+
+        this.ctx.getPage().ifPresent(HyUIPage::close);
     }
 
     protected void notifySuccess(String title, String message, String iconItem, String soundName) {
@@ -93,5 +107,9 @@ public abstract class VoxelPageUI {
         this.builder.getById(elementId, ButtonBuilder.class).ifPresent(btn ->
                 btn.onClick((_, context) -> callback.accept(btn, context))
         );
+    }
+
+    public PlayerRef getPlayerRef() {
+        return this.playerRef;
     }
 }

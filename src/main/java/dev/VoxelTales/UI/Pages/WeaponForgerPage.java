@@ -75,7 +75,7 @@ public class WeaponForgerPage extends VoxelPageUI {
     public void update() {
         super.update(HTML_PATH);
 
-        LoggerUtil.getLogger().info("WeaponForgerPage.update()");
+        //LoggerUtil.getLogger().info("WeaponForgerPage.update()");
 
         this.loadWeaponLists();
 

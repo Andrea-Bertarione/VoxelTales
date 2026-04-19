@@ -12,7 +12,8 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Sim
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
-import dev.VoxelTales.UI.Pages.WeaponForgerPage;
+import dev.VoxelTales.Registries.VoxelDialogueRegistry;
+import dev.VoxelTales.UI.Pages.DialoguePage;
 
 import javax.annotation.Nonnull;
 
@@ -28,7 +29,7 @@ public class OpenForgeUIInteraction extends SimpleInteraction {
     }
 
     protected void firstRun(@Nonnull InteractionType type, @Nonnull InteractionContext context, @Nonnull CooldownHandler cooldownHandler) {
-        LoggerUtil.getLogger().info("Opening ForgingPage!");
+        LoggerUtil.getLogger().info("Opening DialoguePage!");
 
         Ref<EntityStore> ref = context.getEntity();
         CommandBuffer<EntityStore> commandBuffer = context.getCommandBuffer();
@@ -38,12 +39,12 @@ public class OpenForgeUIInteraction extends SimpleInteraction {
 
                 assert playerRef != null;
 
-                WeaponForgerPage page = VoxelCacheRegistry.get("WeaponForgerPage", playerRef, WeaponForgerPage.class);
+                DialoguePage page = VoxelCacheRegistry.get("DialoguePage", playerRef, DialoguePage.class);
 
-                LoggerUtil.getLogger().info("Opening ForgingPage for player!");
+                //LoggerUtil.getLogger().info("Opening ForgingPage for player!");
 
                 if (page != null) {
-                    page.open();
+                    page.openWith(VoxelDialogueRegistry.get("sword-sage"));
                 }
             }
 
