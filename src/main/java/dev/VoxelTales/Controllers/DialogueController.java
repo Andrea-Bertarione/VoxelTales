@@ -1,6 +1,7 @@
 package dev.VoxelTales.Controllers;
 
 import au.ellie.hyui.events.UIContext;
+import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import dev.VoxelTales.UI.Pages.DialoguePage;
 
 import javax.annotation.Nullable;
@@ -121,9 +122,12 @@ public class DialogueController {
 
                     page.setNode(this.node);
                     ctx.updatePage(true);
+
+                    LoggerUtil.getLogger().info("Dialogue node set to " + this.node.getText());
                     break;
                 case CLOSE:
                     page.close();
+                    LoggerUtil.getLogger().info("Dialogue page closed");
                     break;
             }
         }

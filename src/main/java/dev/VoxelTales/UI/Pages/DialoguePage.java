@@ -1,25 +1,25 @@
 package dev.VoxelTales.UI.Pages;
 
-import au.ellie.hyui.builders.ButtonBuilder;
-import au.ellie.hyui.builders.GroupBuilder;
-import au.ellie.hyui.builders.HyUIAnchor;
-import au.ellie.hyui.builders.LabelBuilder;
+import au.ellie.hyui.builders.*;
 import au.ellie.hyui.events.UIContext;
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.VoxelTales.Controllers.DialogueController;
 import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
 
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class DialoguePage extends VoxelPageUI {
+
     private static final String HTML_PATH = "Pages/Dialogue.html";
 
     private static final String TEXT_CONTENT_ID = "dialogue-text-content";
     private static final String OPTIONS_CONTAINER_ID = "dialogue-options";
 
     private DialogueController.DialogueNode currentNode;
-    private List<DialogueController.DialogueResponse> renderedResponses;
+
+    private final Map<String, UIElementBuilder<?>> responseButtons = new HashMap<>();
 
     public DialoguePage(PlayerRef playerRef) {
         super(playerRef);
@@ -43,6 +43,7 @@ public class DialoguePage extends VoxelPageUI {
 
     public void openWith(String initialText, DialogueController.DialogueResponse[] responses) {
         DialogueController.DialogueNode node = DialogueController.DialogueNode.root(initialText);
+
         if (responses != null) {
             for (DialogueController.DialogueResponse response : responses) {
                 node.addResponse(response);
@@ -54,7 +55,7 @@ public class DialoguePage extends VoxelPageUI {
 
     public void setNode(DialogueController.DialogueNode node) {
         this.currentNode = node;
-        this.update();
+        this.redrawCurrentNode();
     }
 
     public void setText(String text) {
@@ -64,7 +65,7 @@ public class DialoguePage extends VoxelPageUI {
             this.currentNode.withText(text);
         }
 
-        this.update();
+        this.redrawCurrentNode();
     }
 
     public void setResponses(List<DialogueController.DialogueResponse> responses) {
@@ -73,55 +74,107 @@ public class DialoguePage extends VoxelPageUI {
         }
 
         this.currentNode.getResponses().clear();
+
         if (responses != null) {
             this.currentNode.getResponses().addAll(responses);
         }
 
-        this.update();
+        this.redrawCurrentNode();
     }
 
-    @Override
-    public void open() {
-        super.open();
-    }
-
-    private void setTextContent() {
-        this.builder.getById(TEXT_CONTENT_ID, LabelBuilder.class).ifPresent(labelBuilder -> {
-            labelBuilder.withText(this.currentNode.getText());
-        });
-    }
-
-    private void buildOptions() {
-        this.builder.getById(OPTIONS_CONTAINER_ID, GroupBuilder.class).ifPresent(container -> {
-            this.clearOptions();
-
-            List<DialogueController.DialogueResponse> responses = this.currentNode.getResponses();
-            for (DialogueController.DialogueResponse response : responses) {
-                LoggerUtil.getLogger().info("Adding dialogue option: " + response.getText());
-
-                container.addChild(ButtonBuilder.secondaryTextButton()
-                        .withId("dialogue-option-" + response.getId())
-                        .withText(response.getText())
-                        .withAnchor(new HyUIAnchor().setTop(5).setHeight(40))
-                        .onClick((__, ctx) -> {
-                            response.processPress(this, ctx);
-                        })
-                );
-            }
-
-            this.renderedResponses = List.copyOf(responses);
-        });
-    }
-
-    private void clearOptions() {
-        if (this.renderedResponses == null) {
+    private void redrawCurrentNode() {
+        if (this.currentNode == null) {
             return;
         }
 
-        for (DialogueController.DialogueResponse previousResponse : this.renderedResponses) {
-            this.builder.removeElement("dialogue-option-" + previousResponse.getId());
+        this.setTextContent();
+        this.buildOptions();
+
+        this.currentPage.updatePage(true);
+    }
+
+    private void setTextContent() {
+        this.withDialogueGroup(TEXT_CONTENT_ID, LabelBuilder.class,
+                label -> label.withText(this.currentNode.getText())
+        );
+    }
+
+    private void buildOptions() {
+        this.withDialogueGroup(OPTIONS_CONTAINER_ID, GroupBuilder.class, container -> {
+            List<DialogueController.DialogueResponse> responses =
+                    List.copyOf(this.currentNode.getResponses());
+
+            this.syncOptions(container, responses);
+        });
+    }
+
+    private void syncOptions(
+            GroupBuilder container,
+            List<DialogueController.DialogueResponse> responses
+    ) {
+        Map<String, DialogueController.DialogueResponse> desired = new HashMap<>();
+
+        for (DialogueController.DialogueResponse response : responses) {
+            String id = buildOptionId(response);
+            desired.put(id, response);
         }
 
-        this.renderedResponses = null;
+        this.responseButtons.entrySet().stream()
+                .filter(entry -> !desired.containsKey(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .forEach(this.builder::removeElement);
+
+        for (Map.Entry<String, DialogueController.DialogueResponse> entry : desired.entrySet()) {
+            String id = entry.getKey();
+            DialogueController.DialogueResponse response = entry.getValue();
+
+            UIElementBuilder<?> existing = this.responseButtons.get(id);
+
+            if (existing != null) {
+                container.addChild(existing);
+                continue;
+            }
+
+            ButtonBuilder button = buildResponseButton(id, response);
+
+            this.responseButtons.put(id, button);
+            container.addChild(button);
+        }
+
+        this.responseButtons.keySet().retainAll(desired.keySet());
+    }
+
+    private ButtonBuilder buildResponseButton(
+            String id,
+            DialogueController.DialogueResponse response
+    ) {
+        LoggerUtil.getLogger().info("Creating dialogue option: " + response.getText());
+
+        return ButtonBuilder.secondaryTextButton()
+                .withId(id)
+                .withText(response.getText())
+                .withAnchor(new HyUIAnchor().setTop(5).setHeight(40))
+                .onClick((__, ctx) -> response.processPress(this, ctx));
+    }
+
+    private String buildOptionId(DialogueController.DialogueResponse response) {
+        return ("dialogue-option-" + response.getId())
+                .toLowerCase()
+                .replaceAll("[^a-z0-9-]", "");
+    }
+
+    private <E extends UIElementBuilder<E>> void withDialogueGroup(
+            String elementId,
+            Class<E> type,
+            Consumer<E> consumer
+    ) {
+        if (this.currentPage != null) {
+            this.currentPage.getById(elementId, type).ifPresent(consumer);
+            return;
+        }
+
+        if (this.builder != null) {
+            this.builder.getById(elementId, type).ifPresent(consumer);
+        }
     }
 }

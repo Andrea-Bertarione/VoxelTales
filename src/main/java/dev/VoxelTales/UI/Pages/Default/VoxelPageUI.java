@@ -24,7 +24,7 @@ public abstract class VoxelPageUI {
     @Nullable
     protected Store<EntityStore> store = null;
     protected PageBuilder builder = null;
-    protected UIContext ctx = null;
+    protected HyUIPage currentPage = null;
 
     public VoxelPageUI(PlayerRef playerRef) {
         this.playerRef = playerRef;
@@ -43,27 +43,21 @@ public abstract class VoxelPageUI {
 
         this.builder = PageBuilder.pageForPlayer(this.playerRef)
                 .loadHtml(pathHTML);
-
-        this.builder.onBuild(((context, _) -> {
-            this.ctx = context;
-        }));
-
-        this.builder.onDismiss((_, _) -> {
-            this.ctx = null;
-        });
     }
 
     public void open() {
         this.update();
         if (store != null && builder != null) {
-            builder.open(store);
+            this.currentPage = builder.open(store);
         }
     }
 
     public void close() {
-        if (this.ctx == null) { return; }
+        if (this.currentPage != null) {
+            this.currentPage.close();
 
-        this.ctx.getPage().ifPresent(HyUIPage::close);
+            this.currentPage = null;
+        }
     }
 
     protected void notifySuccess(String title, String message, String iconItem, String soundName) {
