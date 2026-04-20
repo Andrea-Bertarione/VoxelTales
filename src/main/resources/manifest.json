@@ -13,6 +13,7 @@
   "Website": "https://berta-forge.tech",
   "ServerVersion": "2026.03.26-89796e57b",
   "Dependencies": {
+    "Hytale:NPC": "*",
     "Ellie:HyUI": ">=0.9.5",
     "irai.mod.dynamicfloatingdamageformatter:Dynamic Floating Damage Formatter": ">=1.0.0"
   },

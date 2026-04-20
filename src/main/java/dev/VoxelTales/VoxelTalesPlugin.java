@@ -1,7 +1,5 @@
 package dev.VoxelTales;
 
-import javax.annotation.Nonnull;
-
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -16,10 +14,14 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.events.AddWorldEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
-import dev.VoxelTales.Assets.Commands.*;
+import dev.VoxelTales.Assets.Commands.ChangeSlotCommand;
+import dev.VoxelTales.Assets.Commands.VoxelAdminCommandCollection;
 import dev.VoxelTales.Assets.Dialogues.SwordSageDialogue;
 import dev.VoxelTales.Assets.Dialogues.SwordSageIntroDialogue;
-import dev.VoxelTales.Assets.Interactions.*;
+import dev.VoxelTales.Assets.Interactions.OpenDialogueInteraction;
+import dev.VoxelTales.Assets.Interactions.RouterSignatureInteraction;
+import dev.VoxelTales.Assets.Interactions.RouterSkillInteraction;
+import dev.VoxelTales.Assets.Interactions.VoxelDamageEntityInteraction;
 import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
 import dev.VoxelTales.Components.DialogueStateComponent;
 import dev.VoxelTales.Components.PlayerWeaponProgressComponent;
@@ -28,9 +30,9 @@ import dev.VoxelTales.Components.WeaponHandlerComponent;
 import dev.VoxelTales.Configs.EntityXPConfigs;
 import dev.VoxelTales.Configs.VoxelTalesConfigs;
 import dev.VoxelTales.Configs.VoxelWeaponConfigs;
+import dev.VoxelTales.Events.VoxelAddWorldEvent;
 import dev.VoxelTales.Events.VoxelPlayerDisconnectEvent;
 import dev.VoxelTales.Events.VoxelPlayerReadyEvent;
-import dev.VoxelTales.Events.VoxelAddWorldEvent;
 import dev.VoxelTales.PacketListeners.WeaponActivationListener;
 import dev.VoxelTales.PacketListeners.WeaponMoveListener;
 import dev.VoxelTales.Registries.MetaData.VoxelDamageMetadata;
@@ -39,13 +41,14 @@ import dev.VoxelTales.Registries.VoxelDamageKindRegistry;
 import dev.VoxelTales.Systems.DamageDealingSystem;
 import dev.VoxelTales.Systems.DamageTrackingSystem;
 import dev.VoxelTales.Systems.MobDeathXPSystem;
+import dev.VoxelTales.UI.HUD.WeaponHUD;
 import dev.VoxelTales.UI.Pages.DialoguePage;
 import dev.VoxelTales.UI.Pages.WeaponConfigurationPage;
 import dev.VoxelTales.UI.Pages.WeaponForgerPage;
-import dev.VoxelTales.UI.HUD.WeaponHUD;
 import dev.VoxelTales.Utils.Reflections.VoxelAssetReflection;
 import dev.VoxelTales.Utils.Reflections.VoxelDamageUIReflection;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 

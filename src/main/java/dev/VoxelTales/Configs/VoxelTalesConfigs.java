@@ -4,8 +4,6 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 
-import java.util.UUID;
-
 public class VoxelTalesConfigs {
     private float globalXpMultiplier = 1.0f;
     private int maxLevel = 50;

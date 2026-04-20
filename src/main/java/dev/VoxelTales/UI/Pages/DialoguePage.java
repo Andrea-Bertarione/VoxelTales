@@ -1,13 +1,14 @@
 package dev.VoxelTales.UI.Pages;
 
 import au.ellie.hyui.builders.*;
-import au.ellie.hyui.events.UIContext;
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.VoxelTales.Controllers.DialogueController;
 import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class DialoguePage extends VoxelPageUI {
@@ -144,7 +145,7 @@ public class DialoguePage extends VoxelPageUI {
             String id,
             DialogueController.DialogueResponse response
     ) {
-        LoggerUtil.getLogger().info("Creating dialogue option: " + response.getText());
+        //LoggerUtil.getLogger().info("Creating dialogue option: " + response.getText());
 
         return ButtonBuilder.secondaryTextButton()
                 .withId(id)

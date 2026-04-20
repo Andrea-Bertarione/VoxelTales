@@ -1,8 +1,8 @@
 package dev.VoxelTales.PacketListeners;
 
 import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.protocol.Packet;
 import com.hypixel.hytale.protocol.InteractionType;
+import com.hypixel.hytale.protocol.Packet;
 import com.hypixel.hytale.protocol.packets.interaction.SyncInteractionChain;
 import com.hypixel.hytale.protocol.packets.interaction.SyncInteractionChains;
 import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;

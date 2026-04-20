@@ -1,16 +1,13 @@
 package dev.VoxelTales.UI.Pages.Default;
 
 import au.ellie.hyui.builders.GroupBuilder;
-import au.ellie.hyui.builders.PageOverlayBuilder;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
 import au.ellie.hyui.events.UIContext;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.VoxelTales.UI.Components.ModalUI;
 
-import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public abstract class VoxelEditorPageUI extends VoxelPageUI {
     protected boolean isDirty = false;

@@ -10,7 +10,6 @@ import dev.VoxelTales.Components.DialogueStateComponent;
 import dev.VoxelTales.UI.Pages.DialoguePage;
 import dev.VoxelTales.VoxelTalesPlugin;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

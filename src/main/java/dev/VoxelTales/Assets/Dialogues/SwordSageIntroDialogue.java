@@ -1,13 +1,9 @@
 package dev.VoxelTales.Assets.Dialogues;
 
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
-import dev.VoxelTales.Components.DialogueStateComponent;
 import dev.VoxelTales.Controllers.DialogueController;
 import dev.VoxelTales.Registries.VoxelDialogueRegistry;
+
 import static dev.VoxelTales.Assets.Dialogues.RepeatedDialogues.*;
 
 public class SwordSageIntroDialogue {
