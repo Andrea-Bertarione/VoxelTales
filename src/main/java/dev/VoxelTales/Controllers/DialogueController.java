@@ -2,7 +2,13 @@ package dev.VoxelTales.Controllers;
 
 import au.ellie.hyui.events.UIContext;
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.Components.DialogueStateComponent;
 import dev.VoxelTales.UI.Pages.DialoguePage;
+import dev.VoxelTales.VoxelTalesPlugin;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -14,7 +20,8 @@ public class DialogueController {
     public enum DialogueType {
         CALLBACK,
         NODE,
-        CLOSE
+        CLOSE,
+        FLAG_NODE
     }
 
     public static class DialogueNode {
@@ -86,6 +93,21 @@ public class DialogueController {
             return new DialogueResponse(text, DialogueType.CLOSE, null, null);
         }
 
+        public static DialogueResponse flagNode(String text, DialogueNode node, String flag) {
+            return new DialogueResponse(text, DialogueType.FLAG_NODE, node, (ctx, page) -> {
+                PlayerRef playerRef = page.getPlayerRef();
+                Ref<EntityStore> ref = playerRef.getReference();
+                assert ref != null;
+
+                Store<EntityStore> store = ref.getStore();
+
+                store.getExternalData().getWorld().execute(() -> {
+                    DialogueStateComponent state = store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+                    state.setFlag(flag, true);
+                });
+            });
+        }
+
         public String getText() {
             return text;
         }
@@ -128,6 +150,17 @@ public class DialogueController {
                 case CLOSE:
                     page.close();
                     LoggerUtil.getLogger().info("Dialogue page closed");
+                    break;
+
+                case FLAG_NODE:
+                    if (this.callback == null) { return; }
+                    if (this.node == null) { return; }
+                    if (ctx == null) { return; }
+
+                    page.setNode(this.node);
+                    ctx.updatePage(true);
+
+                    this.callback.accept(ctx, page);
                     break;
             }
         }

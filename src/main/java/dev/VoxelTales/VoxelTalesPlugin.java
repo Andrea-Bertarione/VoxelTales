@@ -18,8 +18,10 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.VoxelTales.Assets.Commands.*;
 import dev.VoxelTales.Assets.Dialogues.SwordSageDialogue;
-import dev.VoxelTales.Assets.Interactions.OpenForgeUIInteraction;
+import dev.VoxelTales.Assets.Dialogues.SwordSageIntroDialogue;
+import dev.VoxelTales.Assets.Interactions.*;
 import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
+import dev.VoxelTales.Components.DialogueStateComponent;
 import dev.VoxelTales.Components.PlayerWeaponProgressComponent;
 import dev.VoxelTales.Components.VoxelPlayerComponent;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
@@ -28,9 +30,6 @@ import dev.VoxelTales.Configs.VoxelTalesConfigs;
 import dev.VoxelTales.Configs.VoxelWeaponConfigs;
 import dev.VoxelTales.Events.VoxelPlayerDisconnectEvent;
 import dev.VoxelTales.Events.VoxelPlayerReadyEvent;
-import dev.VoxelTales.Assets.Interactions.RouterSignatureInteraction;
-import dev.VoxelTales.Assets.Interactions.RouterSkillInteraction;
-import dev.VoxelTales.Assets.Interactions.VoxelDamageEntityInteraction;
 import dev.VoxelTales.Events.VoxelAddWorldEvent;
 import dev.VoxelTales.PacketListeners.WeaponActivationListener;
 import dev.VoxelTales.PacketListeners.WeaponMoveListener;
@@ -67,6 +66,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
     private ComponentType<EntityStore, VoxelPlayerComponent> voxelPlayerComponent;
     private ComponentType<EntityStore, CombatTrackerComponent> combatTrackerComponent;
     private ComponentType<EntityStore, PlayerWeaponProgressComponent> playerWeaponProgressComponent;
+    private ComponentType<EntityStore, DialogueStateComponent> dialogueStateComponent;
 
     public VoxelTalesPlugin(@Nonnull JavaPluginInit init) {
         super(init);
@@ -112,6 +112,12 @@ public class VoxelTalesPlugin extends JavaPlugin {
                 PlayerWeaponProgressComponent.CODEC
         );
 
+        this.dialogueStateComponent = this.getEntityStoreRegistry().registerComponent(
+                DialogueStateComponent.class,
+                "VoxelTales:DialogueStateComponent",
+                DialogueStateComponent.CODEC
+        );
+
         //Register events
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, VoxelPlayerReadyEvent::onPlayerReady);
         this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, VoxelPlayerDisconnectEvent::onPlayerDisconnect);
@@ -134,7 +140,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
         this.getCodecRegistry(Interaction.CODEC).register("RouterSignatureInteraction", RouterSignatureInteraction.class, RouterSignatureInteraction.CODEC);
         this.getCodecRegistry(Interaction.CODEC).register("RouterSkillInteraction", RouterSkillInteraction.class, RouterSkillInteraction.CODEC);
         this.getCodecRegistry(Interaction.CODEC).register("DamageEntityInteraction", VoxelDamageEntityInteraction.class, VoxelDamageEntityInteraction.CODEC);
-        this.getCodecRegistry(Interaction.CODEC).register("OpenForgeUIInteraction", OpenForgeUIInteraction.class, OpenForgeUIInteraction.CODEC);
+        this.getCodecRegistry(Interaction.CODEC).register("OpenDialogueInteraction", OpenDialogueInteraction.class, OpenDialogueInteraction.CODEC);
 
         //Register Caches
         VoxelCacheRegistry.register("WeaponConfigurationPage", WeaponConfigurationPage::new);
@@ -162,6 +168,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
         });
 
         //Register Dialogues
+        SwordSageIntroDialogue.register();
         SwordSageDialogue.register();
     }
 
@@ -189,6 +196,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
     public ComponentType<EntityStore, VoxelPlayerComponent> getVoxelPlayerComponent() { return this.voxelPlayerComponent; }
     public ComponentType<EntityStore, CombatTrackerComponent> getCombatTrackerComponent() { return this.combatTrackerComponent; }
     public ComponentType<EntityStore, PlayerWeaponProgressComponent> getPlayerWeaponProgressComponent() { return this.playerWeaponProgressComponent; }
+    public ComponentType<EntityStore, DialogueStateComponent> getDialogueStateComponent() { return this.dialogueStateComponent; }
 
     public Map<UUID, Short> getSlotCache() {
         return slotCache;

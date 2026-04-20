@@ -30,7 +30,7 @@ public class SwordSageController {
     private static final String DEFAULT_MODEL_ID = "Slothian_Elder";
     private static final String DEFAULT_EQUIPMENT_ID = "Weapon_Staff_Bo_Wood";
     private static final String DEFAULT_ROLE_ID = "Sword_Sage";
-    private static final String DEFAULT_INTERACTION_ID = "OpenForgeRootInteraction";
+    private static final String DEFAULT_INTERACTION_ID = "OpenSageDialogueRootInteraction";
 
     public static void spawnSwordSage(World world, Vector3d position) {
         spawnSwordSage(world, position, null, null, null, null, null);

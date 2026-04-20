@@ -1,74 +1,20 @@
 package dev.VoxelTales.Assets.Dialogues;
 
 import dev.VoxelTales.Controllers.DialogueController;
-import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.Registries.VoxelDialogueRegistry;
-import dev.VoxelTales.UI.Pages.WeaponForgerPage;
+
+import static dev.VoxelTales.Assets.Dialogues.RepeatedDialogues.DEFAULT_CLOSE_RESPONSE;
+import static dev.VoxelTales.Assets.Dialogues.RepeatedDialogues.DEFAULT_OPEN_FORGE_RESPONSE;
 
 public class SwordSageDialogue {
-    private static final String INTRO_TEXT =
-            "Welcome to the world of Orbis young soul, im sorry i had to evoke you in such a place...";
-    private static final String VOID_TEXT =
-            "I would've preferred to use the temple but the void already has taken over it.";
-    private static final String INTRODUCE_SELF_TEXT =
-            "That being said, i still have to introduce myself. I am the Sword Sage.";
-    private static final String WHO_ARE_YOU_TEXT =
-            "Yeah that's a difficult answer to give, you're a lost soul";
-    private static final String CREATED_YOU_TEXT =
-            "I used a lot of my strength to generate a new body for a sword wielder's soul, you!";
-    private static final String SERVICES_TEXT =
-            "Yeah, everything will be revealed at the right time, but for now i can only provide my services and aid you in your quest.";
-    private static final String FINAL_TEXT =
-            "I'm sorry, i know it's a lot to take in but you'll understand soon, for now explore the world and find your way, im at your service if you have more questions.";
-
-
-    private static final String WHOAMI_RESPONSE_TEXT = "Who am I?";
-    private static final String UH_RESPONSE_TEXT = "Huh??";
-    private static final String WHAT_RESPONSE_TEXT = "A sword what? a sword wielder's soul?";
-    private static final String QUEST_RESPONSE_TEXT = "A quest too??";
-
-
-    private static final String CONTINUE_TEXT = "Continue...";
-    private static final String ClOSE_TEXT = "[Close...]";
-    private static final String OPEN_FORGE = "Forge a new sword...";
+    private static final String INTRO_TEXT = "Greetings, dear soul, i'm at your service.";
 
     public static void register() {
         // Root dialogue line shown when the player first opens the conversation.
         DialogueController.DialogueNode introNode = DialogueController.DialogueNode.root(INTRO_TEXT);
 
-        // Follow-up lines in order.
-        DialogueController.DialogueNode voidNode =
-                DialogueController.DialogueNode.node(VOID_TEXT);
-
-        DialogueController.DialogueNode introduceSelfNode =
-                DialogueController.DialogueNode.node(INTRODUCE_SELF_TEXT);
-
-        DialogueController.DialogueNode whoAreYouNode =
-                DialogueController.DialogueNode.node(WHO_ARE_YOU_TEXT);
-
-        DialogueController.DialogueNode createdYouNode =
-                DialogueController.DialogueNode.node(CREATED_YOU_TEXT);
-
-        DialogueController.DialogueNode servicesNode =
-                DialogueController.DialogueNode.node(SERVICES_TEXT);
-
-        DialogueController.DialogueNode finalNode =
-                DialogueController.DialogueNode.node(FINAL_TEXT);
-
-        // Player choice that advances the dialogue to the follow-up node.
-        introNode.addResponse(DialogueController.DialogueResponse.node(CONTINUE_TEXT, voidNode));
-        voidNode.addResponse(DialogueController.DialogueResponse.node(CONTINUE_TEXT, introduceSelfNode));
-        introduceSelfNode.addResponse(DialogueController.DialogueResponse.node(WHOAMI_RESPONSE_TEXT, whoAreYouNode));
-        whoAreYouNode.addResponse(DialogueController.DialogueResponse.node(UH_RESPONSE_TEXT, createdYouNode));
-        createdYouNode.addResponse(DialogueController.DialogueResponse.node(WHAT_RESPONSE_TEXT, servicesNode));
-        servicesNode.addResponse(DialogueController.DialogueResponse.node(QUEST_RESPONSE_TEXT, finalNode));
-        finalNode.addResponse(DialogueController.DialogueResponse.close(ClOSE_TEXT));
-        finalNode.addResponse(DialogueController.DialogueResponse.callback(OPEN_FORGE, (_, page) -> {
-            page.close();
-
-            WeaponForgerPage newPage = VoxelCacheRegistry.get("WeaponForgerPage", page.getPlayerRef(), WeaponForgerPage.class);
-            newPage.open();
-        }));
+        introNode.addResponse(DEFAULT_CLOSE_RESPONSE);
+        introNode.addResponse(DEFAULT_OPEN_FORGE_RESPONSE);
 
         VoxelDialogueRegistry.register("sword-sage", introNode);
     }

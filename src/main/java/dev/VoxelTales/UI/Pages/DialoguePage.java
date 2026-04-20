@@ -28,10 +28,6 @@ public class DialoguePage extends VoxelPageUI {
     public void update() {
         super.update(HTML_PATH);
 
-        if (this.currentNode == null) {
-            return;
-        }
-
         this.setTextContent();
         this.buildOptions();
     }
