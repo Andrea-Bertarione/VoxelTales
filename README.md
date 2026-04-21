@@ -17,17 +17,19 @@ It is a work-in-progress project aiming to deliver a more progression-focused co
 ## Features
 - Custom weapon and stats systems
 - Player XP / leveling logic
-- UI pages for weapon configuration and forging
+- UI pages for weapon configuration, forging, and dialogue
 - HUD support for weapon progression
 - Config-driven weapon/stat data
 - Packet listeners, events, and registries for gameplay integration
 - NPC-driven interaction systems
+- Branching dialogue support with reusable dialogue pages
+- Dialogue state tracking for NPC conversations
 
 ## Roadmap
 ### Near-term
-- Expand the Sword Sage into a proper in-world guide NPC
-- Add dialogue options and lore-driven interactions
-- Add a command to open the forging UI directly
+- Expand the Sword Sage into a fuller in-world guide NPC
+- Add more dialogue branches, responses, and lore-driven interactions
+- Add additional NPC interaction flows beyond the Sword Sage
 - Add a skill selector flow to the Sword Sage UI
 
 ### Weapon Progression
@@ -40,6 +42,9 @@ It is a work-in-progress project aiming to deliver a more progression-focused co
 - Add skill pools to blades and handles
 - Filter skills based on weapon type and forge result compatibility
 - Add more blades, handles, and skills once the progression systems are in place
+
+### Dialogue and NPC Expansion
+- Expand NPC interaction handling for future quest and story systems
 
 ## Project Structure
 - `Components` — entity/player state components
