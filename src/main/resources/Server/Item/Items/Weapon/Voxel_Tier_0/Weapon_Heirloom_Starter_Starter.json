@@ -1,0 +1,39 @@
+{
+  "Parent": "Template_Weapon_Sword",
+  "TranslationProperties": {
+    "Name": "Manual.Weapon_Heirloom_Starter_Starter.name",
+    "Description": "Manual.Weapon_Heirloom_General_Voxel_Tier_0.description"
+  },
+  "Model": "Items/Weapons/Sword/Steel.blockymodel",
+  "Texture": "Items/Weapons/Sword/Steel_Rusty_Texture.png",
+  "Icon": "Icons/ItemsGenerated/Weapon_Sword_Steel_Rusty.png",
+  "ItemLevel": 1,
+  "Tags": {
+    "Family": [
+      "Sword"
+    ],
+    "Type": [
+      "Weapon"
+    ]
+  },
+  "Interactions": {
+    "Primary": "Root_Weapon_Heirloom_Old_Old_Primary",
+    "Ability1": "Root_Signature_Heirloom_Old_Old"
+  },
+  "Weapon": {
+    "EntityStatsToClear": [
+      "SignatureEnergy"
+    ],
+    "StatModifiers": {
+      "SignatureEnergy": [
+        {
+          "Amount": 20,
+          "CalculationType": "Additive"
+        }
+      ]
+    },
+    "RenderDualWielded": false
+  },
+  "MaxDurability": 9999,
+  "DurabilityLossOnHit": 0
+}

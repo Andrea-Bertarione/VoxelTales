@@ -62,13 +62,13 @@ public class WeaponHandlerComponent implements Component<EntityStore> {
                     .build();
 
     public WeaponHandlerComponent() {
-        this.currentBlade = "Old";
-        this.currentHandle = "Old";
+        this.currentBlade = "Starter";
+        this.currentHandle = "Starter";
         this.selectedSkill = "Root_Thrust_Simple";
         this.selectedUltimate = "Root_Vortex_Strike";
-        this.swordPoints = 1;
+        this.swordPoints = 0;
         this.swordXP = 0;
-        this.swordInternalLevel = 1;
+        this.swordInternalLevel = 0;
     }
 
     public WeaponHandlerComponent(WeaponHandlerComponent clone) {
@@ -144,7 +144,7 @@ public class WeaponHandlerComponent implements Component<EntityStore> {
     //Helper methods
 
     public void incrementLevel() { this.swordInternalLevel++; }
-    public void incrementSP() { this.swordPoints++; }
+    public void addSP(int amount) { this.swordPoints += amount; }
 
     public Map<String, Float> getCalculatedDamageMap() {
 

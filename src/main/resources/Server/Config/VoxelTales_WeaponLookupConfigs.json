@@ -53,6 +53,19 @@
       "Tier": 1,
       "AttackSpeed": 1.0,
       "ItemIconId": "Weapon_Sword_Steel"
+    },
+    "Starter": {
+      "DamageScaling": {
+        "Physical": 0.05000000596046448,
+        "Dexterity": 0.05000000596046448
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {},
+      "Tier": 0,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
     }
   },
   "Handles": {
@@ -108,6 +121,18 @@
       "Passives": {},
       "Tier": 1,
       "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
+    "Starter": {
+      "DamageScaling": {
+        "Physical": 0.05000000596046448,
+        "Dexterity": 0.05000000596046448
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {},
+      "Tier": 0,
       "ItemIconId": "Weapon_Sword_Steel"
     }
   }

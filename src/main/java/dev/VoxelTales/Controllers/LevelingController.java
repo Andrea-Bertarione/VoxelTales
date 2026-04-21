@@ -54,7 +54,7 @@ public class LevelingController {
         while (weaponHandlerComponent.getSwordXP() >= requiredXP) {
             weaponHandlerComponent.setSwordXP(weaponHandlerComponent.getSwordXP() - requiredXP);
             weaponHandlerComponent.incrementLevel();
-            weaponHandlerComponent.incrementSP();
+            weaponHandlerComponent.addSP(configs.getSpPerLevel());
 
             requiredXP = VoxelWeaponMathHelper.getRequiredXP(weaponHandlerComponent.getSwordInternalLevel());
         }

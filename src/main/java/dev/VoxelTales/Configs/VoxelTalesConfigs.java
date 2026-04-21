@@ -7,7 +7,7 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 public class VoxelTalesConfigs {
     private float globalXpMultiplier = 1.0f;
     private int maxLevel = 50;
-    private int spPerLevel = 1;
+    private int spPerLevel = 5;
 
     // Math curve constants (XP = base * level ^ exponent)
     private int xpBaseValue = 100;

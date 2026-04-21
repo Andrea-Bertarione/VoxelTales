@@ -78,12 +78,14 @@ public class DamageDealingSystem extends DamageEventSystem {
 
         String interactionSource = damage.getMetaObject(VoxelDamageMetadata.DAMAGE_SOURCE_KEY);
 
+        /*
         if (interactionSource != null) {
             LoggerUtil.getLogger().info("The interactionSource is: " + interactionSource);
         }
         else {
             LoggerUtil.getLogger().warning("No interactionSource found!");
         }
+         */
 
         Map<String, Float> typeMap = weapon.getCalculatedDamageMap(); // e.g., {"Fire": 0.7, "Magic": 0.3}
         if (typeMap.isEmpty()) return;

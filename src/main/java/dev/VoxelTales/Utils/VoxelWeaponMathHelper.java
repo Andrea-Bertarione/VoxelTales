@@ -12,7 +12,7 @@ import java.util.Objects;
 public class VoxelWeaponMathHelper {
     public static int getRequiredXP(int level) {
         VoxelTalesConfigs configs = VoxelTalesPlugin.get().getVoxelTalesConfigs().get();
-        return (int) (configs.getXpBaseValue() * Math.pow(level, configs.getXpExponent()));
+        return (int) (30 + (configs.getXpBaseValue() * Math.pow(level, configs.getXpExponent())));
     }
 
     public static float getXPProgress(int currentXP, int level) {

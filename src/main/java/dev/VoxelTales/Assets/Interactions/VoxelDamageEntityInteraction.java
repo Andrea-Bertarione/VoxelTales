@@ -1,5 +1,6 @@
 package dev.VoxelTales.Assets.Interactions;
 
+import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.util.MathUtil;
@@ -38,6 +39,8 @@ import javax.annotation.Nullable;
 public class VoxelDamageEntityInteraction extends DamageEntityInteraction {
     @Override
     protected void tick0(boolean firstRun, float time, @Nonnull InteractionType type, @Nonnull InteractionContext context, @Nonnull CooldownHandler cooldownHandler) {
+        LoggerUtil.getLogger().info("VoxelDamageEntityInteraction tick0");
+
         Ref<EntityStore> targetRef = context.getTargetEntity();
         if (targetRef != null && targetRef.isValid() && context.getEntity().isValid()) {
             CommandBuffer<EntityStore> commandBuffer = context.getCommandBuffer();
@@ -153,6 +156,9 @@ public class VoxelDamageEntityInteraction extends DamageEntityInteraction {
                 ItemStack itemInHand = ItemUtils.canApplyItemStackPenalties(attackerRef, commandBuffer) ? context.getHeldItem() : null;
                 Damage[] hits = DamageCalculatorSystems.queueDamageCalculator((commandBuffer.getExternalData()).getWorld(), damage, targetRef, context.getCommandBuffer(), source, itemInHand);
 
+                String voxelSource = context.getMetaStore().getMetaObject(VoxelDamageMetadata.INTERACTION_SOURCE_KEY);
+                LoggerUtil.getLogger().info("The interactionSource is: " + voxelSource);
+
                 if (hits.length > 0) {
                     Damage firstDamage = hits[0];
                     DamageCalculatorSystems.DamageSequence seq = new DamageCalculatorSystems.DamageSequence(sequentialHits, damageCalculator);
@@ -161,8 +167,6 @@ public class VoxelDamageEntityInteraction extends DamageEntityInteraction {
                     if (damageEffects != null) {
                         damageEffects.addToDamage(firstDamage);
                     }
-
-                    String voxelSource = context.getMetaStore().getIfPresentMetaObject(VoxelDamageMetadata.INTERACTION_SOURCE_KEY);
 
                     for(Damage damageEvent : hits) {
                         if (knockbackComponent != null) {
@@ -180,6 +184,7 @@ public class VoxelDamageEntityInteraction extends DamageEntityInteraction {
                             damageEvent.putMetaObject(Damage.HIT_ANGLE, hitAngleDeg);
                         }
 
+                        LoggerUtil.getLogger().info("Does it ever get here? ");
                         damageEvent.getMetaStore().putMetaObject(VoxelDamageMetadata.DAMAGE_SOURCE_KEY, voxelSource);
 
                         commandBuffer.invoke(targetRef, damageEvent);
