@@ -26,12 +26,23 @@ public abstract class VoxelPageUI {
     protected PageBuilder builder = null;
     protected HyUIPage currentPage = null;
 
+    private long openDebounceMillis = 150L;
+    private long lastDismissAtMillis = 0L;
+
     public VoxelPageUI(PlayerRef playerRef) {
         this.playerRef = playerRef;
         Ref<EntityStore> ref = this.playerRef.getReference();
         if (ref != null && ref.isValid()) {
             this.store = ref.getStore();
         }
+    }
+
+    public void setOpenDebounceMillis(long openDebounceMillis) {
+        this.openDebounceMillis = Math.max(0L, openDebounceMillis);
+    }
+
+    public long getOpenDebounceMillis() {
+        return this.openDebounceMillis;
     }
 
     //custom update logic, remember to call the default implementation!
@@ -46,8 +57,21 @@ public abstract class VoxelPageUI {
     }
 
     public void open() {
+        long now = System.currentTimeMillis();
+        long elapsedSinceDismiss = now - this.lastDismissAtMillis;
+
+        if (elapsedSinceDismiss < this.openDebounceMillis) {
+            return;
+        }
+
         this.update();
+
         if (store != null && builder != null) {
+            this.builder.onDismiss((page, _) -> {
+                this.currentPage = null;
+                this.lastDismissAtMillis = System.currentTimeMillis();
+            });
+
             this.currentPage = builder.open(store);
         }
     }
@@ -55,8 +79,8 @@ public abstract class VoxelPageUI {
     public void close() {
         if (this.currentPage != null) {
             this.currentPage.close();
-
             this.currentPage = null;
+            this.lastDismissAtMillis = System.currentTimeMillis();
         }
     }
 

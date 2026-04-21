@@ -91,6 +91,7 @@ public class SwordSageController {
         LoggerUtil.getLogger().info("[Sword_Sage] Model and persistent model components replaced.");
          */
 
+
         NPCEntity npcEntity = store.getComponent(npcRef, Objects.requireNonNull(NPCEntity.getComponentType()));
         LoggerUtil.getLogger().info("[Sword_Sage] NPC entity component present: " + (npcEntity != null));
         if (npcEntity != null) {
@@ -99,6 +100,7 @@ public class SwordSageController {
             LoggerUtil.getLogger().info("[Sword_Sage] NPC type: " + npcEntity.getNPCTypeId() + " and role: " + npcEntity.getRole().getRoleName());
             LoggerUtil.getLogger().info("[Sword_Sage] Equipped item in hand: " + finalEquipmentId);
         }
+
 
         LoggerUtil.getLogger().info("[Sword_Sage] Sword_Sage NPC spawned at " + targetPosition);
     }

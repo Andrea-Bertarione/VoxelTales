@@ -14,11 +14,12 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.events.AddWorldEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
+import com.hypixel.hytale.server.npc.NPCPlugin;
+import dev.VoxelTales.Assets.Actions.Builders.BuilderOpenDialogueAction;
 import dev.VoxelTales.Assets.Commands.ChangeSlotCommand;
 import dev.VoxelTales.Assets.Commands.VoxelAdminCommandCollection;
 import dev.VoxelTales.Assets.Dialogues.SwordSageDialogue;
 import dev.VoxelTales.Assets.Dialogues.SwordSageIntroDialogue;
-import dev.VoxelTales.Assets.Interactions.OpenDialogueInteraction;
 import dev.VoxelTales.Assets.Interactions.RouterSignatureInteraction;
 import dev.VoxelTales.Assets.Interactions.RouterSkillInteraction;
 import dev.VoxelTales.Assets.Interactions.VoxelDamageEntityInteraction;
@@ -143,7 +144,8 @@ public class VoxelTalesPlugin extends JavaPlugin {
         this.getCodecRegistry(Interaction.CODEC).register("RouterSignatureInteraction", RouterSignatureInteraction.class, RouterSignatureInteraction.CODEC);
         this.getCodecRegistry(Interaction.CODEC).register("RouterSkillInteraction", RouterSkillInteraction.class, RouterSkillInteraction.CODEC);
         this.getCodecRegistry(Interaction.CODEC).register("DamageEntityInteraction", VoxelDamageEntityInteraction.class, VoxelDamageEntityInteraction.CODEC);
-        this.getCodecRegistry(Interaction.CODEC).register("OpenDialogueInteraction", OpenDialogueInteraction.class, OpenDialogueInteraction.CODEC);
+
+        NPCPlugin.get().registerCoreComponentType("OpenDialogueAction", BuilderOpenDialogueAction::new);
 
         //Register Caches
         VoxelCacheRegistry.register("WeaponConfigurationPage", WeaponConfigurationPage::new);

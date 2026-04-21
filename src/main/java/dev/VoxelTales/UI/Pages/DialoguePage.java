@@ -34,6 +34,8 @@ public class DialoguePage extends VoxelPageUI {
     }
 
     public void openWith(DialogueController.DialogueNode node) {
+        //LoggerUtil.getLogger().info("Opening dialogue with node: " + node.getText());
+
         this.currentNode = node;
         this.open();
     }

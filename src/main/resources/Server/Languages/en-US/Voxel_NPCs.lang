@@ -1,1 +1,4 @@
 Sword_Sage.name = Sword Sage
+
+
+interactionHints.talk = Press [{key}] to talk
