@@ -2,7 +2,6 @@ package dev.VoxelTales.UI.Components;
 
 import au.ellie.hyui.builders.*;
 import au.ellie.hyui.elements.LayoutModeSupported;
-import au.ellie.hyui.types.ButtonStyle;
 import au.ellie.hyui.types.LayoutMode;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 

@@ -10,7 +10,6 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
@@ -25,6 +24,10 @@ public abstract class VoxelPageUI {
     @Nullable
     protected Store<EntityStore> store = null;
     protected PageBuilder builder = null;
+    protected HyUIPage currentPage = null;
+
+    private long openDebounceMillis = 150L;
+    private long lastDismissAtMillis = 0L;
 
     public VoxelPageUI(PlayerRef playerRef) {
         this.playerRef = playerRef;
@@ -32,6 +35,14 @@ public abstract class VoxelPageUI {
         if (ref != null && ref.isValid()) {
             this.store = ref.getStore();
         }
+    }
+
+    public void setOpenDebounceMillis(long openDebounceMillis) {
+        this.openDebounceMillis = Math.max(0L, openDebounceMillis);
+    }
+
+    public long getOpenDebounceMillis() {
+        return this.openDebounceMillis;
     }
 
     //custom update logic, remember to call the default implementation!
@@ -46,9 +57,30 @@ public abstract class VoxelPageUI {
     }
 
     public void open() {
+        long now = System.currentTimeMillis();
+        long elapsedSinceDismiss = now - this.lastDismissAtMillis;
+
+        if (elapsedSinceDismiss < this.openDebounceMillis) {
+            return;
+        }
+
         this.update();
+
         if (store != null && builder != null) {
-            builder.open(store);
+            this.builder.onDismiss((page, _) -> {
+                this.currentPage = null;
+                this.lastDismissAtMillis = System.currentTimeMillis();
+            });
+
+            this.currentPage = builder.open(store);
+        }
+    }
+
+    public void close() {
+        if (this.currentPage != null) {
+            this.currentPage.close();
+            this.currentPage = null;
+            this.lastDismissAtMillis = System.currentTimeMillis();
         }
     }
 
@@ -93,5 +125,9 @@ public abstract class VoxelPageUI {
         this.builder.getById(elementId, ButtonBuilder.class).ifPresent(btn ->
                 btn.onClick((_, context) -> callback.accept(btn, context))
         );
+    }
+
+    public PlayerRef getPlayerRef() {
+        return this.playerRef;
     }
 }

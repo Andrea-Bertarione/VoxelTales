@@ -28,8 +28,8 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.ser
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.server.combat.DamageEffects;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.server.combat.Knockback;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.Utils.Reflections.VoxelDamageEntityReflection;
 import dev.VoxelTales.Registries.MetaData.VoxelDamageMetadata;
+import dev.VoxelTales.Utils.Reflections.VoxelDamageEntityReflection;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 
 import javax.annotation.Nonnull;

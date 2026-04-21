@@ -1,6 +1,7 @@
 package dev.VoxelTales.Controllers;
 
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
+import com.hypixel.hytale.builtin.npceditor.NPCRoleAssetTypeHandler;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3d;
@@ -15,7 +16,6 @@ import com.hypixel.hytale.server.core.modules.entity.component.TransformComponen
 import com.hypixel.hytale.server.core.modules.interaction.Interactions;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.npc.INonPlayerCharacter;
-import com.hypixel.hytale.server.core.universe.world.spawn.ISpawnProvider;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -27,29 +27,26 @@ import java.util.Objects;
 
 public class SwordSageController {
     private static final Vector3f DEFAULT_ROTATION = new Vector3f(0.0F, 1.57F, 0.0F);
-    private static final String DEFAULT_MODEL_ID = "Slothian_Elder";
+    //private static final String DEFAULT_MODEL_ID = "Slothian_Elder";
     private static final String DEFAULT_EQUIPMENT_ID = "Weapon_Staff_Bo_Wood";
     private static final String DEFAULT_ROLE_ID = "Sword_Sage";
-    private static final String DEFAULT_INTERACTION_ID = "OpenForgeRootInteraction";
 
     public static void spawnSwordSage(World world, Vector3d position) {
-        spawnSwordSage(world, position, null, null, null, null, null);
+        spawnSwordSage(world, position, null, null, null);
     }
 
     public static void spawnSwordSage(
             World world,
             Vector3d position,
             @Nullable Vector3f rotation,
-            @Nullable String modelId,
+            //@Nullable String modelId,
             @Nullable String equipmentId,
-            @Nullable String roleId,
-            @Nullable String interactionId
+            @Nullable String roleId
     ) {
         Vector3f finalRotation = rotation != null ? rotation : DEFAULT_ROTATION;
-        String finalModelId = modelId != null ? modelId : DEFAULT_MODEL_ID;
+        //String finalModelId = modelId != null ? modelId : DEFAULT_MODEL_ID;
         String finalEquipmentId = equipmentId != null ? equipmentId : DEFAULT_EQUIPMENT_ID;
         String finalRoleId = roleId != null ? roleId : DEFAULT_ROLE_ID;
-        String finalInteractionId = interactionId != null ? interactionId : DEFAULT_INTERACTION_ID;
 
         Vector3d targetPosition = new Vector3d(position);
         LoggerUtil.getLogger().info("[Sword_Sage] Base position=" + position + ", target position=" + targetPosition);
@@ -78,6 +75,7 @@ public class SwordSageController {
             LoggerUtil.getLogger().info("[Sword_Sage] Position assigned to target position.");
         }
 
+        /*
         ModelAsset modelAsset = ModelAsset.getAssetMap().getAsset(finalModelId);
         LoggerUtil.getLogger().info("[Sword_Sage] Model asset lookup for '" + finalModelId + "' => " + modelAsset);
         if (modelAsset == null) {
@@ -91,17 +89,18 @@ public class SwordSageController {
         store.replaceComponent(npcRef, ModelComponent.getComponentType(), new ModelComponent(spawnModel));
         store.replaceComponent(npcRef, PersistentModel.getComponentType(), new PersistentModel(spawnModel.toReference()));
         LoggerUtil.getLogger().info("[Sword_Sage] Model and persistent model components replaced.");
+         */
+
 
         NPCEntity npcEntity = store.getComponent(npcRef, Objects.requireNonNull(NPCEntity.getComponentType()));
         LoggerUtil.getLogger().info("[Sword_Sage] NPC entity component present: " + (npcEntity != null));
         if (npcEntity != null) {
             RoleUtils.setItemInHand(npcRef, npcEntity, finalEquipmentId, store);
+
+            LoggerUtil.getLogger().info("[Sword_Sage] NPC type: " + npcEntity.getNPCTypeId() + " and role: " + npcEntity.getRole().getRoleName());
             LoggerUtil.getLogger().info("[Sword_Sage] Equipped item in hand: " + finalEquipmentId);
         }
 
-        store.ensureAndGetComponent(npcRef, Interactable.getComponentType());
-        Interactions interactions = store.ensureAndGetComponent(npcRef, Interactions.getComponentType());
-        interactions.setInteractionId(InteractionType.Use, finalInteractionId);
 
         LoggerUtil.getLogger().info("[Sword_Sage] Sword_Sage NPC spawned at " + targetPosition);
     }

@@ -1,10 +1,12 @@
 package dev.VoxelTales.PacketListeners;
 
 import com.hypixel.hytale.protocol.Packet;
-import com.hypixel.hytale.protocol.packets.inventory.*;
+import com.hypixel.hytale.protocol.packets.inventory.DropItemStack;
+import com.hypixel.hytale.protocol.packets.inventory.MoveItemStack;
+import com.hypixel.hytale.protocol.packets.inventory.SmartMoveItemStack;
 import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;
-import dev.VoxelTales.VoxelTalesPlugin;
 import dev.VoxelTales.Utils.VoxelInventoryHelper;
+import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.Objects;
 

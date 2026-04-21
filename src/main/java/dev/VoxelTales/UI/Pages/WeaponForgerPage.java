@@ -2,8 +2,6 @@ package dev.VoxelTales.UI.Pages;
 
 import au.ellie.hyui.builders.*;
 import au.ellie.hyui.elements.LayoutModeSupported;
-import au.ellie.hyui.events.UIContext;
-import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
@@ -15,7 +13,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class WeaponForgerPage extends VoxelPageUI {
@@ -75,7 +72,7 @@ public class WeaponForgerPage extends VoxelPageUI {
     public void update() {
         super.update(HTML_PATH);
 
-        LoggerUtil.getLogger().info("WeaponForgerPage.update()");
+        //LoggerUtil.getLogger().info("WeaponForgerPage.update()");
 
         this.loadWeaponLists();
 

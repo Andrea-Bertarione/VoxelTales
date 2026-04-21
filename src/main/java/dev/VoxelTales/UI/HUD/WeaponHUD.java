@@ -4,14 +4,11 @@ import au.ellie.hyui.builders.*;
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.Components.WeaponHandlerComponent;
 import dev.VoxelTales.UI.HUD.Default.VoxelHudUI;
 import dev.VoxelTales.Utils.VoxelWeaponMathHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
-import dev.VoxelTales.Components.WeaponHandlerComponent;
-
-import java.util.Objects;
 
 public class WeaponHUD extends VoxelHudUI {
     private float progressPercent = 0;
