@@ -29,7 +29,6 @@ public class OpenUICommand<T extends VoxelPageUI> extends AbstractPlayerCommand 
         if (page != null) {
             page.open();
         } else {
-
             commandContext.sendMessage(Message.parse("Failed to open UI: " + cacheKey));
         }
     }
