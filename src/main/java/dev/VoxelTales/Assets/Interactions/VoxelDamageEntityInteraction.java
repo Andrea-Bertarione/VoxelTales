@@ -67,6 +67,11 @@ public class VoxelDamageEntityInteraction extends DamageEntityInteraction {
         }
     }
 
+    @Override
+    protected void simulateTick0(boolean firstRun, float time, @Nonnull InteractionType type, @Nonnull InteractionContext context, @Nonnull CooldownHandler cooldownHandler) {
+        this.tick0(firstRun, time, type, context, cooldownHandler);
+    }
+
     private void voxelAttemptEntityDamage0(@Nonnull Damage.Source source, @Nonnull InteractionContext context, @Nonnull Ref<EntityStore> attackerRef, @Nonnull Ref<EntityStore> targetRef, @Nullable Vector4d hit) {
         CommandBuffer<EntityStore> commandBuffer = context.getCommandBuffer();
         assert commandBuffer != null;

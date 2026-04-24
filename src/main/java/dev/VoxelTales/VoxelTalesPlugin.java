@@ -1,9 +1,10 @@
 package dev.VoxelTales;
 
+import com.hypixel.hytale.builtin.adventure.memories.MemoriesPlugin;
+import com.hypixel.hytale.builtin.adventure.memories.page.MemoriesUnlockedPage;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
@@ -19,8 +20,10 @@ import com.hypixel.hytale.server.npc.NPCPlugin;
 import dev.VoxelTales.Assets.Actions.Builders.BuilderOpenDialogueAction;
 import dev.VoxelTales.Assets.Commands.ChangeSlotCommand;
 import dev.VoxelTales.Assets.Commands.VoxelAdminCommandCollection;
-import dev.VoxelTales.Assets.Dialogues.SwordSageDialogue;
+import dev.VoxelTales.Assets.Dialogues.SwordSagePostQuestDialogue;
+import dev.VoxelTales.Assets.Dialogues.SwordSagePreQuestDialogue;
 import dev.VoxelTales.Assets.Dialogues.SwordSageIntroDialogue;
+import dev.VoxelTales.Assets.Dialogues.SwordSageRepeatedDialogue;
 import dev.VoxelTales.Assets.Interactions.RouterSignatureInteraction;
 import dev.VoxelTales.Assets.Interactions.RouterSkillInteraction;
 import dev.VoxelTales.Assets.Interactions.VoxelDamageEntityInteraction;
@@ -144,7 +147,10 @@ public class VoxelTalesPlugin extends JavaPlugin {
         //Register Interactions
         this.getCodecRegistry(Interaction.CODEC).register("RouterSignatureInteraction", RouterSignatureInteraction.class, RouterSignatureInteraction.CODEC);
         this.getCodecRegistry(Interaction.CODEC).register("RouterSkillInteraction", RouterSkillInteraction.class, RouterSkillInteraction.CODEC);
-        this.getCodecRegistry(Interaction.CODEC).register("DamageEntityInteraction", VoxelDamageEntityInteraction.class, VoxelDamageEntityInteraction.CODEC);
+        this.getCodecRegistry(Interaction.CODEC).register("DamageEntity", VoxelDamageEntityInteraction.class, VoxelDamageEntityInteraction.CODEC);
+
+        //VoxelDamageEntityInteraction interaction = new VoxelDamageEntityInteraction();
+        //Interaction.getAssetStore().loadAssets("DamageEntityInteraction", new ArrayList<>(List.of(interaction)));
 
         NPCPlugin.get().registerCoreComponentType("OpenDialogueAction", BuilderOpenDialogueAction::new);
 
@@ -175,7 +181,9 @@ public class VoxelTalesPlugin extends JavaPlugin {
 
         //Register Dialogues
         SwordSageIntroDialogue.register();
-        SwordSageDialogue.register();
+        SwordSagePreQuestDialogue.register();
+        SwordSageRepeatedDialogue.register();
+        SwordSagePostQuestDialogue.register();
     }
 
     @Override

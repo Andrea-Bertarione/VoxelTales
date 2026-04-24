@@ -20,7 +20,8 @@ public class DialogueController {
         CALLBACK,
         NODE,
         CLOSE,
-        FLAG_NODE
+        FLAG_NODE,
+        BRANCHED
     }
 
     public static class DialogueNode {
@@ -66,10 +67,12 @@ public class DialogueController {
     }
 
     public static class DialogueResponse {
+        public record BranchedNode(DialogueNode node, String flag, boolean expectedValue) {}
         private final String text;
         private final String id;
         private final DialogueType type;
         private final DialogueNode node;
+        private List<BranchedNode> branches = new ArrayList<>();
         private final BiConsumer<UIContext, DialoguePage> callback;
 
         private DialogueResponse(String text, DialogueType type, DialogueNode node, BiConsumer<UIContext, DialoguePage> callback) {
@@ -80,16 +83,25 @@ public class DialogueController {
             this.callback = callback;
         }
 
+        private DialogueResponse(String text, DialogueType type, DialogueNode node, List<BranchedNode> branches) {
+            this.text = text;
+            this.id = UUID.randomUUID().toString();
+            this.type = type;
+            this.node = node;
+            this.branches = branches;
+            this.callback = null;
+        }
+
         public static DialogueResponse callback(String text, BiConsumer<UIContext, DialoguePage> callback) {
             return new DialogueResponse(text, DialogueType.CALLBACK, null, callback);
         }
 
         public static DialogueResponse node(String text, DialogueNode node) {
-            return new DialogueResponse(text, DialogueType.NODE, node, null);
+            return new DialogueResponse(text, DialogueType.NODE, node, (BiConsumer<UIContext, DialoguePage>) null);
         }
 
         public static DialogueResponse close(String text) {
-            return new DialogueResponse(text, DialogueType.CLOSE, null, null);
+            return new DialogueResponse(text, DialogueType.CLOSE, (DialogueNode) null, (BiConsumer<UIContext, DialoguePage>) null);
         }
 
         public static DialogueResponse flagNode(String text, DialogueNode node, String flag) {
@@ -105,6 +117,10 @@ public class DialogueController {
                     state.setFlag(flag, true);
                 });
             });
+        }
+
+        public static DialogueResponse branchNode(String text, List<BranchedNode> branches) {
+            return new DialogueResponse(text, DialogueType.BRANCHED, null, branches);
         }
 
         public String getText() {
@@ -161,7 +177,35 @@ public class DialogueController {
 
                     this.callback.accept(ctx, page);
                     break;
+                case BRANCHED:
+                    if (this.branches == null) { return; }
+                    if (ctx == null) { return; }
+
+                    DialogueNode resolved = resolveBranch(page);
+                    if (resolved == null) { return; }
+
+                    page.setNode(resolved);
+                    ctx.updatePage(true);
+                    break;
             }
+        }
+
+        private DialogueNode resolveBranch(DialoguePage page) {
+            PlayerRef playerRef = page.getPlayerRef();
+            Ref<EntityStore> ref = playerRef.getReference();
+            if (ref == null) { return null; }
+
+            Store<EntityStore> store = ref.getStore();
+            DialogueStateComponent state = store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+
+            for (BranchedNode branch : branches) {
+                boolean actual = state.hasFlag(branch.flag());
+                if (actual == branch.expectedValue()) {
+                    return branch.node();
+                }
+            }
+
+            return null;
         }
     }
 }

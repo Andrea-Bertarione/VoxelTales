@@ -57,9 +57,19 @@ public class OpenDialogueAction extends ActionBase {
                     DialogueStateComponent dialogueStateComponent = store.ensureAndGetComponent(playerReference, VoxelTalesPlugin.get().getDialogueStateComponent());
 
                     if (page != null) {
-                        page.openWith(VoxelDialogueRegistry.get("sword-sage" +
-                                (dialogueStateComponent.hasFlag(SwordSageFlags.EXHAUSTED_SWORD_SAGE)
-                                        ? "" : "-intro")));
+                        String dialogueKey;
+
+                        if (dialogueStateComponent.hasFlag(SwordSageFlags.COMPLETED_SWORD_SAGE_QUEST)) {
+                            dialogueKey = "sword-sage-repeated";
+                        } else if (dialogueStateComponent.hasFlag(SwordSageFlags.ACCEPTED_SWORD_SAGE_QUEST)) {
+                            dialogueKey = "sword-sage-post-quest";
+                        } else if (dialogueStateComponent.hasFlag(SwordSageFlags.EXHAUSTED_SWORD_SAGE)) {
+                            dialogueKey = "sword-sage-pre-quest";
+                        } else {
+                            dialogueKey = "sword-sage-intro";
+                        }
+
+                        page.openWith(VoxelDialogueRegistry.get(dialogueKey));
                     }
                     else {
                         return false;

@@ -4,7 +4,7 @@ import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
 import dev.VoxelTales.Controllers.DialogueController;
 import dev.VoxelTales.Registries.VoxelDialogueRegistry;
 
-import static dev.VoxelTales.Assets.Dialogues.RepeatedDialogues.*;
+import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.*;
 
 public class SwordSageIntroDialogue {
     private static final String INTRO_TEXT =
@@ -20,7 +20,7 @@ public class SwordSageIntroDialogue {
     private static final String SERVICES_TEXT =
             "Yeah, everything will be revealed at the right time, but for now i can only provide my services and aid you in your quest.";
     private static final String FINAL_TEXT =
-            "I'm sorry, i know it's a lot to take in but you'll understand soon, for now explore the world and find your way, im at your service if you have more questions.";
+            "I'm sorry, i know it's a lot to take in but you'll understand soon, for now forge your first sword and find your way, im at your service if you have more questions.";
 
 
     private static final String WHOAMI_RESPONSE_TEXT = "Who am I?";
