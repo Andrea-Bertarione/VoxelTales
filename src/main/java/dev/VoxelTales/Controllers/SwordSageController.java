@@ -75,6 +75,8 @@ public class SwordSageController {
             LoggerUtil.getLogger().info("[Sword_Sage] Position assigned to target position.");
         }
 
+        store.ensureComponent(npcRef, Interactable.getComponentType());
+
         /*
         ModelAsset modelAsset = ModelAsset.getAssetMap().getAsset(finalModelId);
         LoggerUtil.getLogger().info("[Sword_Sage] Model asset lookup for '" + finalModelId + "' => " + modelAsset);
