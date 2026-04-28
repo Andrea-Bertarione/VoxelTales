@@ -13,7 +13,8 @@ import dev.VoxelTales.Utils.VoxelWeaponProgressionHelper;
 import java.util.List;
 import java.util.Objects;
 
-import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.*;
+import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.defaultCloseResponse;
+import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.defaultOpenForgeResponse;
 
 public class SwordSagePostQuestDialogue {
     private static final String CHECK_QUEST_TEXT = "I've done it, i think?";

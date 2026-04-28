@@ -1,11 +1,12 @@
 package dev.VoxelTales.Systems;
 
 import com.hypixel.hytale.builtin.adventure.memories.component.PlayerMemories;
-import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
-import com.hypixel.hytale.component.*;
+import com.hypixel.hytale.component.CommandBuffer;
+import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefChangeSystem;
-import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;

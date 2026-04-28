@@ -1,7 +1,6 @@
 package dev.VoxelTales.Controllers;
 
 import au.ellie.hyui.events.UIContext;
-import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.universe.PlayerRef;

@@ -4,7 +4,8 @@ import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Controllers.DialogueController;
 import dev.VoxelTales.Registries.VoxelDialogueRegistry;
 
-import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.*;
+import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.defaultCloseResponse;
+import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.defaultOpenForgeResponse;
 
 public class SwordSageRepeatedDialogue {
     public static final String INTRO_TEXT = "Greetings, dear soul, i'm at your service.";

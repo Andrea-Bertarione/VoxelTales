@@ -1,7 +1,6 @@
 package dev.VoxelTales.UI.Pages;
 
 import au.ellie.hyui.builders.*;
-import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.VoxelTales.Controllers.DialogueController;
 import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
