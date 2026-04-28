@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class SwordSageController {
-    private static final Vector3f DEFAULT_ROTATION = new Vector3f(0.0F, 1.57F, 0.0F);
+    private static final Vector3f DEFAULT_ROTATION = new Vector3f(0.0F, 1.30F, 0.0F);
     //private static final String DEFAULT_MODEL_ID = "Slothian_Elder";
     private static final String DEFAULT_EQUIPMENT_ID = "Weapon_Staff_Bo_Wood";
     private static final String DEFAULT_ROLE_ID = "Sword_Sage";
@@ -68,14 +68,14 @@ public class SwordSageController {
             return;
         }
 
-        TransformComponent transform = store.getComponent(npcRef, TransformComponent.getComponentType());
+        /*TransformComponent transform = store.getComponent(npcRef, TransformComponent.getComponentType());
         LoggerUtil.getLogger().info("[Sword_Sage] Transform component present: " + (transform != null));
         if (transform != null) {
             transform.getPosition().assign(targetPosition);
             LoggerUtil.getLogger().info("[Sword_Sage] Position assigned to target position.");
-        }
+        }*/
 
-        store.ensureComponent(npcRef, Interactable.getComponentType());
+        //store.ensureComponent(npcRef, Interactable.getComponentType());
 
         /*
         ModelAsset modelAsset = ModelAsset.getAssetMap().getAsset(finalModelId);
@@ -102,7 +102,6 @@ public class SwordSageController {
             LoggerUtil.getLogger().info("[Sword_Sage] NPC type: " + npcEntity.getNPCTypeId() + " and role: " + npcEntity.getRole().getRoleName());
             LoggerUtil.getLogger().info("[Sword_Sage] Equipped item in hand: " + finalEquipmentId);
         }
-
 
         LoggerUtil.getLogger().info("[Sword_Sage] Sword_Sage NPC spawned at " + targetPosition);
     }

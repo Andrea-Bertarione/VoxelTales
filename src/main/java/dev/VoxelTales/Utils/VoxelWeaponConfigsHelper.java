@@ -109,8 +109,8 @@ public class VoxelWeaponConfigsHelper {
 
     private static VoxelWeaponConfigs.ComponentStats createDefaultTemplate() {
         VoxelWeaponConfigs.ComponentStats stats = new VoxelWeaponConfigs.ComponentStats();
-        stats.getBaseDamage().put("Physical", 5.0f);
-        stats.getDamageScaling().put("Strength", 1.0f);
+        stats.getBaseDamage().put("Physical", 1.0f);
+        stats.getDamageScaling().put("Physical", 1.0f);
         return stats;
     }
 }

@@ -46,6 +46,6 @@ public class SpawnSwordSage extends AbstractPlayerCommand {
         Vector3f finalRotation = rotation != null ? new Vector3f(rotation.getX(), rotation.getY(), rotation.getZ()) : null;
         Vector3d finalPosition = position != null ? new Vector3d(position.getX(), position.getY(), position.getZ()) : playerPosition;
 
-        SwordSageController.spawnSwordSage(world, finalPosition, finalRotation, equipmentId, roleId);
+        world.execute(() -> SwordSageController.spawnSwordSage(world, finalPosition, finalRotation, equipmentId, roleId));
     }
 }

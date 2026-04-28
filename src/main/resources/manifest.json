@@ -2,7 +2,7 @@
   "Group": "dev.Berta-forge.VoxelTales",
   "Name": "VoxelTales",
   "Version": "${version}",
-  "Description": "VoxelTales is a server-side combat progression overhaul inspired by the modular progression of Voxel Blade. This mod completely dismantles the classic \"resource-to-sword\" crafting recipe, replacing predictable weapon tiers with a deep, RPG-centric component system.",
+  "Description": "VoxelTales is a server-side combat progression overhaul inspired by the modular progression of VoxlBlade. This mod completely dismantles the classic \"resource-to-sword\" crafting recipe, replacing predictable weapon tiers with a deep, RPG-centric component system.",
   "Authors": [
     {
       "Name": "Berta",

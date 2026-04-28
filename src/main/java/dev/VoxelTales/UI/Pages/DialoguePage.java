@@ -176,4 +176,8 @@ public class DialoguePage extends VoxelPageUI {
             this.builder.getById(elementId, type).ifPresent(consumer);
         }
     }
+
+    public DialogueController.DialogueNode getCurrentNode() {
+        return this.currentNode;
+    }
 }

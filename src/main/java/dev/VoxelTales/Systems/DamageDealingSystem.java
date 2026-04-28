@@ -171,7 +171,7 @@ public class DamageDealingSystem extends DamageEventSystem {
     }
 
     private DamageResult calculateDamage(WeaponHandlerComponent weaponHandlerComponent, EntityStatMap attackerStats, Float totalEffectiveBoost) {
-        float baseDamage = 5f;
+        float baseDamage = 14f;
 
         int weaponLevel = weaponHandlerComponent.getSwordInternalLevel();
         float levelMultiplier = 1.0f + (weaponLevel * 0.0125f);

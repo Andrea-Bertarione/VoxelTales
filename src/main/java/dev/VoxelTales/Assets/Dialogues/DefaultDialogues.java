@@ -11,16 +11,20 @@ public class DefaultDialogues {
     public static final String OPEN_FORGE_TEXT = "[Forge a new sword...]";
     public static final String ACCEPT_QUEST_TEXT = "[Accept]";
 
-    public static final DialogueController.DialogueResponse DEFAULT_CLOSE_RESPONSE = DialogueController.DialogueResponse.close(ClOSE_TEXT);
-    public static final DialogueController.DialogueResponse DEFAULT_OPEN_FORGE_RESPONSE = DialogueController.DialogueResponse.callback(OPEN_FORGE_TEXT, (_, page) -> {
-        //page.close();
+    public static DialogueController.DialogueResponse defaultCloseResponse() {
+        return DialogueController.DialogueResponse.close(ClOSE_TEXT);
+    }
+    public static DialogueController.DialogueResponse defaultOpenForgeResponse() {
+        return DialogueController.DialogueResponse.custom(OPEN_FORGE_TEXT).withCallback((_, page) -> {
+            //page.close();
 
-        WeaponForgerPage newPage = VoxelCacheRegistry.get("WeaponForgerPage", page.getPlayerRef(), WeaponForgerPage.class);
+            WeaponForgerPage newPage = VoxelCacheRegistry.get("WeaponForgerPage", page.getPlayerRef(), WeaponForgerPage.class);
 
-        if (newPage != null) {
-            newPage.open();
-        } else {
-            page.getPlayerRef().sendMessage(Message.parse("Failed to open UI: " + "WeaponForgerPage"));
-        }
-    });
+            if (newPage != null) {
+                newPage.open();
+            } else {
+                page.getPlayerRef().sendMessage(Message.parse("Failed to open UI: " + "WeaponForgerPage"));
+            }
+        });
+    }
 }

@@ -1,5 +1,6 @@
-package dev.VoxelTales.Assets.Dialogues;
+package dev.VoxelTales.Assets.Dialogues.SwordSage;
 
+import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
 import dev.VoxelTales.Controllers.DialogueController;
 import dev.VoxelTales.Registries.VoxelDialogueRegistry;
@@ -58,9 +59,9 @@ public class SwordSageIntroDialogue {
         whoAreYouNode.addResponse(DialogueController.DialogueResponse.node(UH_RESPONSE_TEXT, createdYouNode));
         createdYouNode.addResponse(DialogueController.DialogueResponse.node(WHAT_RESPONSE_TEXT, servicesNode));
         servicesNode.addResponse(DialogueController.DialogueResponse.flagNode(QUEST_RESPONSE_TEXT, finalNode, SwordSageFlags.EXHAUSTED_SWORD_SAGE));
-        finalNode.addResponse(DEFAULT_CLOSE_RESPONSE);
-        finalNode.addResponse(DEFAULT_OPEN_FORGE_RESPONSE);
+        finalNode.addResponse(defaultCloseResponse());
+        finalNode.addResponse(defaultOpenForgeResponse());
 
-        VoxelDialogueRegistry.register("sword-sage-intro", introNode);
+        VoxelDialogueRegistry.register(DialogKey.SWORD_SAGE_INTRO, introNode);
     }
 }

@@ -147,6 +147,9 @@ public class WeaponForgerPage extends VoxelPageUI {
     }
 
     private void drawBladeStats() {
+        this.bladeStatElements.values().forEach(this.builder::removeElement);
+        this.bladeStatElements.clear();
+
         if (this.selectedBlade == null) return;
 
         this.syncStatPanel(
@@ -161,6 +164,9 @@ public class WeaponForgerPage extends VoxelPageUI {
     }
 
     private void drawHandleStats() {
+        this.handleStatElements.values().forEach(this.builder::removeElement);
+        this.handleStatElements.clear();
+
         if (this.selectedHandle == null) return;
 
         this.syncStatPanel(
@@ -175,6 +181,9 @@ public class WeaponForgerPage extends VoxelPageUI {
     }
 
     private void drawForgedStats() {
+        this.forgedStatElements.values().forEach(this.builder::removeElement);
+        this.forgedStatElements.clear();
+
         if (this.selectedBlade == null || this.selectedHandle == null) {
             this.builder.getById(FORGED_STATS_ID, GroupBuilder.class).ifPresent(el -> el.withVisible(false));
             return;

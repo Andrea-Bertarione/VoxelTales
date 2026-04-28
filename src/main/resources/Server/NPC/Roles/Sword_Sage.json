@@ -5,6 +5,8 @@
     "Sword Sage"
   ],
 
+  "IsMemory": false,
+
   "DefaultNPCAttitude": "Ignore",
   "DefaultPlayerAttitude": "Neutral",
 

@@ -1,7 +1,6 @@
-package dev.VoxelTales.Assets.Dialogues;
+package dev.VoxelTales.Assets.Dialogues.SwordSage;
 
-import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.util.NotificationUtil;
+import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
 import dev.VoxelTales.Controllers.DialogueController;
 import dev.VoxelTales.Registries.VoxelDialogueRegistry;
@@ -19,16 +18,16 @@ public class SwordSagePreQuestDialogue {
         DialogueController.DialogueNode unlockMemoriesNode = DialogueController.DialogueNode.node(UNLOCK_MEMORIES_TEXT);
         DialogueController.DialogueNode acceptedQuestNode = DialogueController.DialogueNode.node(ACCEPTED_QUEST_TEXT);
 
-        introNode.addResponse(DEFAULT_CLOSE_RESPONSE);
-        introNode.addResponse(DEFAULT_OPEN_FORGE_RESPONSE);
+        introNode.addResponse(defaultCloseResponse());
+        introNode.addResponse(defaultOpenForgeResponse());
         introNode.addResponse(DialogueController.DialogueResponse.node(NEXT_QUEST_TEXT, unlockMemoriesNode));
 
         unlockMemoriesNode.addResponse(
                 DialogueController.DialogueResponse.flagNode(ACCEPT_QUEST_TEXT, acceptedQuestNode, SwordSageFlags.ACCEPTED_SWORD_SAGE_QUEST)
         );
 
-        acceptedQuestNode.addResponse(DEFAULT_CLOSE_RESPONSE);
+        acceptedQuestNode.addResponse(defaultCloseResponse());
 
-        VoxelDialogueRegistry.register("sword-sage-pre-quest", introNode);
+        VoxelDialogueRegistry.register(DialogKey.SWORD_SAGE_PRE_QUEST, introNode);
     }
 }

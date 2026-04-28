@@ -9,9 +9,9 @@ import java.util.HashMap;
 
 public class VoxelWeaponConfigs {
     public static class ComponentStats {
-        private HashMap<String, Float> damageScaling; // e.g., "Strength": 1.2, "Agility": 0.8
-        private HashMap<String, Float> baseDamage;    // e.g., "Physical": 15.0, "Magical": 5.0
-        private HashMap<String, Float> passives;      // e.g., "Lifesteal": 0.1, "CritChance": 0.05
+        private HashMap<String, Float> damageScaling;
+        private HashMap<String, Float> baseDamage;
+        private HashMap<String, Float> passives;
         private Integer tier;
         private Float attackSpeed;
         private String itemIconId;
@@ -125,7 +125,7 @@ public class VoxelWeaponConfigs {
         // Optional: Provide a fallback/default setup so it doesn't crash if the JSON is empty
         ComponentStats defaultStats = new ComponentStats();
         defaultStats.getBaseDamage().put("Physical", 1.0f);
-        defaultStats.getDamageScaling().put("Strength", 1.0f);
+        defaultStats.getDamageScaling().put("Physical", 1.0f);
 
         this.blades.put("default", defaultStats);
         this.handles.put("default", defaultStats);

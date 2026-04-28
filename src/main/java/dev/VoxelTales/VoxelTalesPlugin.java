@@ -1,10 +1,12 @@
 package dev.VoxelTales;
 
-import com.hypixel.hytale.builtin.adventure.memories.MemoriesPlugin;
-import com.hypixel.hytale.builtin.adventure.memories.page.MemoriesUnlockedPage;
+import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.dependency.Dependency;
+import com.hypixel.hytale.component.dependency.Order;
+import com.hypixel.hytale.component.dependency.SystemDependency;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
@@ -12,18 +14,20 @@ import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.schema.SchemaGenerator;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.events.AddWorldEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.NPCPlugin;
+import com.hypixel.hytale.server.npc.systems.RoleSystems;
 import dev.VoxelTales.Assets.Actions.Builders.BuilderOpenDialogueAction;
 import dev.VoxelTales.Assets.Commands.ChangeSlotCommand;
 import dev.VoxelTales.Assets.Commands.VoxelAdminCommandCollection;
-import dev.VoxelTales.Assets.Dialogues.SwordSagePostQuestDialogue;
-import dev.VoxelTales.Assets.Dialogues.SwordSagePreQuestDialogue;
-import dev.VoxelTales.Assets.Dialogues.SwordSageIntroDialogue;
-import dev.VoxelTales.Assets.Dialogues.SwordSageRepeatedDialogue;
+import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSagePostQuestDialogue;
+import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSagePreQuestDialogue;
+import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSageIntroDialogue;
+import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSageRepeatedDialogue;
 import dev.VoxelTales.Assets.Interactions.RouterSignatureInteraction;
 import dev.VoxelTales.Assets.Interactions.RouterSkillInteraction;
 import dev.VoxelTales.Assets.Interactions.VoxelDamageEntityInteraction;
@@ -45,6 +49,7 @@ import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.Registries.VoxelDamageKindRegistry;
 import dev.VoxelTales.Systems.DamageDealingSystem;
 import dev.VoxelTales.Systems.DamageTrackingSystem;
+import dev.VoxelTales.Systems.MemoriesUnlockedSystem;
 import dev.VoxelTales.Systems.MobDeathXPSystem;
 import dev.VoxelTales.UI.HUD.WeaponHUD;
 import dev.VoxelTales.UI.Pages.DialoguePage;
@@ -54,16 +59,25 @@ import dev.VoxelTales.Utils.Reflections.VoxelAssetReflection;
 import dev.VoxelTales.Utils.Reflections.VoxelDamageUIReflection;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VoxelTalesPlugin extends JavaPlugin {
     private static VoxelTalesPlugin instance;
 
+    private static final String WEAPON_LOOKUP_CONFIG_NAME = "VoxelTales_WeaponLookupConfigs.json";
+    private static final String BUNDLED_WEAPON_LOOKUP_CONFIG_PATH = "Server/Config/" + WEAPON_LOOKUP_CONFIG_NAME;
+
     //Configs
-    private final Config<VoxelTalesConfigs> voxelTalesConfigs = this.withConfig("VoxelTales_GeneralConfigs", VoxelTalesConfigs.CODEC);
-    private final Config<EntityXPConfigs> entityXpConfigs = this.withConfig("VoxelTales_EntityXPConfigs", EntityXPConfigs.CODEC);
-    private final Config<VoxelWeaponConfigs> weaponLookupConfig = this.withConfig("VoxelTales_WeaponLookupConfigs", VoxelWeaponConfigs.CODEC);
+    private final Config<VoxelTalesConfigs> voxelTalesConfigs;
+    private final Config<EntityXPConfigs> entityXpConfigs;
+    private final Config<VoxelWeaponConfigs> weaponLookupConfig;
 
     //Caches
     private final Map<UUID, Short> slotCache = new ConcurrentHashMap<>();
@@ -79,13 +93,49 @@ public class VoxelTalesPlugin extends JavaPlugin {
     public VoxelTalesPlugin(@Nonnull JavaPluginInit init) {
         super(init);
         instance = this;
+
+        voxelTalesConfigs = this.withConfig("VoxelTales_GeneralConfigs", VoxelTalesConfigs.CODEC);
+        entityXpConfigs = this.withConfig("VoxelTales_EntityXPConfigs", EntityXPConfigs.CODEC);
+        weaponLookupConfig = this.withConfig("VoxelTales_WeaponLookupConfigs", VoxelWeaponConfigs.CODEC);
+    }
+
+    @Nullable
+    @Override
+    public CompletableFuture<Void> preLoad() {
+        this.copyBundledWeaponLookupConfigIfMissing();
+
+        return super.preLoad();
+    }
+
+    private void copyBundledWeaponLookupConfigIfMissing() {
+        Path targetPath = this.getDataDirectory().resolve(WEAPON_LOOKUP_CONFIG_NAME);
+
+        if (Files.exists(targetPath)) {
+            return;
+        }
+
+        try {
+            Files.createDirectories(targetPath.getParent());
+
+            try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream(BUNDLED_WEAPON_LOOKUP_CONFIG_PATH)) {
+                if (stream == null) {
+                    LoggerUtil.getLogger().warning("[VoxelTales] Bundled weapon lookup config not found at: " + BUNDLED_WEAPON_LOOKUP_CONFIG_PATH);
+                    return;
+                }
+
+                Files.copy(stream, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                LoggerUtil.getLogger().info("[VoxelTales] Copied bundled weapon lookup config to: " + targetPath);
+            }
+        } catch (Throwable t) {
+            LoggerUtil.getLogger().warning("[VoxelTales] Failed to copy bundled weapon lookup config: " + t.getMessage());
+        }
     }
 
     @Override
     protected void setup() {
-        this.voxelTalesConfigs.save();
-        this.entityXpConfigs.save();
-        this.weaponLookupConfig.save();
+        voxelTalesConfigs.save();
+        entityXpConfigs.save();
+        weaponLookupConfig.save();
 
         //Register custom Metadata
         VoxelDamageMetadata.registerDamage(Damage.META_REGISTRY);
@@ -135,6 +185,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
         this.getEntityStoreRegistry().registerSystem(new DamageTrackingSystem());
         this.getEntityStoreRegistry().registerSystem(new MobDeathXPSystem());
         this.getEntityStoreRegistry().registerSystem(new DamageDealingSystem());
+        this.getEntityStoreRegistry().registerSystem(new MemoriesUnlockedSystem());
 
         //Register packet listeners
         PacketAdapters.registerInbound(WeaponMoveListener.weaponFilter());
@@ -191,6 +242,10 @@ public class VoxelTalesPlugin extends JavaPlugin {
         //Run asset patching AFTER everything loaded
         VoxelAssetReflection.patch();
     }
+
+    public Set<Dependency<EntityStore>> dependencies = Set.of(
+            new SystemDependency<>(Order.AFTER, RoleSystems.RoleActivateSystem.class)
+    );
 
     public static VoxelTalesPlugin get() {
         return instance;

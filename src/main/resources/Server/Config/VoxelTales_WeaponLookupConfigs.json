@@ -47,7 +47,7 @@
         "Dexterity": 0.15000000596046448
       },
       "BaseDamage": {
-        "Physical": 1.0
+        "Physical": 0.75
       },
       "Passives": {},
       "Tier": 1,
@@ -60,7 +60,7 @@
         "Dexterity": 0.05000000596046448
       },
       "BaseDamage": {
-        "Physical": 1.0
+        "Physical": 0.4
       },
       "Passives": {},
       "Tier": 0,
@@ -116,7 +116,7 @@
         "Dexterity": 0.15000000596046448
       },
       "BaseDamage": {
-        "Physical": 1.0
+        "Physical": 0.75
       },
       "Passives": {},
       "Tier": 1,
@@ -129,7 +129,7 @@
         "Dexterity": 0.05000000596046448
       },
       "BaseDamage": {
-        "Physical": 1.0
+        "Physical": 0.4
       },
       "Passives": {},
       "Tier": 0,
