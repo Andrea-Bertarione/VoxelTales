@@ -23,6 +23,7 @@ import com.hypixel.hytale.server.npc.systems.RoleSystems;
 import dev.VoxelTales.Assets.Actions.Builders.BuilderOpenDialogueAction;
 import dev.VoxelTales.Assets.Commands.ChangeSlotCommand;
 import dev.VoxelTales.Assets.Commands.VoxelAdminCommandCollection;
+import dev.VoxelTales.Assets.Commands.VoxelShowCurrentStats;
 import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSageIntroDialogue;
 import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSagePostQuestDialogue;
 import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSagePreQuestDialogue;
@@ -192,6 +193,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
 
         //Register Commands
         this.getCommandRegistry().registerCommand(new ChangeSlotCommand());
+        this.getCommandRegistry().registerCommand(new VoxelShowCurrentStats());
         this.getCommandRegistry().registerCommand(new VoxelAdminCommandCollection());
 
         //Register Interactions

@@ -18,12 +18,14 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.VoxelTales.Components.WeaponHandlerComponent;
 import dev.VoxelTales.Registries.MetaData.VoxelDamageMetadata;
+import dev.VoxelTales.Registries.VoxelPassivesRegistry;
 import dev.VoxelTales.Utils.VoxelStatsHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
 import irai.mod.DynamicFloatingDamageFormatter.DamageNumbers;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class DamageDealingSystem extends DamageEventSystem {
@@ -86,6 +88,8 @@ public class DamageDealingSystem extends DamageEventSystem {
             LoggerUtil.getLogger().warning("No interactionSource found!");
         }
          */
+
+        this.handleOnHitPassives(attackerRef, targetRef, buffer);
 
         Map<String, Float> typeMap = weapon.getCalculatedDamageMap(); // e.g., {"Fire": 0.7, "Magic": 0.3}
         if (typeMap.isEmpty()) return;
@@ -153,6 +157,19 @@ public class DamageDealingSystem extends DamageEventSystem {
     @Override
     public Query<EntityStore> getQuery() {
         return Query.or(NPCEntity.getComponentType(), Player.getComponentType());
+    }
+
+    public void handleOnHitPassives(Ref<EntityStore> attacker, Ref<EntityStore> targetRef, ComponentAccessor<EntityStore> accessor) {
+        EntityStatMap statMap = accessor.ensureAndGetComponent(attacker, EntityStatMap.getComponentType());
+        for (String passiveKey : VoxelPassivesRegistry.getRegisteredKeys()) {
+            int index = VoxelStatsHelper.getStatIndex(passiveKey);
+            if (index == -1) continue;
+
+            float statValue = Objects.requireNonNull(statMap.get(index)).get();
+            if (statValue > 0) {
+                VoxelPassivesRegistry.get(passiveKey).onHit(attacker, targetRef, statValue, accessor);
+            }
+        }
     }
 
     private void copyDamageMeta(Damage original, Damage next) {

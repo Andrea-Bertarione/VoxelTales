@@ -3,16 +3,21 @@ package dev.VoxelTales.Utils;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.EntityStatType;
 import dev.VoxelTales.Components.VoxelPlayerComponent;
+import kotlin.Pair;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class VoxelStatsHelper {
     public static final Set<String> STATS_SET = Set.of(
+            //Scaling stat boosts
             "Boost_Physical",
-            "Boost_Dexterity"
+            "Boost_Dexterity",
+            "Boost_Fire",
+            "Boost_Magic",
+
+            //Passives abilities stats
+            "Passive_Burn",
+            "Passive_Burn_Duration"
     );
 
     public static void updateWeaponStats(VoxelPlayerComponent playerComp, EntityStatMap statMap, HashMap<String, Float> newModifiers) {
@@ -43,5 +48,19 @@ public class VoxelStatsHelper {
     public static int getStatIndex(String stat) {
         if (!STATS_SET.contains(stat)) return -1;
         return EntityStatType.getAssetMap().getIndexOrDefault(stat, -1);
+    }
+
+    public static List<Pair<String, Float>> getAllStats(EntityStatMap statMap) {
+        List<Pair<String, Float>> stats = new ArrayList<>();
+
+        STATS_SET.forEach((statName) -> {
+            int index = getStatIndex(statName);
+            if (index != -1) {
+                Pair<String, Float> val = new Pair<>(statName, Objects.requireNonNull(statMap.get(index)).get());
+                stats.add(val);
+            }
+        });
+
+        return stats;
     }
 }
