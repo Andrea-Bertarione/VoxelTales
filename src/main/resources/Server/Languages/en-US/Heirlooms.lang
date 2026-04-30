@@ -3,9 +3,16 @@
 Weapon_Heirloom_Old_Old.name = Old Old Heirloom
 Weapon_Heirloom_Old_Sharp.name = Old Sharp Heirloom
 Weapon_Heirloom_Old_Quick.name = Old Quick Heirloom
+Weapon_Heirloom_Old_Incandescent.name = Old Incandescent Heirloom
 Weapon_Heirloom_Sharp_Old.name = Sharp Old Heirloom
 Weapon_Heirloom_Sharp_Sharp.name = Sharp Sharp Heirloom
 Weapon_Heirloom_Sharp_Quick.name = Sharp Quick Heirloom
+Weapon_Heirloom_Sharp_Incandescent.name = Sharp Incandescent Heirloom
 Weapon_Heirloom_Quick_Old.name = Quick Old Heirloom
 Weapon_Heirloom_Quick_Sharp.name = Quick Sharp Heirloom
 Weapon_Heirloom_Quick_Quick.name = Quick Quick Heirloom
+Weapon_Heirloom_Quick_Incandescent.name = Quick Incandescent Heirloom
+Weapon_Heirloom_Incandescent_Old.name = Incandescent Old Heirloom
+Weapon_Heirloom_Incandescent_Sharp.name = Incandescent Sharp Heirloom
+Weapon_Heirloom_Incandescent_Quick.name = Incandescent Quick Heirloom
+Weapon_Heirloom_Incandescent_Incandescent.name = Incandescent Incandescent Heirloom
