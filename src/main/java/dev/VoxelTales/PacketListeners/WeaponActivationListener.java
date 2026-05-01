@@ -9,6 +9,8 @@ import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
+import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.UI.HUD.WeaponHUD;
 import dev.VoxelTales.VoxelTalesPlugin;
 
@@ -23,7 +25,8 @@ public class WeaponActivationListener implements PlayerPacketFilter {
             return false;
         }
 
-        short lockedSlot = VoxelTalesPlugin.get().getLockedSlot(playerRef.getUuid());
+        Short lockedSlot = VoxelCacheRegistry.getSynced(CacheEnum.SLOT_CACHE, playerRef.getUuid(), Short.class);
+        if (lockedSlot == null) { return false; }
 
         // Step 2: Search the interaction updates for slot swaps
         for (SyncInteractionChain chain : syncPacket.updates) {
@@ -46,7 +49,7 @@ public class WeaponActivationListener implements PlayerPacketFilter {
         Ref<EntityStore> ref = playerRef.getReference();
         if (ref == null || !ref.isValid()) return;
 
-        WeaponHUD weaponHUD = VoxelTalesPlugin.get().getWeaponHud(playerRef);
+        WeaponHUD weaponHUD = VoxelCacheRegistry.get(CacheEnum.HUD_CACHE, playerRef, WeaponHUD.class);
         World world = ref.getStore().getExternalData().getWorld();
 
         world.execute(weaponHUD::show);
@@ -57,7 +60,7 @@ public class WeaponActivationListener implements PlayerPacketFilter {
         Ref<EntityStore> ref = playerRef.getReference();
         if (ref == null || !ref.isValid()) return;
 
-        WeaponHUD weaponHUD = VoxelTalesPlugin.get().getWeaponHud(playerRef);
+        WeaponHUD weaponHUD = VoxelCacheRegistry.get(CacheEnum.HUD_CACHE, playerRef, WeaponHUD.class);
         weaponHUD.hide();
     }
 }

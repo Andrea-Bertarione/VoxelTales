@@ -4,10 +4,15 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
+import dev.VoxelTales.Registries.VoxelConfigsRegistry;
 
 import java.util.HashMap;
 
 public class VoxelWeaponConfigs {
+    public static VoxelWeaponConfigs get() {
+        return VoxelConfigsRegistry.getConfig(VoxelWeaponConfigs.class);
+    }
+
     public static class ComponentStats {
         private HashMap<String, Float> damageScaling;
         private HashMap<String, Float> baseDamage;

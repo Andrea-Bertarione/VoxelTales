@@ -13,8 +13,10 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 
-import dev.VoxelTales.Components.WeaponHandlerComponent;
+import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
 import dev.VoxelTales.Configs.VoxelTalesConfigs;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
+import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.UI.HUD.WeaponHUD;
 import dev.VoxelTales.Utils.VoxelWeaponMathHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
@@ -22,10 +24,9 @@ import dev.VoxelTales.VoxelTalesPlugin;
 public class LevelingController {
 
     public static void incrementXP(Store<EntityStore> store, Ref<EntityStore> ref, int amount) {
-        WeaponHandlerComponent weaponHandlerComponent = store.ensureAndGetComponent(ref,
-                VoxelTalesPlugin.get().getWeaponHandlerComponent());
+        WeaponHandlerComponent weaponHandlerComponent = store.ensureAndGetComponent(ref, WeaponHandlerComponent.getComponentType());
 
-        VoxelTalesConfigs configs = VoxelTalesPlugin.get().getVoxelTalesConfigs().get();
+        VoxelTalesConfigs configs = VoxelTalesConfigs.get();
 
         int currentXP = weaponHandlerComponent.getSwordXP();
         weaponHandlerComponent.setSwordXP((int) (currentXP + (amount * configs.getGlobalXpMultiplier())));
@@ -36,7 +37,7 @@ public class LevelingController {
         if (playerRef == null) { return; }
 
         // Redraw HUD
-        WeaponHUD weaponHUD = VoxelTalesPlugin.get().getWeaponHud(playerRef);
+        WeaponHUD weaponHUD = VoxelCacheRegistry.get(CacheEnum.HUD_CACHE, playerRef, WeaponHUD.class);
         weaponHUD.update();
 
         if (levelsGained > 0) {
@@ -49,7 +50,7 @@ public class LevelingController {
         int startingLevel = weaponHandlerComponent.getSwordInternalLevel();
         int requiredXP = VoxelWeaponMathHelper.getRequiredXP(startingLevel);
 
-        VoxelTalesConfigs configs = VoxelTalesPlugin.get().getVoxelTalesConfigs().get();
+        VoxelTalesConfigs configs = VoxelTalesConfigs.get();
         if (startingLevel >= configs.getMaxLevel()) { return 0; }
         while (weaponHandlerComponent.getSwordXP() >= requiredXP) {
             weaponHandlerComponent.setSwordXP(weaponHandlerComponent.getSwordXP() - requiredXP);
@@ -63,7 +64,7 @@ public class LevelingController {
     }
 
     private static void levelUP(int levels, PlayerRef playerRef, Store<EntityStore> store, Ref<EntityStore> ref) {
-        VoxelTalesConfigs configs = VoxelTalesPlugin.get().getVoxelTalesConfigs().get();
+        VoxelTalesConfigs configs = VoxelTalesConfigs.get();
 
         String secondary = levels == 1 ?
                 "Congratulations you leveled up and gained " + levels * configs.getSpPerLevel() + " SP!"

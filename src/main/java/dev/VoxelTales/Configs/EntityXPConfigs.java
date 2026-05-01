@@ -9,11 +9,16 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import dev.VoxelTales.Registries.VoxelConfigsRegistry;
 
 import java.util.HashMap;
 
 public class EntityXPConfigs {
     private HashMap<String, Integer> mobXPLookUpTable;
+
+    public static EntityXPConfigs get() {
+        return VoxelConfigsRegistry.getConfig(EntityXPConfigs.class);
+    }
 
     public static final BuilderCodec<EntityXPConfigs> CODEC = BuilderCodec.builder(EntityXPConfigs.class, EntityXPConfigs::new)
             .append(

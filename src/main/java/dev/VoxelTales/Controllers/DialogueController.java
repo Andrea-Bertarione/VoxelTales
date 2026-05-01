@@ -5,7 +5,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.Components.DialogueStateComponent;
+import dev.VoxelTales.Components.PlayerComponents.DialogueStateComponent;
 import dev.VoxelTales.UI.Pages.DialoguePage;
 import dev.VoxelTales.VoxelTalesPlugin;
 
@@ -177,7 +177,7 @@ public class DialogueController {
                     Store<EntityStore> store = ref.getStore();
 
                     store.getExternalData().getWorld().execute(() -> {
-                        DialogueStateComponent state = store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+                        DialogueStateComponent state = store.ensureAndGetComponent(ref, DialogueStateComponent.getComponentType());
                         state.setFlag(this.flagBuffer, true);
                     });
 
@@ -208,7 +208,7 @@ public class DialogueController {
             if (ref == null) { return null; }
 
             Store<EntityStore> store = ref.getStore();
-            DialogueStateComponent state = store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+            DialogueStateComponent state = store.ensureAndGetComponent(ref, DialogueStateComponent.getComponentType());
 
             for (BranchedNode branch : branches) {
                 boolean actual = state.hasFlag(branch.flag());

@@ -2,6 +2,7 @@ package dev.VoxelTales.Assets.Dialogues;
 
 import com.hypixel.hytale.server.core.Message;
 import dev.VoxelTales.Controllers.DialogueController;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.UI.Pages.WeaponForgerPage;
 
@@ -18,12 +19,12 @@ public class DefaultDialogues {
         return DialogueController.DialogueResponse.custom(OPEN_FORGE_TEXT).withCallback((_, page) -> {
             //page.close();
 
-            WeaponForgerPage newPage = VoxelCacheRegistry.get("WeaponForgerPage", page.getPlayerRef(), WeaponForgerPage.class);
+            WeaponForgerPage newPage = VoxelCacheRegistry.get(CacheEnum.WeaponForgerPage, page.getPlayerRef(), WeaponForgerPage.class);
 
             if (newPage != null) {
                 newPage.open();
             } else {
-                page.getPlayerRef().sendMessage(Message.parse("Failed to open UI: " + "WeaponForgerPage"));
+                page.getPlayerRef().sendMessage(Message.parse("Failed to open UI: " + CacheEnum.WeaponForgerPage.name()));
             }
         });
     }

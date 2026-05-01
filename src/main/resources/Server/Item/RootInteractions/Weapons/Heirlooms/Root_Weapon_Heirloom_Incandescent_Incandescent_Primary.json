@@ -1,0 +1,9 @@
+{
+  "Cooldown": {
+    "Cooldown": 0.1
+  },
+  "RequireNewClick": true,
+  "Interactions": [
+    "Weapon_Heirloom_Incandescent_Incandescent_Primary"
+  ]
+}

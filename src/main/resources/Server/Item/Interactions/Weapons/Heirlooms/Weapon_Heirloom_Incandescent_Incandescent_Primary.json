@@ -1,0 +1,10 @@
+{
+  "Type": "Charging",
+  "Next": {
+    "0": "Weapon_Sword_Primary_Chain",
+    "0.2": {
+      "Type": "RouterSkillInteraction",
+      "RootInteraction": "Root_Thrust_Simple"
+    }
+  }
+}

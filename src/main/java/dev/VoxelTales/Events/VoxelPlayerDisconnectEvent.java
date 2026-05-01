@@ -9,9 +9,6 @@ public class VoxelPlayerDisconnectEvent {
     public static void onPlayerDisconnect(PlayerDisconnectEvent event) {
         PlayerRef playerRef = event.getPlayerRef();
 
-        VoxelTalesPlugin.get().removeLockedSlot(playerRef.getUuid());
-        VoxelTalesPlugin.get().removeWeaponHud(playerRef.getUuid());
-
         VoxelCacheRegistry.cleanup(playerRef.getUuid());
     }
 }

@@ -8,15 +8,16 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayer
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
 import org.jetbrains.annotations.NotNull;
 
 public class OpenUICommand<T extends VoxelPageUI> extends AbstractPlayerCommand {
-    private final String cacheKey;
+    private final CacheEnum cacheKey;
     private final Class<T> uiClass;
 
-    public OpenUICommand(String commandName, String description, String cacheKey, Class<T> uiClass) {
+    public OpenUICommand(String commandName, String description, CacheEnum cacheKey, Class<T> uiClass) {
         super(commandName, description);
         this.cacheKey = cacheKey;
         this.uiClass = uiClass;

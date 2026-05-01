@@ -1,11 +1,16 @@
-package dev.VoxelTales.Components;
+package dev.VoxelTales.Components.PlayerComponents;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
 import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.Registries.VoxelComponentsRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -15,6 +20,10 @@ public class VoxelPlayerComponent implements Component<EntityStore> {
     private short weaponSlot;
     public Map<String, Float> weaponStatModifiers;
     public boolean areStatsUpdated = false;
+
+    public static ComponentType<EntityStore, VoxelPlayerComponent> getComponentType() {
+        return VoxelComponentsRegistry.getComponentType(VoxelPlayerComponent.class);
+    }
 
     public static final BuilderCodec<VoxelPlayerComponent> CODEC = BuilderCodec.builder(VoxelPlayerComponent.class, VoxelPlayerComponent::new)
             .append(new KeyedCodec<>("WeaponSlot", Codec.SHORT),
@@ -52,4 +61,14 @@ public class VoxelPlayerComponent implements Component<EntityStore> {
     @Nullable
     @Override
     public Component<EntityStore> clone() { return this; }
+
+    public static Short getWeaponSlot (PlayerRef playerRef) {
+        Ref<EntityStore> ref = playerRef.getReference();
+        if (ref == null || !ref.isValid()) { return 0; }
+
+        Store<EntityStore> store = ref.getStore();
+        VoxelPlayerComponent component = store.ensureAndGetComponent(ref, VoxelPlayerComponent.getComponentType());
+
+        return component.getWeaponSlot();
+    }
 }

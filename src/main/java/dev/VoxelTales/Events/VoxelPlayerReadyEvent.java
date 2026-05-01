@@ -6,37 +6,27 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.Components.VoxelPlayerComponent;
-import dev.VoxelTales.Components.WeaponHandlerComponent;
+import dev.VoxelTales.Components.PlayerComponents.PlayerWeaponProgressComponent;
+import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
 import dev.VoxelTales.Controllers.CharacterStatsController;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
-import dev.VoxelTales.Utils.VoxelSwordHelper;
-import dev.VoxelTales.VoxelTalesPlugin;
-
-import java.util.HashMap;
+import dev.VoxelTales.Utils.VoxelInventoryHelper;
 
 public class VoxelPlayerReadyEvent {
     public static void onPlayerReady(PlayerReadyEvent event) {
         Player player = event.getPlayer();
 
         Ref<EntityStore> ref = player.getReference();
-        if (ref == null || !ref.isValid()) {
-            return;
-        }
+        if (ref == null || !ref.isValid()) return;
+
         Store<EntityStore> store = ref.getStore();
-        PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+        PlayerRef playerRef = store.ensureAndGetComponent(ref, PlayerRef.getComponentType());
+        WeaponHandlerComponent weaponHandlerComponent = store.ensureAndGetComponent(ref, WeaponHandlerComponent.getComponentType());
 
-        assert playerRef != null;
-
-        VoxelPlayerComponent playerComponent = store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getVoxelPlayerComponent());
-        WeaponHandlerComponent weaponHandlerComponent = store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getWeaponHandlerComponent());
-        short itemSlot = playerComponent.getWeaponSlot();
-
-        VoxelTalesPlugin.get().getSlotCache().put(playerRef.getUuid(), itemSlot);
-
-        VoxelSwordHelper.setVoxelWeaponStack(store, ref, playerComponent, weaponHandlerComponent);
+        VoxelInventoryHelper.setVoxelWeaponStack(playerRef);
         CharacterStatsController.setLevelHealthBoost(store, ref, weaponHandlerComponent.getSwordInternalLevel());
 
-        VoxelCacheRegistry.get("VoxelPlayerWeaponProgressCache", playerRef, HashMap.class);
+        VoxelCacheRegistry.get(CacheEnum.VoxelPlayerWeaponProgressCache, playerRef, PlayerWeaponProgressComponent.PlayerWeaponProgressData.class);
     }
 }

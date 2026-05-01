@@ -4,7 +4,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.Components.DialogueStateComponent;
+import dev.VoxelTales.Components.PlayerComponents.DialogueStateComponent;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 public class VoxelFlagHelper {
@@ -20,7 +20,7 @@ public class VoxelFlagHelper {
 
         Store<EntityStore> store = ref.getStore();
         DialogueStateComponent dialogueStateComponent =
-                store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+                store.ensureAndGetComponent(ref, DialogueStateComponent.getComponentType());
 
         return dialogueStateComponent.hasFlag(flag);
     }
@@ -37,7 +37,7 @@ public class VoxelFlagHelper {
 
         Store<EntityStore> store = ref.getStore();
         DialogueStateComponent dialogueStateComponent =
-                store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+                store.ensureAndGetComponent(ref, DialogueStateComponent.getComponentType());
 
         dialogueStateComponent.setFlag(flag, value);
     }
@@ -54,7 +54,7 @@ public class VoxelFlagHelper {
 
         Store<EntityStore> store = ref.getStore();
         DialogueStateComponent dialogueStateComponent =
-                store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+                store.ensureAndGetComponent(ref, DialogueStateComponent.getComponentType());
 
         dialogueStateComponent.clearFlag(flag);
     }
@@ -71,7 +71,7 @@ public class VoxelFlagHelper {
 
         Store<EntityStore> store = ref.getStore();
         DialogueStateComponent dialogueStateComponent =
-                store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+                store.ensureAndGetComponent(ref, DialogueStateComponent.getComponentType());
 
         dialogueStateComponent.toggleFlag(flag);
     }

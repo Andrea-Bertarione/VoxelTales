@@ -6,7 +6,8 @@
         "Dexterity": 0.30000001192092896
       },
       "BaseDamage": {
-        "Physical": 1.0
+        "Physical": 1.0,
+        "Fire": 0.20000000298023224
       },
       "Passives": {
         "Boost_Physical": 0.05000000074505806
@@ -29,6 +30,24 @@
       "AttackSpeed": 1.100000023841858,
       "ItemIconId": "Weapon_Sword_Steel"
     },
+    "Incandescent": {
+      "DamageScaling": {
+        "Physical": 0.10000000149011612,
+        "Magic": 0.10000000149011612,
+        "Fire": 0.20000000298023224
+      },
+      "BaseDamage": {
+        "Physical": 0.699999988079071,
+        "Fire": 0.30000001192092896
+      },
+      "Passives": {
+        "Passive_Burn": 0.10000000149011612,
+        "Passive_Burn_Duration": 0.5
+      },
+      "Tier": 2,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
     "default": {
       "DamageScaling": {
         "Strength": 1.0
@@ -41,29 +60,28 @@
       "AttackSpeed": 1.0,
       "ItemIconId": "Weapon_Sword_Steel"
     },
+    "Starter": {
+      "DamageScaling": {
+        "Strength": 0.05000000074505806
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {},
+      "Tier": 0,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
     "Old": {
       "DamageScaling": {
         "Physical": 0.15000000596046448,
         "Dexterity": 0.15000000596046448
       },
       "BaseDamage": {
-        "Physical": 0.75
+        "Physical": 1.0
       },
       "Passives": {},
       "Tier": 1,
-      "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
-    },
-    "Starter": {
-      "DamageScaling": {
-        "Physical": 0.05000000596046448,
-        "Dexterity": 0.05000000596046448
-      },
-      "BaseDamage": {
-        "Physical": 0.4
-      },
-      "Passives": {},
-      "Tier": 0,
       "AttackSpeed": 1.0,
       "ItemIconId": "Weapon_Sword_Steel"
     }
@@ -98,6 +116,24 @@
       "AttackSpeed": 1.100000023841858,
       "ItemIconId": "Weapon_Sword_Steel"
     },
+    "Incandescent": {
+      "DamageScaling": {
+        "Physical": 0.10000000149011612,
+        "Magic": 0.10000000149011612,
+        "Fire": 0.20000000298023224
+      },
+      "BaseDamage": {
+        "Physical": 0.699999988079071,
+        "Fire": 0.30000001192092896
+      },
+      "Passives": {
+        "Passive_Burn": 0.10000000149011612,
+        "Passive_Burn_Duration": 0.5
+      },
+      "Tier": 2,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
     "default": {
       "DamageScaling": {
         "Strength": 1.0
@@ -110,29 +146,29 @@
       "AttackSpeed": 1.0,
       "ItemIconId": "Weapon_Sword_Steel"
     },
+    "Starter": {
+      "DamageScaling": {
+        "Strength": 0.05000000074505806
+      },
+      "BaseDamage": {
+        "Physical": 1.0
+      },
+      "Passives": {},
+      "Tier": 0,
+      "AttackSpeed": 1.0,
+      "ItemIconId": "Weapon_Sword_Steel"
+    },
     "Old": {
       "DamageScaling": {
         "Physical": 0.15000000596046448,
         "Dexterity": 0.15000000596046448
       },
       "BaseDamage": {
-        "Physical": 0.75
+        "Physical": 1.0
       },
       "Passives": {},
       "Tier": 1,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
-    },
-    "Starter": {
-      "DamageScaling": {
-        "Physical": 0.05000000596046448,
-        "Dexterity": 0.05000000596046448
-      },
-      "BaseDamage": {
-        "Physical": 0.4
-      },
-      "Passives": {},
-      "Tier": 0,
       "ItemIconId": "Weapon_Sword_Steel"
     }
   }

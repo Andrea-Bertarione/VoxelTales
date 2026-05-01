@@ -3,6 +3,7 @@ package dev.VoxelTales.Assets.Commands;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import dev.VoxelTales.Assets.Commands.AdminCommands.*;
 import dev.VoxelTales.Assets.Commands.Presets.OpenUICommand;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.UI.Pages.DialoguePage;
 import dev.VoxelTales.UI.Pages.WeaponConfigurationPage;
 import dev.VoxelTales.UI.Pages.WeaponForgerPage;
@@ -20,21 +21,21 @@ public class VoxelAdminCommandCollection extends AbstractCommandCollection {
         addSubCommand(new OpenUICommand<>(
                 "config",
                 "Command to open the mod configuration menu",
-                "WeaponConfigurationPage",
+                CacheEnum.WeaponConfigurationPage,
                 WeaponConfigurationPage.class
         ));
 
         addSubCommand(new OpenUICommand<>(
                 "forger",
                 "Command to open the weapon forger menu",
-                "WeaponForgerPage",
+                CacheEnum.WeaponForgerPage,
                 WeaponForgerPage.class
         ));
 
         addSubCommand(new OpenUICommand<>(
                 "dialogue",
                 "Command to open the dialogue menu",
-                "DialoguePage",
+                CacheEnum.DialoguePage,
                 DialoguePage.class
         ));
     }

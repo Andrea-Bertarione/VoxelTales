@@ -3,6 +3,7 @@ package dev.VoxelTales.Configs;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import dev.VoxelTales.Registries.VoxelConfigsRegistry;
 
 public class VoxelTalesConfigs {
     private float globalXpMultiplier = 1.0f;
@@ -14,6 +15,10 @@ public class VoxelTalesConfigs {
     private float xpExponent = 1.5f;
 
     private boolean serverSetUP = false;
+
+    public static VoxelTalesConfigs get() {
+        return VoxelConfigsRegistry.getConfig(VoxelTalesConfigs.class);
+    }
 
     public VoxelTalesConfigs() {}
 
