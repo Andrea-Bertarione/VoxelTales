@@ -3,11 +3,12 @@ package dev.VoxelTales.Assets.Dialogues.SwordSage;
 import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
 import dev.VoxelTales.Controllers.DialogueController;
-import dev.VoxelTales.Registries.VoxelDialogueRegistry;
+import dev.VoxelTales.Interfaces.IVoxelDialogue;
+import dev.VoxelTales.Registries.VoxelDialoguesRegistry;
 
 import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.*;
 
-public class SwordSageIntroDialogue {
+public class SwordSageIntroDialogue implements IVoxelDialogue {
     private static final String INTRO_TEXT =
             "Welcome to the world of Orbis young soul, im sorry i had to evoke you in such a place...";
     private static final String VOID_TEXT =
@@ -62,6 +63,6 @@ public class SwordSageIntroDialogue {
         finalNode.addResponse(defaultCloseResponse());
         finalNode.addResponse(defaultOpenForgeResponse());
 
-        VoxelDialogueRegistry.register(DialogKey.SWORD_SAGE_INTRO, introNode);
+        VoxelDialoguesRegistry.register(DialogKey.SWORD_SAGE_INTRO, introNode);
     }
 }

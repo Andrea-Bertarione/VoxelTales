@@ -2,7 +2,9 @@ package dev.VoxelTales.Components.CombatComponents;
 
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.Registries.VoxelComponentsRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +12,11 @@ import java.util.UUID;
 
 public class CombatTrackerComponent implements Component<EntityStore> {
     private final Map<UUID, Float> damageMap;
+
+    public static ComponentType<EntityStore, CombatTrackerComponent> getComponentType() {
+        return VoxelComponentsRegistry.getComponentType(CombatTrackerComponent.class);
+    }
+
 
     public static final BuilderCodec<CombatTrackerComponent> CODEC = BuilderCodec.builder(CombatTrackerComponent.class, CombatTrackerComponent::new)
             .build();

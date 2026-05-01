@@ -1,41 +1,27 @@
 package dev.VoxelTales.Registries;
 
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
-import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
-import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBehavior;
-import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
-import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
+import dev.VoxelTales.Assets.Passives.OnHit.Burn;
+import dev.VoxelTales.Assets.Passives.VoxelPassive;
 import dev.VoxelTales.Interfaces.IVoxelPassiveEffect;
-import dev.VoxelTales.Utils.VoxelStatsHelper;
+import dev.VoxelTales.Interfaces.IVoxelRegistry;
+import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class VoxelPassivesRegistry{
+public class VoxelPassivesRegistry implements IVoxelRegistry {
     private static final Map<String, IVoxelPassiveEffect> PASSIVES = new HashMap<>();
-    private static final EntityEffect BURN_EFFECT = EntityEffect.getAssetMap().getAsset("Burn");
 
-    static {
-        PASSIVES.put("Passive_Burn", (attacker, targetRef, chance, accessor) -> {
-            if (passedChance(chance)) {
-                if (targetRef == null || !targetRef.isValid()) return;
-                if (BURN_EFFECT == null) return;
+    public static void init(VoxelTalesPlugin plugin) {
+        register(new Burn());
 
-                //LoggerUtil.getLogger().info("Passive_Burn activated!");
-
-                EffectControllerComponent effectControllerComponent = accessor.ensureAndGetComponent(targetRef, EffectControllerComponent.getComponentType());
-
-                float duration = accessor.ensureAndGetComponent(attacker, EntityStatMap.getComponentType()).get(VoxelStatsHelper.getStatIndex("Passive_Burn_Duration")).get();
-                effectControllerComponent.addEffect(targetRef, BURN_EFFECT, duration, OverlapBehavior.EXTEND, accessor);
-            }
-        });
+        LoggerUtil.getLogger().info("[VoxelPassivesRegistry] Initialized with " + PASSIVES.size() + " passives.");
     }
+
+    private static void register(VoxelPassive passive) { PASSIVES.put(passive.getName(), passive); }
 
     public static IVoxelPassiveEffect get(String key) { return PASSIVES.get(key); }
     public static Set<String> getRegisteredKeys() { return PASSIVES.keySet(); }
-
-    private static boolean passedChance(float chance) {
-        return Math.random() < chance;
-    }
 }

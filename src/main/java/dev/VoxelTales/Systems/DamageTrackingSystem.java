@@ -48,7 +48,7 @@ public class DamageTrackingSystem extends DamageEventSystem {
         }
         UUID attackerUuid = attackerUuidComponent.getUuid();
 
-        CombatTrackerComponent tracker = commandBuffer.getComponent(targetRef, VoxelTalesPlugin.get().getCombatTrackerComponent());
+        CombatTrackerComponent tracker = commandBuffer.getComponent(targetRef, CombatTrackerComponent.getComponentType());
 
         float damageAmount = damage.getAmount();
 

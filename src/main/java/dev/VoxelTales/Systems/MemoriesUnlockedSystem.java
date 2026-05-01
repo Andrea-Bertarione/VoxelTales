@@ -10,7 +10,7 @@ import com.hypixel.hytale.component.system.RefChangeSystem;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
-import dev.VoxelTales.Components.DialogueStateComponent;
+import dev.VoxelTales.Components.PlayerComponents.DialogueStateComponent;
 import dev.VoxelTales.VoxelTalesPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +26,7 @@ public class MemoriesUnlockedSystem extends RefChangeSystem<EntityStore, PlayerM
 
     @Override
     public void onComponentAdded(@Nonnull Ref<EntityStore> ref, @Nonnull PlayerMemories playerMemories, @Nonnull Store<EntityStore> store, @Nonnull CommandBuffer<EntityStore> commandBuffer) {
-        DialogueStateComponent stateComponent = commandBuffer.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+        DialogueStateComponent stateComponent = commandBuffer.ensureAndGetComponent(ref, DialogueStateComponent.getComponentType());
 
         //LoggerUtil.getLogger().info("Sword Sage quest completed");
 
@@ -35,7 +35,7 @@ public class MemoriesUnlockedSystem extends RefChangeSystem<EntityStore, PlayerM
 
     @Override
     public void onComponentSet(@NotNull Ref<EntityStore> ref, @Nullable PlayerMemories playerMemories, @NotNull PlayerMemories t1, @NotNull Store<EntityStore> store, @NotNull CommandBuffer<EntityStore> commandBuffer) {
-        DialogueStateComponent stateComponent = commandBuffer.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getDialogueStateComponent());
+        DialogueStateComponent stateComponent = commandBuffer.ensureAndGetComponent(ref, DialogueStateComponent.getComponentType());
 
         //LoggerUtil.getLogger().info("Sword Sage quest completed");
 

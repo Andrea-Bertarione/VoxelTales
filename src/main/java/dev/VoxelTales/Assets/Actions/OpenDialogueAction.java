@@ -12,11 +12,11 @@ import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 import dev.VoxelTales.Assets.Actions.Builders.BuilderOpenDialogueAction;
 import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
-import dev.VoxelTales.Components.DialogueStateComponent;
+import dev.VoxelTales.Components.PlayerComponents.DialogueStateComponent;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
-import dev.VoxelTales.Registries.VoxelDialogueRegistry;
+import dev.VoxelTales.Registries.VoxelDialoguesRegistry;
 import dev.VoxelTales.UI.Pages.DialoguePage;
-import dev.VoxelTales.VoxelTalesPlugin;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nonnull;
@@ -52,8 +52,8 @@ public class OpenDialogueAction extends ActionBase {
         Player playerComponent = store.getComponent(playerReference, Player.getComponentType());
         if (playerComponent == null) return false;
 
-        DialoguePage page = VoxelCacheRegistry.get("DialoguePage", playerRefComponent, DialoguePage.class);
-        DialogueStateComponent dialogueStateComponent = store.ensureAndGetComponent(playerReference, VoxelTalesPlugin.get().getDialogueStateComponent());
+        DialoguePage page = VoxelCacheRegistry.get(CacheEnum.DialoguePage, playerRefComponent, DialoguePage.class);
+        DialogueStateComponent dialogueStateComponent = store.ensureAndGetComponent(playerReference, DialogueStateComponent.getComponentType());
 
         if (page == null) return false;
         DialogKey dialogueKey;
@@ -69,7 +69,7 @@ public class OpenDialogueAction extends ActionBase {
         }
 
         //LoggerUtil.getLogger().info("Trying to open Dialogue: " + dialogueKey);
-        page.openWith(VoxelDialogueRegistry.get(String.valueOf(dialogueKey)));
+        page.openWith(VoxelDialoguesRegistry.get(String.valueOf(dialogueKey)));
 
 
         return true;

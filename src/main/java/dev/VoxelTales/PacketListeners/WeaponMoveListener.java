@@ -5,26 +5,29 @@ import com.hypixel.hytale.protocol.packets.inventory.DropItemStack;
 import com.hypixel.hytale.protocol.packets.inventory.MoveItemStack;
 import com.hypixel.hytale.protocol.packets.inventory.SmartMoveItemStack;
 import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
+import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.Utils.VoxelInventoryHelper;
-import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.Objects;
 
-public class WeaponMoveListener {
+public class WeaponMoveListener implements PlayerPacketFilter {
 
-    public static PlayerPacketFilter weaponFilter() {
-        return (playerRef, packet) -> {
-            short lockedSlot = VoxelTalesPlugin.get().getLockedSlot(playerRef.getUuid());
-            boolean shouldBlock = isShouldBlock(packet, lockedSlot);
+    @Override
+    public boolean test(PlayerRef playerRef, Packet packet) {
+        Short lockedSlot = VoxelCacheRegistry.getSynced(CacheEnum.SLOT_CACHE, playerRef.getUuid(), Short.class);
+        if (lockedSlot == null) { return false; }
 
-            if (shouldBlock) {
-                VoxelInventoryHelper.syncHotbar(playerRef, playerRef.getReference(),
-                        Objects.requireNonNull(playerRef.getReference()).getStore());
-                return true; // Cancel the restricted move
-            }
+        boolean shouldBlock = isShouldBlock(packet, lockedSlot);
 
-            return false; // Let all other inventory interactions pass
-        };
+        if (shouldBlock) {
+            VoxelInventoryHelper.syncHotbar(playerRef, playerRef.getReference(),
+                    Objects.requireNonNull(playerRef.getReference()).getStore());
+            return true; // Cancel the restricted move
+        }
+
+        return false; // Let all other inventory interactions pass
     }
 
     private static boolean isShouldBlock(Packet packet, short lockedSlot) {

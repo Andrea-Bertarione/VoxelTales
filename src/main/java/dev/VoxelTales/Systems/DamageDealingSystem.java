@@ -16,7 +16,8 @@ import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import dev.VoxelTales.Components.WeaponHandlerComponent;
+import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
+import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
 import dev.VoxelTales.Registries.MetaData.VoxelDamageMetadata;
 import dev.VoxelTales.Registries.VoxelPassivesRegistry;
 import dev.VoxelTales.Utils.VoxelStatsHelper;
@@ -40,7 +41,7 @@ public class DamageDealingSystem extends DamageEventSystem {
         Ref<EntityStore> attackerRef = source.getRef();
         Ref<EntityStore> targetRef = chunk.getReferenceTo(index);
 
-        WeaponHandlerComponent weapon = store.getComponent(attackerRef, VoxelTalesPlugin.get().getWeaponHandlerComponent());
+        WeaponHandlerComponent weapon = store.getComponent(attackerRef, WeaponHandlerComponent.getComponentType());
         EntityStatMap attackerStats = store.getComponent(attackerRef, EntityStatMap.getComponentType());
 
         if (Boolean.TRUE.equals(damage.getIfPresentMetaObject(VoxelDamageMetadata.PROCESSED_KEY))) {
@@ -124,7 +125,7 @@ public class DamageDealingSystem extends DamageEventSystem {
                 //LoggerUtil.getLogger().info("The kind resolved to: " +
                  //       DamageNumbers.resolveKindId(damage));
 
-                buffer.ensureAndGetComponent(targetRef, VoxelTalesPlugin.get().getCombatTrackerComponent());
+                buffer.ensureAndGetComponent(targetRef, CombatTrackerComponent.getComponentType());
                 isFirst = false;
             } else {
                 Damage extraHit = new Damage(damage.getSource(), cause, calculatedAmount);

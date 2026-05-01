@@ -2,12 +2,13 @@ package dev.VoxelTales.Assets.Dialogues.SwordSage;
 
 import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Controllers.DialogueController;
-import dev.VoxelTales.Registries.VoxelDialogueRegistry;
+import dev.VoxelTales.Interfaces.IVoxelDialogue;
+import dev.VoxelTales.Registries.VoxelDialoguesRegistry;
 
 import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.defaultCloseResponse;
 import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.defaultOpenForgeResponse;
 
-public class SwordSageRepeatedDialogue {
+public class SwordSageRepeatedDialogue implements IVoxelDialogue {
     public static final String INTRO_TEXT = "Greetings, dear soul, i'm at your service.";
 
     public static void register() {
@@ -16,7 +17,7 @@ public class SwordSageRepeatedDialogue {
         introNode.addResponse(defaultCloseResponse());
         introNode.addResponse(defaultOpenForgeResponse());
 
-        VoxelDialogueRegistry.register(DialogKey.SWORD_SAGE_REPEATED, introNode);
+        VoxelDialoguesRegistry.register(DialogKey.SWORD_SAGE_REPEATED, introNode);
     }
 
 }

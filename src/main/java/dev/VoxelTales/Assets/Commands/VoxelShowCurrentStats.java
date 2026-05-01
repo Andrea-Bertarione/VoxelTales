@@ -34,7 +34,11 @@ public class VoxelShowCurrentStats extends AbstractPlayerCommand {
         List<Pair<String, Float>> stats = VoxelStatsHelper.getAllStats(statMap);
 
         Message msg = Message.empty();
-        stats.forEach(val -> msg.insert(val.toString() + "\n"));
+        stats.forEach(val -> {
+            if (val.getSecond() == 0f) return;
+
+            msg.insert(val + "\n");
+        });
 
         playerRef.sendMessage(msg);
     }

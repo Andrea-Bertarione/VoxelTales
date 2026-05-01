@@ -5,7 +5,7 @@ import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.Components.WeaponHandlerComponent;
+import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
 import dev.VoxelTales.UI.HUD.Default.VoxelHudUI;
 import dev.VoxelTales.Utils.VoxelWeaponMathHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
@@ -24,7 +24,7 @@ public class WeaponHUD extends VoxelHudUI {
         Ref<EntityStore> ref = playerRef.getReference();
         if (ref == null || !ref.isValid()) return;
 
-        WeaponHandlerComponent handler = ref.getStore().getComponent(ref, VoxelTalesPlugin.get().getWeaponHandlerComponent());
+        WeaponHandlerComponent handler = ref.getStore().getComponent(ref, WeaponHandlerComponent.getComponentType());
         if (handler == null) return;
 
         this.swordPoints = handler.getSwordPoints();

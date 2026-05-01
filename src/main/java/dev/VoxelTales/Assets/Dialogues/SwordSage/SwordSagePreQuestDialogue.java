@@ -3,11 +3,12 @@ package dev.VoxelTales.Assets.Dialogues.SwordSage;
 import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
 import dev.VoxelTales.Controllers.DialogueController;
-import dev.VoxelTales.Registries.VoxelDialogueRegistry;
+import dev.VoxelTales.Interfaces.IVoxelDialogue;
+import dev.VoxelTales.Registries.VoxelDialoguesRegistry;
 
 import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.*;
 
-public class SwordSagePreQuestDialogue {
+public class SwordSagePreQuestDialogue implements IVoxelDialogue {
     private static final String NEXT_QUEST_TEXT = "What should i do next?";
     private static final String UNLOCK_MEMORIES_TEXT = "Well, i do have something that might help you, go to the temple of Gaia, i marked it on your map, come back to me after you've started remembering...";
     private static final String ACCEPTED_QUEST_TEXT = "Good, go for it!";
@@ -28,6 +29,6 @@ public class SwordSagePreQuestDialogue {
 
         acceptedQuestNode.addResponse(defaultCloseResponse());
 
-        VoxelDialogueRegistry.register(DialogKey.SWORD_SAGE_PRE_QUEST, introNode);
+        VoxelDialoguesRegistry.register(DialogKey.SWORD_SAGE_PRE_QUEST, introNode);
     }
 }

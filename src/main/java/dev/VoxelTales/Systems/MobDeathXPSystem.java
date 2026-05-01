@@ -28,7 +28,7 @@ public class MobDeathXPSystem extends DeathSystems.OnDeathSystem {
     @Override
     public Query<EntityStore> getQuery() {
         return Query.and(
-                VoxelTalesPlugin.get().getCombatTrackerComponent(),
+                CombatTrackerComponent.getComponentType(),
                 NPCEntity.getComponentType(),
                 EntityStatMap.getComponentType(),
                 Query.not(Player.getComponentType())
@@ -37,7 +37,7 @@ public class MobDeathXPSystem extends DeathSystems.OnDeathSystem {
 
     @Override
     public void onComponentAdded(@Nonnull Ref<EntityStore> ref , @Nonnull DeathComponent component, @Nonnull Store<EntityStore> store , @Nonnull CommandBuffer<EntityStore>  commandBuffer) {
-        CombatTrackerComponent tracker = store.getComponent(ref, VoxelTalesPlugin.get().getCombatTrackerComponent());
+        CombatTrackerComponent tracker = store.getComponent(ref, CombatTrackerComponent.getComponentType());
         NPCEntity npcEntity = store.getComponent(ref, Objects.requireNonNull(NPCEntity.getComponentType()));
         EntityStatMap entityStatMap = store.getComponent(ref, EntityStatMap.getComponentType());
         if (tracker == null) return;

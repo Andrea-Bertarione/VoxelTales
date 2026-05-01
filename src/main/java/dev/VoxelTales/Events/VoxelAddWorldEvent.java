@@ -6,7 +6,9 @@ import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.events.AddWorldEvent;
 import com.hypixel.hytale.server.core.universe.world.spawn.ISpawnProvider;
+import dev.VoxelTales.Configs.VoxelTalesConfigs;
 import dev.VoxelTales.Controllers.SwordSageController;
+import dev.VoxelTales.Registries.VoxelConfigsRegistry;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.concurrent.TimeUnit;
@@ -21,7 +23,9 @@ public class VoxelAddWorldEvent {
         LoggerUtil.getLogger().info("[Sword_Sage] AddWorldEvent triggered for world " + event.getWorld().getWorldConfig().getUuid());
         World world = event.getWorld();
 
-        if (VoxelTalesPlugin.get().getVoxelTalesConfigs().get().isServerSetUP()) {
+        VoxelTalesConfigs configs = VoxelTalesConfigs.get();
+
+        if (configs.isServerSetUP()) {
             LoggerUtil.getLogger().warning("[Sword_Sage] World already set up!");
             return;
         }
@@ -36,8 +40,9 @@ public class VoxelAddWorldEvent {
             Vector3d basePosition = spawnProvider.getSpawnPoint(world, world.getWorldConfig().getUuid()).getPosition();
             SwordSageController.spawnSwordSage(world, basePosition.add(SWORD_SAGE_POSITION_OFFSET));
 
-            VoxelTalesPlugin.get().getVoxelTalesConfigs().get().setServerSetUP(true);
-            VoxelTalesPlugin.get().getVoxelTalesConfigs().save();
+            configs.setServerSetUP(true);
+            VoxelConfigsRegistry.save(VoxelTalesConfigs.class);
+
         }), SWORD_SAGE_SPAWN_DELAY, TimeUnit.SECONDS);
     }
 }

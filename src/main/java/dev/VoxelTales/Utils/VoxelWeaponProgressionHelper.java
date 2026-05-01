@@ -7,7 +7,7 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
-import dev.VoxelTales.Components.PlayerWeaponProgressComponent;
+import dev.VoxelTales.Components.PlayerComponents.PlayerWeaponProgressComponent;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 public class VoxelWeaponProgressionHelper {
@@ -30,7 +30,7 @@ public class VoxelWeaponProgressionHelper {
 
         Store<EntityStore> store = ref.getStore();
         PlayerWeaponProgressComponent progressComponent =
-                store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getPlayerWeaponProgressComponent());
+                store.ensureAndGetComponent(ref, PlayerWeaponProgressComponent.getComponentType());
 
         progressComponent.unlockBlade(bladeId);
         runNotification(playerRef, "blade", bladeId);
@@ -48,7 +48,7 @@ public class VoxelWeaponProgressionHelper {
 
         Store<EntityStore> store = ref.getStore();
         PlayerWeaponProgressComponent progressComponent =
-                store.ensureAndGetComponent(ref, VoxelTalesPlugin.get().getPlayerWeaponProgressComponent());
+                store.ensureAndGetComponent(ref, PlayerWeaponProgressComponent.getComponentType());
 
         progressComponent.unlockHandle(handleId);
         runNotification(playerRef, "handle", handleId);

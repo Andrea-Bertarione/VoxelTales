@@ -1,12 +1,14 @@
-package dev.VoxelTales.Components;
+package dev.VoxelTales.Components.PlayerComponents;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.validation.Validators;
 import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Configs.VoxelWeaponConfigs;
+import dev.VoxelTales.Registries.VoxelComponentsRegistry;
 import dev.VoxelTales.Utils.VoxelWeaponConfigsHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +23,10 @@ public class WeaponHandlerComponent implements Component<EntityStore> {
     private int swordPoints;
     private int swordXP;
     private int swordInternalLevel;
+
+    public static ComponentType<EntityStore, WeaponHandlerComponent> getComponentType() {
+        return VoxelComponentsRegistry.getComponentType(WeaponHandlerComponent.class);
+    }
 
     public static final BuilderCodec<WeaponHandlerComponent> CODEC =
             BuilderCodec.builder(WeaponHandlerComponent.class, WeaponHandlerComponent::new)

@@ -1,19 +1,34 @@
-package dev.VoxelTales.Components;
+package dev.VoxelTales.Components.PlayerComponents;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.set.SetCodec;
 import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.Registries.VoxelComponentsRegistry;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class PlayerWeaponProgressComponent implements Component<EntityStore> {
+    public record PlayerWeaponProgressData(
+            Set<String> unlockedBlades,
+            Set<String> unlockedHandles
+    ) {}
+
     public Set<String> unlockedBlades;
     public Set<String> unlockedHandles;
+
+    public static ComponentType<EntityStore, PlayerWeaponProgressComponent> getComponentType() {
+        return VoxelComponentsRegistry.getComponentType(PlayerWeaponProgressComponent.class);
+    }
 
     public static final BuilderCodec<PlayerWeaponProgressComponent> CODEC =
             BuilderCodec.builder(PlayerWeaponProgressComponent.class, PlayerWeaponProgressComponent::new)
@@ -90,5 +105,25 @@ public class PlayerWeaponProgressComponent implements Component<EntityStore> {
 
     public void lockHandle(String handleId) {
         this.unlockedHandles.remove(handleId);
+    }
+
+    public static PlayerWeaponProgressData getProgressionData (PlayerRef playerRef) {
+        Ref<EntityStore> ref = playerRef.getReference();
+        if (ref == null || !ref.isValid()) {
+
+            return new PlayerWeaponProgressComponent.PlayerWeaponProgressData(
+                    Collections.emptySet(),
+                    Collections.emptySet()
+            );
+        }
+
+        Store<EntityStore> store = ref.getStore();
+        PlayerWeaponProgressComponent component =
+                store.ensureAndGetComponent(ref, PlayerWeaponProgressComponent.getComponentType());
+
+        return new PlayerWeaponProgressComponent.PlayerWeaponProgressData(
+                component.getUnlockedBlades(),
+                component.getUnlockedHandles()
+        );
     }
 }

@@ -2,26 +2,15 @@ package dev.VoxelTales.Utils;
 
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.EntityStatType;
-import dev.VoxelTales.Components.VoxelPlayerComponent;
+import dev.VoxelTales.Components.PlayerComponents.VoxelPlayerComponent;
 import kotlin.Pair;
+import dev.VoxelTales.Controllers.CharacterStatsController;
 
 import java.util.*;
 
 public class VoxelStatsHelper {
-    public static final Set<String> STATS_SET = Set.of(
-            //Scaling stat boosts
-            "Boost_Physical",
-            "Boost_Dexterity",
-            "Boost_Fire",
-            "Boost_Magic",
-
-            //Passives abilities stats
-            "Passive_Burn",
-            "Passive_Burn_Duration"
-    );
-
     public static void updateWeaponStats(VoxelPlayerComponent playerComp, EntityStatMap statMap, HashMap<String, Float> newModifiers) {
-        if (playerComp.areStatsUpdated && playerComp.weaponStatModifiers != null) {
+        if (playerComp.weaponStatModifiers != null && !playerComp.weaponStatModifiers.isEmpty()) {
             for (Map.Entry<String, Float> oldEntry : playerComp.weaponStatModifiers.entrySet()) {
                 int index = getStatIndex(oldEntry.getKey());
                 if (index != -1 && oldEntry.getValue() != 0f) {
@@ -41,19 +30,20 @@ public class VoxelStatsHelper {
             }
         }
 
+        // Update the state
         playerComp.weaponStatModifiers = newModifiers != null ? new HashMap<>(newModifiers) : new HashMap<>();
         playerComp.areStatsUpdated = true;
     }
 
     public static int getStatIndex(String stat) {
-        if (!STATS_SET.contains(stat)) return -1;
+        if (!CharacterStatsController.STATS_SET.contains(stat)) return -1;
         return EntityStatType.getAssetMap().getIndexOrDefault(stat, -1);
     }
 
     public static List<Pair<String, Float>> getAllStats(EntityStatMap statMap) {
         List<Pair<String, Float>> stats = new ArrayList<>();
 
-        STATS_SET.forEach((statName) -> {
+        CharacterStatsController.STATS_SET.forEach((statName) -> {
             int index = getStatIndex(statName);
             if (index != -1) {
                 Pair<String, Float> val = new Pair<>(statName, Objects.requireNonNull(statMap.get(index)).get());

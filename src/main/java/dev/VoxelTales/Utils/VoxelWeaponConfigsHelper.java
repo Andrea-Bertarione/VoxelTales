@@ -1,14 +1,14 @@
 package dev.VoxelTales.Utils;
 
 import dev.VoxelTales.Configs.VoxelWeaponConfigs;
+import dev.VoxelTales.Registries.VoxelConfigsRegistry;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.Set;
 
 public class VoxelWeaponConfigsHelper {
     public static void deleteEntry(String type, String name) {
-        var wrapper = VoxelTalesPlugin.get().getWeaponLookupConfig();
-        VoxelWeaponConfigs config = wrapper.get();
+        VoxelWeaponConfigs config = VoxelWeaponConfigs.get();
 
         if (type.equals("blades")) {
             config.removeBladeStats(name);
@@ -16,12 +16,11 @@ public class VoxelWeaponConfigsHelper {
             config.removeHandleStats(name);
         }
 
-        wrapper.save();
+        VoxelConfigsRegistry.save(VoxelWeaponConfigs.class);
     }
 
     public static void renameEntry(String type, String name, String newName) {
-        var wrapper = VoxelTalesPlugin.get().getWeaponLookupConfig();
-        VoxelWeaponConfigs config = wrapper.get();
+        VoxelWeaponConfigs config = VoxelWeaponConfigs.get();
 
         if (type.equals("blades")) {
             var stats = config.getBladeStats(name);
@@ -33,12 +32,11 @@ public class VoxelWeaponConfigsHelper {
             config.setHandleStats(newName, stats);
         }
 
-        wrapper.save();
+        VoxelConfigsRegistry.save(VoxelWeaponConfigs.class);
     }
 
     public static void saveStatsOf(String type, String name, VoxelWeaponConfigs.ComponentStats data) {
-        var wrapper = VoxelTalesPlugin.get().getWeaponLookupConfig();
-        VoxelWeaponConfigs config = wrapper.get();
+        VoxelWeaponConfigs config = VoxelWeaponConfigs.get();
 
         if (type.equals("blades")) {
             config.setBladeStats(name, data);
@@ -46,7 +44,7 @@ public class VoxelWeaponConfigsHelper {
             config.setHandleStats(name, data);
         }
 
-        wrapper.save();
+        VoxelConfigsRegistry.save(VoxelWeaponConfigs.class);
     }
 
     public static VoxelWeaponConfigs.ComponentStats getStatsOf(String type, String name) {
@@ -57,8 +55,7 @@ public class VoxelWeaponConfigsHelper {
      * Gets blade stats or generates a default entry if missing.
      */
     public static VoxelWeaponConfigs.ComponentStats getBladeStats(String bladeId) {
-        var wrapper = VoxelTalesPlugin.get().getWeaponLookupConfig();
-        VoxelWeaponConfigs config = wrapper.get();
+        VoxelWeaponConfigs config = VoxelWeaponConfigs.get();
 
         if (config.getBlades().containsKey(bladeId)) {
             return config.getBlades().get(bladeId);
@@ -69,7 +66,7 @@ public class VoxelWeaponConfigsHelper {
         config.getBlades().put(bladeId, defaultStats);
 
         // Save the updated map back to the JSON file
-        wrapper.save();
+        VoxelConfigsRegistry.save(VoxelWeaponConfigs.class);
 
         return defaultStats;
     }
@@ -78,8 +75,7 @@ public class VoxelWeaponConfigsHelper {
      * Gets handle stats or generates a default entry if missing.
      */
     public static VoxelWeaponConfigs.ComponentStats getHandleStats(String handleId) {
-        var wrapper = VoxelTalesPlugin.get().getWeaponLookupConfig();
-        VoxelWeaponConfigs config = wrapper.get();
+        VoxelWeaponConfigs config = VoxelWeaponConfigs.get();
 
         if (config.getHandles().containsKey(handleId)) {
             return config.getHandles().get(handleId);
@@ -89,14 +85,13 @@ public class VoxelWeaponConfigsHelper {
         VoxelWeaponConfigs.ComponentStats defaultStats = createDefaultTemplate();
         config.getHandles().put(handleId, defaultStats);
 
-        wrapper.save();
+        VoxelConfigsRegistry.save(VoxelWeaponConfigs.class);
 
         return defaultStats;
     }
 
     public static Set<String> getListOfNames(String type) {
-        var wrapper = VoxelTalesPlugin.get().getWeaponLookupConfig();
-        VoxelWeaponConfigs config = wrapper.get();
+        VoxelWeaponConfigs config = VoxelWeaponConfigs.get();
 
         if (type.equals("blades")) {
             return config.getBlades().keySet();

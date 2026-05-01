@@ -3,9 +3,11 @@ package dev.VoxelTales.UI.Pages;
 import au.ellie.hyui.builders.*;
 import au.ellie.hyui.elements.LayoutModeSupported;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import dev.VoxelTales.Components.PlayerComponents.PlayerWeaponProgressComponent;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
-import dev.VoxelTales.Utils.VoxelSwordHelper;
+import dev.VoxelTales.Utils.VoxelInventoryHelper;
 import dev.VoxelTales.Utils.VoxelWeaponConfigsHelper;
 
 import java.text.DecimalFormat;
@@ -96,16 +98,18 @@ public class WeaponForgerPage extends VoxelPageUI {
     }
 
     private void loadWeaponLists() {
-        HashMap<String, Set<String>> weaponProgressCache = VoxelCacheRegistry.getSynced("VoxelPlayerWeaponProgressCache", this.playerRef.getUuid(), HashMap.class);
-        this.availableBlades = weaponProgressCache.getOrDefault("blades", new HashSet<>());
-        this.availableHandles = weaponProgressCache.getOrDefault("handles", new HashSet<>());
+        PlayerWeaponProgressComponent.PlayerWeaponProgressData weaponProgressCache = VoxelCacheRegistry.getSynced(CacheEnum.VoxelPlayerWeaponProgressCache, this.playerRef.getUuid(), PlayerWeaponProgressComponent.PlayerWeaponProgressData.class);
+        if (weaponProgressCache == null) return;
+
+        this.availableBlades = weaponProgressCache.unlockedBlades();
+        this.availableHandles = weaponProgressCache.unlockedHandles();
     }
 
 
     private void bindConfirmForgeButton() {
         this.builder.getById(CONFIRM_FORGE_BUTTON_ID, ButtonBuilder.class).ifPresent(button ->
                 button.onClick((_, context) -> {
-                    VoxelSwordHelper.equipNewWeapon(this.playerRef, this.selectedBlade, this.selectedHandle);
+                    VoxelInventoryHelper.equipNewWeapon(this.playerRef, this.selectedBlade, this.selectedHandle);
 
                     super.notifySuccess("Success!", "Successfully forged " + this.selectedBlade + " - " + this.selectedHandle, "Weapon_Heirloom_" + this.selectedBlade + "_" + this.selectedHandle, "SFX_Level_Up_Generic");
 

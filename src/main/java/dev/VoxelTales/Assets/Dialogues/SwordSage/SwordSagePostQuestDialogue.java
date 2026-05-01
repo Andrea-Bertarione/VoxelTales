@@ -5,7 +5,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
 import dev.VoxelTales.Controllers.DialogueController;
-import dev.VoxelTales.Registries.VoxelDialogueRegistry;
+import dev.VoxelTales.Interfaces.IVoxelDialogue;
+import dev.VoxelTales.Registries.VoxelDialoguesRegistry;
 import dev.VoxelTales.UI.Pages.DialoguePage;
 import dev.VoxelTales.Utils.VoxelFlagHelper;
 import dev.VoxelTales.Utils.VoxelWeaponProgressionHelper;
@@ -16,7 +17,7 @@ import java.util.Objects;
 import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.defaultCloseResponse;
 import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.defaultOpenForgeResponse;
 
-public class SwordSagePostQuestDialogue {
+public class SwordSagePostQuestDialogue implements IVoxelDialogue {
     private static final String CHECK_QUEST_TEXT = "I've done it, i think?";
     private static final String UNLOCKED_MEMORIES_TEXT_SUCCESS = "Oh i see you did start remembering, then i'll have to congratulate you, here's a couple new blades and handles to aid you in your journey.";
     private static final String UNLOCKED_MEMORIES_TEXT_FAILURE = "I'm sorry, but i need you to actually find yourself first.";
@@ -41,7 +42,7 @@ public class SwordSagePostQuestDialogue {
                     successBranch, failureBranch
                 )).withCallback(SwordSagePostQuestDialogue::unlockNewWeapon));
 
-        VoxelDialogueRegistry.register(DialogKey.SWORD_SAGE_POST_QUEST, introNode);
+        VoxelDialoguesRegistry.register(DialogKey.SWORD_SAGE_POST_QUEST, introNode);
     }
 
     private static void unlockNewWeapon(UIContext ctx, DialoguePage page) {

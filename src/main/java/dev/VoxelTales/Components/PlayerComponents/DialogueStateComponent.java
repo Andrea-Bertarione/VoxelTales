@@ -1,11 +1,13 @@
-package dev.VoxelTales.Components;
+package dev.VoxelTales.Components.PlayerComponents;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
 import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.VoxelTales.Registries.VoxelComponentsRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -13,6 +15,10 @@ import java.util.Map;
 
 public class DialogueStateComponent implements Component<EntityStore> {
     public Map<String, Boolean> dialogueFlags;
+
+    public static ComponentType<EntityStore, DialogueStateComponent> getComponentType() {
+        return VoxelComponentsRegistry.getComponentType(DialogueStateComponent.class);
+    }
 
     public static final BuilderCodec<DialogueStateComponent> CODEC =
             BuilderCodec.builder(DialogueStateComponent.class, DialogueStateComponent::new)
