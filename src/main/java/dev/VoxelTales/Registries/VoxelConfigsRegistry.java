@@ -6,7 +6,7 @@ import com.hypixel.hytale.server.core.util.Config;
 import dev.VoxelTales.Configs.EntityXPConfigs;
 import dev.VoxelTales.Configs.VoxelTalesConfigs;
 import dev.VoxelTales.Configs.VoxelWeaponConfigs;
-import dev.VoxelTales.Interfaces.IVoxelRegistry;
+import dev.VoxelTales.Core.AVoxelRegistry;
 import dev.VoxelTales.Registries.RegistryEnums.ConfigEnum;
 import dev.VoxelTales.VoxelTalesPlugin;
 
@@ -16,23 +16,28 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VoxelConfigsRegistry implements IVoxelRegistry {
-    private static final String CONFIG_PATH = "Server/Config/";
-    private static final ConcurrentHashMap<Class<?>, Config<?>> configRegistry = new ConcurrentHashMap<>();
+public class VoxelConfigsRegistry extends AVoxelRegistry {
+    private final String CONFIG_PATH = "Server/Config/";
+    private final ConcurrentHashMap<Class<?>, Config<?>> configRegistry = new ConcurrentHashMap<>();
 
-    public static void init(VoxelTalesPlugin plugin) {
+    private static VoxelConfigsRegistry INSTANCE;
+
+    public void init(VoxelTalesPlugin plugin) {
+        INSTANCE = this;
+
         registerClass(plugin, ConfigEnum.VOXELTALES_GENERAL_CONFIGS, VoxelTalesConfigs.class, VoxelTalesConfigs.CODEC);
         registerClass(plugin, ConfigEnum.ENTITY_XP_CONFIGS, EntityXPConfigs.class, EntityXPConfigs.CODEC);
         registerClass(plugin, ConfigEnum.WEAPON_LOOKUP_CONFIGS, VoxelWeaponConfigs.class, VoxelWeaponConfigs.CODEC, true);
 
-        LoggerUtil.getLogger().info("[VoxelConfigsRegistry] Registered " + configRegistry.size() + " configs.");
+        LoggerUtil.getLogger().info("[VoxelConfigsRegistry] Registered " + super.getRegistryCount() + " configs.");
     }
 
-    private static void registerClass(VoxelTalesPlugin plugin, ConfigEnum configEnum, Class<?> clazz, BuilderCodec<?> codec) {
+    private void registerClass(VoxelTalesPlugin plugin, ConfigEnum configEnum, Class<?> clazz, BuilderCodec<?> codec) {
         configRegistry.put(clazz, plugin.registerConfig(configEnum.getName(), codec));
+        super.incrementRegistryCount();
     }
 
-    private static void registerClass(VoxelTalesPlugin plugin, ConfigEnum configEnum, Class<?> clazz, BuilderCodec<?> codec, boolean copyConfig) {
+    private void registerClass(VoxelTalesPlugin plugin, ConfigEnum configEnum, Class<?> clazz, BuilderCodec<?> codec, boolean copyConfig) {
         registerClass(plugin, configEnum, clazz, codec);
 
         if (copyConfig) {
@@ -40,13 +45,13 @@ public class VoxelConfigsRegistry implements IVoxelRegistry {
         }
     }
 
-    public static void saveAll() {
+    public void saveAll() {
         for (Config<?> config : configRegistry.values()) {
             config.save();
         }
     }
 
-    public static void save(Class<?> clazz) {
+    public void save(Class<?> clazz) {
         Config<?> config = configRegistry.get(clazz);
         if (config != null) {
             config.save();
@@ -54,11 +59,11 @@ public class VoxelConfigsRegistry implements IVoxelRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getConfig(Class<T> clazz) {
+    public <T> T getConfig(Class<T> clazz) {
         return (T) configRegistry.get(clazz).get();
     }
 
-    private static void copyConfigIfMissing(VoxelTalesPlugin plugin, ConfigEnum configName) {
+    private void copyConfigIfMissing(VoxelTalesPlugin plugin, ConfigEnum configName) {
         String fileName = configName.getName() + ".json";
         Path targetPath = plugin.getDataDirectory().resolve(fileName);
 
@@ -81,5 +86,13 @@ public class VoxelConfigsRegistry implements IVoxelRegistry {
         } catch (Throwable t) {
             LoggerUtil.getLogger().warning("[VoxelTales] Failed to copy config: " + t.getMessage());
         }
+    }
+
+    //Static direct access methods
+    public static <T> T staticGet(Class<T> clazz) {
+        return INSTANCE.getConfig(clazz);
+    }
+    public static void staticSave(Class<?> clazz) {
+        INSTANCE.save(clazz);
     }
 }

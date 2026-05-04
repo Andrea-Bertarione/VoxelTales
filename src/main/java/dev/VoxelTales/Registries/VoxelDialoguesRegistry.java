@@ -7,40 +7,55 @@ import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSagePostQuestDialogue;
 import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSagePreQuestDialogue;
 import dev.VoxelTales.Assets.Dialogues.SwordSage.SwordSageRepeatedDialogue;
 import dev.VoxelTales.Controllers.DialogueController;
-import dev.VoxelTales.Interfaces.IVoxelRegistry;
+import dev.VoxelTales.Core.AVoxelRegistry;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VoxelDialoguesRegistry implements IVoxelRegistry {
-    private static final ConcurrentHashMap<String, DialogueController.DialogueNode> dialogueRegistry = new ConcurrentHashMap<>();
+public class VoxelDialoguesRegistry extends AVoxelRegistry {
+    private final ConcurrentHashMap<String, DialogueController.DialogueNode> dialogueRegistry = new ConcurrentHashMap<>();
 
-    public static void register(DialogKey key, DialogueController.DialogueNode dialogueNode) {
+    private static VoxelDialoguesRegistry INSTANCE;
+
+    public void register(DialogKey key, DialogueController.DialogueNode dialogueNode) {
         dialogueRegistry.put(String.valueOf(key), dialogueNode);
+        super.incrementRegistryCount();
     }
 
-    public static DialogueController.DialogueNode get(String key) {
+    public DialogueController.DialogueNode get(String key) {
         return dialogueRegistry.get(key);
     }
 
     @Deprecated
-    public static void register(String key, DialogueController.DialogueNode dialogueNode) {
+    public void register(String key, DialogueController.DialogueNode dialogueNode) {
         dialogueRegistry.put(key, dialogueNode);
+        super.incrementRegistryCount();
     }
 
     @Deprecated
-    public static DialogueController.DialogueNode get(DialogKey key) { return dialogueRegistry.get(String.valueOf(key)); }
+    public DialogueController.DialogueNode get(DialogKey key) { return dialogueRegistry.get(String.valueOf(key)); }
 
-    public static void clear() {
+    public void clear() {
         dialogueRegistry.clear();
     }
 
-    public static void init(VoxelTalesPlugin plugin) {
+    public void init(VoxelTalesPlugin plugin) {
+        INSTANCE = this;
+
         SwordSageIntroDialogue.register();
         SwordSagePreQuestDialogue.register();
         SwordSageRepeatedDialogue.register();
         SwordSagePostQuestDialogue.register();
 
-        LoggerUtil.getLogger().info("[VoxelDialogueRegistry] Registered " + dialogueRegistry.size() + " dialogues.");
+        LoggerUtil.getLogger().info("[VoxelDialogueRegistry] Registered " + super.getRegistryCount() + " dialogues.");
+    }
+
+    // Static direct access methods
+    public static DialogueController.DialogueNode staticGet(DialogKey key) {
+        return INSTANCE.get(key);
+    }
+
+    public static void staticRegister(DialogKey key, DialogueController.DialogueNode dialogueNode) {
+        INSTANCE.register(key, dialogueNode);
     }
 }

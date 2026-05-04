@@ -98,7 +98,7 @@ public class WeaponForgerPage extends VoxelPageUI {
     }
 
     private void loadWeaponLists() {
-        PlayerWeaponProgressComponent.PlayerWeaponProgressData weaponProgressCache = VoxelCacheRegistry.getSynced(CacheEnum.VoxelPlayerWeaponProgressCache, this.playerRef.getUuid(), PlayerWeaponProgressComponent.PlayerWeaponProgressData.class);
+        PlayerWeaponProgressComponent.PlayerWeaponProgressData weaponProgressCache = VoxelCacheRegistry.staticGetSynced(CacheEnum.VOXEL_PLAYER_WEAPON_PROGRESS_CACHE, this.playerRef.getUuid(), PlayerWeaponProgressComponent.PlayerWeaponProgressData.class);
         if (weaponProgressCache == null) return;
 
         this.availableBlades = weaponProgressCache.unlockedBlades();

@@ -23,18 +23,21 @@ import java.util.concurrent.CompletableFuture;
 
 public class VoxelTalesPlugin extends JavaPlugin {
     private static VoxelTalesPlugin instance;
+    private final RegistryManager registryManager = new RegistryManager();
 
     public VoxelTalesPlugin(@Nonnull JavaPluginInit init) {
         super(init);
         instance = this;
 
-        VoxelConfigsRegistry.saveAll();
+        //Init the ComponentRegistry at plugin creation to make sure that the static behavior of components is respected
+        registryManager.initRegistry(VoxelComponentsRegistry.class, this);
     }
 
     @Nullable
     @Override
     public CompletableFuture<Void> preLoad() {
-        VoxelConfigsRegistry.init(this);
+        //Init the ConfigRegistry during preLoad to allow the copying of the configuration files before loading them
+        registryManager.initRegistry(VoxelConfigsRegistry.class, this);
 
         return super.preLoad();
     }
@@ -45,35 +48,17 @@ public class VoxelTalesPlugin extends JavaPlugin {
         VoxelDamageMetadata.registerDamage(Damage.META_REGISTRY);
         VoxelDamageMetadata.registerInteraction(Interaction.META_REGISTRY);
 
-        //Register Damage Kinds
-        VoxelDamageKindsRegistry.init(this);
-
-        //Register components
-        VoxelComponentsRegistry.init(this);
-
-        //Register events
-        VoxelEventsRegistry.init(this);
-
-        //Register systems
-        VoxelSystemsRegistry.init(this);
-
-        //Register packet listeners
-        VoxelPacketListenersRegistry.init(this);
-
-        //Register Commands
-        VoxelCommandsRegistry.init(this);
-
-        //Register Interactions
-        VoxelInteractionRegistry.init(this);
-
-        //Register Actions
-        VoxelNPCActionsRegistry.init(this);
-
-        //Register Caches
-        VoxelCacheRegistry.init(this);
-
-        //Register Dialogues
-        VoxelDialoguesRegistry.init(this);
+        registryManager.initRegistries(List.of(
+                VoxelSystemsRegistry.class,
+                VoxelDamageKindsRegistry.class,
+                VoxelEventsRegistry.class,
+                VoxelPacketListenersRegistry.class,
+                VoxelCommandsRegistry.class,
+                VoxelInteractionRegistry.class,
+                VoxelNPCActionsRegistry.class,
+                VoxelDialoguesRegistry.class,
+                VoxelCacheRegistry.class
+        ), this);
     }
 
     @Override
@@ -81,6 +66,9 @@ public class VoxelTalesPlugin extends JavaPlugin {
         //Run asset patching AFTER everything loaded
         VoxelAssetReflection.patch();
         VoxelDamageUIReflection.disableBuiltinCombatText(this);
+
+        //Save the configs after everything is loaded
+        registryManager.getRegistry(VoxelConfigsRegistry.class).saveAll();
     }
 
     public Set<Dependency<EntityStore>> dependencies = Set.of(
@@ -90,6 +78,7 @@ public class VoxelTalesPlugin extends JavaPlugin {
     public static VoxelTalesPlugin get() {
         return instance;
     }
+    public static RegistryManager getRegistryManager() { return instance.registryManager; }
 
     public Config<?> registerConfig(String name, BuilderCodec<?> codec) {
         return this.withConfig(name, codec);

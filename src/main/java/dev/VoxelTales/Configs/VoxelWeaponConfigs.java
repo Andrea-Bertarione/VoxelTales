@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class VoxelWeaponConfigs {
     public static VoxelWeaponConfigs get() {
-        return VoxelConfigsRegistry.getConfig(VoxelWeaponConfigs.class);
+        return VoxelConfigsRegistry.staticGet(VoxelWeaponConfigs.class);
     }
 
     public static class ComponentStats {

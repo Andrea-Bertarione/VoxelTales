@@ -8,6 +8,6 @@ import dev.VoxelTales.VoxelTalesPlugin;
 
 public class VoxelXPConfigsHelper {
     public static int getMobXP(NPCEntity npcEntity, EntityStatMap stats) {
-        return EntityXPConfigs.get().getOrGenerateXP(npcEntity, stats, () -> VoxelConfigsRegistry.save(EntityXPConfigs.class));
+        return EntityXPConfigs.get().getOrGenerateXP(npcEntity, stats, () -> VoxelConfigsRegistry.staticSave(EntityXPConfigs.class));
     }
 }

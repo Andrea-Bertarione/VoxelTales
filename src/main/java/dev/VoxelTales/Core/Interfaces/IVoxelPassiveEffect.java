@@ -1,4 +1,4 @@
-package dev.VoxelTales.Interfaces;
+package dev.VoxelTales.Core.Interfaces;
 
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;

@@ -10,8 +10,10 @@ import java.util.*;
 
 public class VoxelStatsHelper {
     public static void updateWeaponStats(VoxelPlayerComponent playerComp, EntityStatMap statMap, HashMap<String, Float> newModifiers) {
-        if (playerComp.weaponStatModifiers != null && !playerComp.weaponStatModifiers.isEmpty()) {
-            for (Map.Entry<String, Float> oldEntry : playerComp.weaponStatModifiers.entrySet()) {
+        Map<String, Float> weaponStatModifiers = playerComp.getWeaponStatModifiers();
+
+        if (weaponStatModifiers != null && !weaponStatModifiers.isEmpty()) {
+            for (Map.Entry<String, Float> oldEntry : weaponStatModifiers.entrySet()) {
                 int index = getStatIndex(oldEntry.getKey());
                 if (index != -1 && oldEntry.getValue() != 0f) {
                     float currentValue = Objects.requireNonNull(statMap.get(index)).get();
@@ -31,8 +33,8 @@ public class VoxelStatsHelper {
         }
 
         // Update the state
-        playerComp.weaponStatModifiers = newModifiers != null ? new HashMap<>(newModifiers) : new HashMap<>();
-        playerComp.areStatsUpdated = true;
+        playerComp.setWeaponStatModifiers(newModifiers != null ? new HashMap<>(newModifiers) : new HashMap<>());
+        playerComp.setAreStatsUpdated(true);
     }
 
     public static int getStatIndex(String stat) {

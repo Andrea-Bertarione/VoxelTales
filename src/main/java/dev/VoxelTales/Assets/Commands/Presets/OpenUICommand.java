@@ -25,7 +25,7 @@ public class OpenUICommand<T extends VoxelPageUI> extends AbstractPlayerCommand 
 
     @Override
     protected void execute(@NotNull CommandContext commandContext, @NotNull Store<EntityStore> store, @NotNull Ref<EntityStore> ref, @NotNull PlayerRef playerRef, @NotNull World world) {
-        T page = VoxelCacheRegistry.get(this.cacheKey, playerRef, this.uiClass);
+        T page = VoxelCacheRegistry.staticGet(this.cacheKey, playerRef, this.uiClass);
 
         if (page != null) {
             page.open();

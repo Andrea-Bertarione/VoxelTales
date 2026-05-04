@@ -2,7 +2,7 @@ package dev.VoxelTales.Assets.Dialogues.SwordSage;
 
 import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Controllers.DialogueController;
-import dev.VoxelTales.Interfaces.IVoxelDialogue;
+import dev.VoxelTales.Core.Interfaces.IVoxelDialogue;
 import dev.VoxelTales.Registries.VoxelDialoguesRegistry;
 
 import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.defaultCloseResponse;
@@ -17,7 +17,7 @@ public class SwordSageRepeatedDialogue implements IVoxelDialogue {
         introNode.addResponse(defaultCloseResponse());
         introNode.addResponse(defaultOpenForgeResponse());
 
-        VoxelDialoguesRegistry.register(DialogKey.SWORD_SAGE_REPEATED, introNode);
+        VoxelDialoguesRegistry.staticRegister(DialogKey.SWORD_SAGE_REPEATED, introNode);
     }
 
 }

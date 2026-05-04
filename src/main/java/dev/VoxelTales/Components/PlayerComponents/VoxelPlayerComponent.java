@@ -13,16 +13,17 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Registries.VoxelComponentsRegistry;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class VoxelPlayerComponent implements Component<EntityStore> {
     private short weaponSlot;
-    public Map<String, Float> weaponStatModifiers;
-    public boolean areStatsUpdated = false;
+    private Map<String, Float> weaponStatModifiers;
+    private boolean areStatsUpdated = false;
 
     public static ComponentType<EntityStore, VoxelPlayerComponent> getComponentType() {
-        return VoxelComponentsRegistry.getComponentType(VoxelPlayerComponent.class);
+        return VoxelComponentsRegistry.staticGetComponentType(VoxelPlayerComponent.class);
     }
 
     public static final BuilderCodec<VoxelPlayerComponent> CODEC = BuilderCodec.builder(VoxelPlayerComponent.class, VoxelPlayerComponent::new)
@@ -44,7 +45,7 @@ public class VoxelPlayerComponent implements Component<EntityStore> {
 
     public VoxelPlayerComponent(VoxelPlayerComponent clone) {
         this.weaponSlot = clone.weaponSlot;
-        this.weaponStatModifiers = clone.weaponStatModifiers;
+        this.weaponStatModifiers = clone.weaponStatModifiers != null ? new HashMap<>(clone.weaponStatModifiers) : null;
         this.areStatsUpdated = clone.areStatsUpdated;
     }
 
@@ -58,9 +59,25 @@ public class VoxelPlayerComponent implements Component<EntityStore> {
         this.areStatsUpdated = false;
     }
 
+    public Map<String, Float> getWeaponStatModifiers() {
+        return Collections.unmodifiableMap(this.weaponStatModifiers);
+    }
+
+    public void setWeaponStatModifiers(Map<String, Float> weaponStatModifiers) {
+        this.weaponStatModifiers = weaponStatModifiers;
+    }
+
+    public boolean isAreStatsUpdated() {
+        return areStatsUpdated;
+    }
+
+    public void setAreStatsUpdated(boolean areStatsUpdated) {
+        this.areStatsUpdated = areStatsUpdated;
+    }
+
     @Nullable
     @Override
-    public Component<EntityStore> clone() { return this; }
+    public Component<EntityStore> clone() { return new VoxelPlayerComponent(this); }
 
     public static Short getWeaponSlot (PlayerRef playerRef) {
         Ref<EntityStore> ref = playerRef.getReference();
@@ -71,4 +88,6 @@ public class VoxelPlayerComponent implements Component<EntityStore> {
 
         return component.getWeaponSlot();
     }
+
+
 }

@@ -7,8 +7,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
 import dev.VoxelTales.UI.HUD.Default.VoxelHudUI;
-import dev.VoxelTales.Utils.VoxelWeaponMathHelper;
-import dev.VoxelTales.VoxelTalesPlugin;
+import dev.VoxelTales.Utils.VoxelMathHelper;
 
 public class WeaponHUD extends VoxelHudUI {
     private float progressPercent = 0;
@@ -29,8 +28,8 @@ public class WeaponHUD extends VoxelHudUI {
 
         this.swordPoints = handler.getSwordPoints();
         this.currentXP = handler.getSwordXP();
-        this.requiredXP = VoxelWeaponMathHelper.getRequiredXP(handler.getSwordInternalLevel());
-        this.progressPercent = VoxelWeaponMathHelper.getXPProgress(handler.getSwordXP(), handler.getSwordInternalLevel());
+        this.requiredXP = VoxelMathHelper.getRequiredXP(handler.getSwordInternalLevel());
+        this.progressPercent = VoxelMathHelper.getXPProgress(handler.getSwordXP(), handler.getSwordInternalLevel());
     }
 
     public void update() {

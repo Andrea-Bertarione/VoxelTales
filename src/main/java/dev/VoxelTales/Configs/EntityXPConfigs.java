@@ -17,7 +17,7 @@ public class EntityXPConfigs {
     private HashMap<String, Integer> mobXPLookUpTable;
 
     public static EntityXPConfigs get() {
-        return VoxelConfigsRegistry.getConfig(EntityXPConfigs.class);
+        return VoxelConfigsRegistry.staticGet(EntityXPConfigs.class);
     }
 
     public static final BuilderCodec<EntityXPConfigs> CODEC = BuilderCodec.builder(EntityXPConfigs.class, EntityXPConfigs::new)

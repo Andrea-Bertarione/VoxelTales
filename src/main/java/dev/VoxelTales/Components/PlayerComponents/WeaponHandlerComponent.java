@@ -25,7 +25,7 @@ public class WeaponHandlerComponent implements Component<EntityStore> {
     private int swordInternalLevel;
 
     public static ComponentType<EntityStore, WeaponHandlerComponent> getComponentType() {
-        return VoxelComponentsRegistry.getComponentType(WeaponHandlerComponent.class);
+        return VoxelComponentsRegistry.staticGetComponentType(WeaponHandlerComponent.class);
     }
 
     public static final BuilderCodec<WeaponHandlerComponent> CODEC =

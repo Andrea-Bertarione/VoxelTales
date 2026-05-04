@@ -6,7 +6,7 @@
 
     <groupId>dev.Berta-Forge</groupId>
     <artifactId>VoxelTales</artifactId>
-    <version>0.7.0</version>
+    <version>0.7.1</version>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>

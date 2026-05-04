@@ -12,13 +12,17 @@ import com.hypixel.hytale.server.core.modules.entity.component.TransformComponen
 import com.hypixel.hytale.server.core.modules.entity.damage.*;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import dev.VoxelTales.Assets.Balancing.CombatBalancing;
 import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
 import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
 import dev.VoxelTales.Registries.MetaData.VoxelDamageMetadata;
+import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
+import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.Registries.VoxelPassivesRegistry;
 import dev.VoxelTales.Utils.VoxelStatsHelper;
 import dev.VoxelTales.VoxelTalesPlugin;
@@ -42,20 +46,19 @@ public class DamageDealingSystem extends DamageEventSystem {
         Ref<EntityStore> targetRef = chunk.getReferenceTo(index);
 
         WeaponHandlerComponent weapon = store.getComponent(attackerRef, WeaponHandlerComponent.getComponentType());
+        PlayerRef playerRef = store.getComponent(attackerRef, PlayerRef.getComponentType());
         EntityStatMap attackerStats = store.getComponent(attackerRef, EntityStatMap.getComponentType());
 
         if (Boolean.TRUE.equals(damage.getIfPresentMetaObject(VoxelDamageMetadata.PROCESSED_KEY))) {
-            //DamageCause cause = DamageCause.getAssetMap().getAsset(damage.getDamageCauseIndex());
-
-            //if (cause == null) { return; }
-            //DamageNumbers.emit(store, targetRef, damage.getAmount(), ("Voxel_" + cause.getId()).toUpperCase());
             return;
         }
 
         if (weapon == null || attackerStats == null) return;
 
         float totalEffectiveBoost = 0.0f;
-        Map<String, Float> scalings = weapon.getCalculatedScalingMap(); // e.g., {"Air": 1.1, "Magic": 0.5}
+
+        @SuppressWarnings("unchecked")
+        Map<String, Float> scalings = playerRef != null ? VoxelCacheRegistry.staticGet(CacheEnum.VOXEL_PLAYER_SCALING_CACHE, playerRef, Map.class) : weapon.getCalculatedScalingMap();
         for (Map.Entry<String, Float> entry : scalings.entrySet()) {
             float scalingValue = entry.getValue();
             float statBoost = 0f;
@@ -71,7 +74,7 @@ public class DamageDealingSystem extends DamageEventSystem {
             totalEffectiveBoost += (scalingValue * statBoost);
         }
 
-        DamageResult result = calculateDamage(weapon, attackerStats, totalEffectiveBoost);
+        DamageResult result = calculateDamage(playerRef, weapon, attackerStats, totalEffectiveBoost);
         float finalScaledDamage = result.finalDamage();
 
         boolean isCritical = result.isCrit();
@@ -81,18 +84,11 @@ public class DamageDealingSystem extends DamageEventSystem {
 
         String interactionSource = damage.getMetaObject(VoxelDamageMetadata.DAMAGE_SOURCE_KEY);
 
-        /*
-        if (interactionSource != null) {
-            LoggerUtil.getLogger().info("The interactionSource is: " + interactionSource);
-        }
-        else {
-            LoggerUtil.getLogger().warning("No interactionSource found!");
-        }
-         */
-
         this.handleOnHitPassives(attackerRef, targetRef, buffer);
 
-        Map<String, Float> typeMap = weapon.getCalculatedDamageMap(); // e.g., {"Fire": 0.7, "Magic": 0.3}
+        @SuppressWarnings("unchecked")
+        Map<String, Float> typeMap = playerRef != null ?
+                VoxelCacheRegistry.staticGet(CacheEnum.VOXEL_PLAYER_DAMAGE_CACHE, playerRef, Map.class) : weapon.getCalculatedDamageMap(); // e.g., {"Fire": 0.7, "Magic": 0.3}
         if (typeMap.isEmpty()) return;
 
         boolean isFirst = true;
@@ -162,13 +158,13 @@ public class DamageDealingSystem extends DamageEventSystem {
 
     public void handleOnHitPassives(Ref<EntityStore> attacker, Ref<EntityStore> targetRef, ComponentAccessor<EntityStore> accessor) {
         EntityStatMap statMap = accessor.ensureAndGetComponent(attacker, EntityStatMap.getComponentType());
-        for (String passiveKey : VoxelPassivesRegistry.getRegisteredKeys()) {
+        for (String passiveKey : VoxelPassivesRegistry.staticGetRegisteredKeys()) {
             int index = VoxelStatsHelper.getStatIndex(passiveKey);
             if (index == -1) continue;
 
             float statValue = Objects.requireNonNull(statMap.get(index)).get();
             if (statValue > 0) {
-                VoxelPassivesRegistry.get(passiveKey).onHit(attacker, targetRef, statValue, accessor);
+                VoxelPassivesRegistry.staticGet(passiveKey).onHit(attacker, targetRef, statValue, accessor);
             }
         }
     }
@@ -188,15 +184,14 @@ public class DamageDealingSystem extends DamageEventSystem {
         }
     }
 
-    private DamageResult calculateDamage(WeaponHandlerComponent weaponHandlerComponent, EntityStatMap attackerStats, Float totalEffectiveBoost) {
-        float baseDamage = 14f;
+    private DamageResult calculateDamage(PlayerRef playerRef, WeaponHandlerComponent weaponHandlerComponent, EntityStatMap attackerStats, Float totalEffectiveBoost) {
+        float baseDamage = CombatBalancing.BASE_DAMAGE;
 
         int weaponLevel = weaponHandlerComponent.getSwordInternalLevel();
-        float levelMultiplier = 1.0f + (weaponLevel * 0.0125f);
+        float levelMultiplier = 1.0f + (weaponLevel * CombatBalancing.LEVEL_DAMAGE_MULTIPLIER);
 
-        float atkSpeed = weaponHandlerComponent.getCalculatedAttackSpeed();
-        float speedMultiplier = 1.0f + ((1.0f - atkSpeed) * 1.5f);
-        speedMultiplier = Math.max(0.1f, speedMultiplier);
+        float atkSpeed = VoxelCacheRegistry.staticGet(CacheEnum.VOXEL_PLAYER_ATKSPEED_CACHE, playerRef, Float.class);
+        float speedMultiplier = CombatBalancing.getSpeedDamageMultiplier(atkSpeed);
 
         float finalScaledDamage = (baseDamage * speedMultiplier) * levelMultiplier * (1.0f + totalEffectiveBoost);
 

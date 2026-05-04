@@ -14,7 +14,7 @@ public class CombatTrackerComponent implements Component<EntityStore> {
     private final Map<UUID, Float> damageMap;
 
     public static ComponentType<EntityStore, CombatTrackerComponent> getComponentType() {
-        return VoxelComponentsRegistry.getComponentType(CombatTrackerComponent.class);
+        return VoxelComponentsRegistry.staticGetComponentType(CombatTrackerComponent.class);
     }
 
 

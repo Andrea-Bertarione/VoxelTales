@@ -37,7 +37,7 @@ public class ChangeSlotCommand extends AbstractPlayerCommand {
     ) {
         short formattedSlot = slot.get(context).shortValue();
         short newSlot = (short) (formattedSlot - 1);
-        short itemSlot = VoxelCacheRegistry.get(CacheEnum.SLOT_CACHE, playerRef, Short.class);
+        short itemSlot = VoxelCacheRegistry.staticGet(CacheEnum.SLOT_CACHE, playerRef, Short.class);
 
         if (itemSlot == newSlot) {
             context.sendMessage(Message.raw("Weapon slot is already " + formattedSlot));

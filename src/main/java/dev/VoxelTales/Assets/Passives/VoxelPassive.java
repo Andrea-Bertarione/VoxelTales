@@ -3,7 +3,7 @@ package dev.VoxelTales.Assets.Passives;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.VoxelTales.Interfaces.IVoxelPassiveEffect;
+import dev.VoxelTales.Core.Interfaces.IVoxelPassiveEffect;
 
 public abstract class VoxelPassive implements IVoxelPassiveEffect {
     private final String name;
