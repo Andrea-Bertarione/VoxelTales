@@ -206,6 +206,11 @@ public class DamageDealingSystem extends DamageEventSystem {
         EntityStatValue dexStat = statMap.get(statIndex);
         if (dexStat == null) return new DamageResult(currentDamage, false);
 
+        // Formula: dexterity stat (0.0–1.0) is converted to a percentage, then divided by 10
+        // to yield crit chance as a 0–100% value.
+        // e.g. Dexterity = 1.0 (100% boost) -> critChance = 10%
+        // critMultiplier = critChance / 100 -> at max dexterity, crit deals 10% extra damage.
+        // NOTE: The 10% cap is intentional for the current balancing pass; revisit if tuning requires a higher ceiling.
         float dexBoostPercent = dexStat.get() * 100f;
         float critChance = dexBoostPercent / 10f;
         float critMultiplier = critChance / 100f;
