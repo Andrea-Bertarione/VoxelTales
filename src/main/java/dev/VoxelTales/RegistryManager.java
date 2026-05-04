@@ -11,33 +11,20 @@ public class RegistryManager {
         return VoxelTalesPlugin.getRegistryManager();
     }
 
-    private final Map<Class<? extends AVoxelRegistry<?>>, AVoxelRegistry<?>> registries = new ConcurrentHashMap<>();
+    private final Map<Class<? extends AVoxelRegistry>, AVoxelRegistry> registries = new ConcurrentHashMap<>();
 
-    public void initRegistries(List<Class<? extends AVoxelRegistry<? extends AVoxelRegistry<?>>>> classes, VoxelTalesPlugin plugin) {
-        classes.forEach(registry -> {
-            AVoxelRegistry<? extends AVoxelRegistry<?>> instance;
-
-            try {
-                instance = registry.getDeclaredConstructor().newInstance();
-            }
-            catch (Exception e) {
-                LoggerUtil.logException("Failed to initialize registry: " + registry.getName(), e);
-                return;
-            }
-
-            this.registries.put(registry, instance);
-            instance.init(plugin);
-        });
+    public void initRegistries(List<Class<? extends AVoxelRegistry>> classes, VoxelTalesPlugin plugin) {
+        classes.forEach(registry -> this.initRegistry(registry, plugin));
     }
 
-    public void initRegistry(Class<? extends AVoxelRegistry<?>> clazz, VoxelTalesPlugin plugin) {
-        AVoxelRegistry<?> instance;
+    public void initRegistry(Class<? extends AVoxelRegistry> clazz, VoxelTalesPlugin plugin) {
+        AVoxelRegistry instance;
 
         try {
             instance = clazz.getDeclaredConstructor().newInstance();
         }
         catch (Exception e) {
-            LoggerUtil.getLogger().severe("Failed to initialize registry: " + clazz.getName());
+            LoggerUtil.logException("Failed to initialize registry: " + clazz.getName(), e);
             return;
         }
 
@@ -46,8 +33,8 @@ public class RegistryManager {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends AVoxelRegistry<T>> T getRegistry(Class<T> clazz) throws IllegalStateException {
-        AVoxelRegistry<?> instance = registries.get(clazz);
+    public <T extends AVoxelRegistry> T getRegistry(Class<T> clazz) throws IllegalStateException {
+        AVoxelRegistry instance = registries.get(clazz);
         if (instance == null) {
             throw new IllegalStateException("[RegistryManager] Registry not found: " + clazz.getSimpleName());
         }

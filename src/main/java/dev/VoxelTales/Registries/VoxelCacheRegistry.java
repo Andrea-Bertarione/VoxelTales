@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class VoxelCacheRegistry extends AVoxelRegistry<VoxelCacheRegistry> {
+public class VoxelCacheRegistry extends AVoxelRegistry {
     public record CacheDefinition<T>(Function<PlayerRef, T> factory) {}
 
     private static VoxelCacheRegistry INSTANCE;

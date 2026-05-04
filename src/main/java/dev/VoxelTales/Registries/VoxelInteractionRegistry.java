@@ -11,7 +11,7 @@ import dev.VoxelTales.Core.AVoxelRegistry;
 import dev.VoxelTales.Registries.RegistryEnums.InteractionEnum;
 import dev.VoxelTales.VoxelTalesPlugin;
 
-public class VoxelInteractionRegistry extends AVoxelRegistry<VoxelInteractionRegistry> {
+public class VoxelInteractionRegistry extends AVoxelRegistry {
     public void init(VoxelTalesPlugin plugin) {
         CodecMapRegistry.Assets<Interaction, ?> interactionCodedRegistry = plugin.getCodecRegistry(Interaction.CODEC);
 

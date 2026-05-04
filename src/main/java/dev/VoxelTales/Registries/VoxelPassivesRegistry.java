@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VoxelPassivesRegistry extends AVoxelRegistry<VoxelPassive> {
+public class VoxelPassivesRegistry extends AVoxelRegistry {
     private final Map<String, IVoxelPassiveEffect> PASSIVES = new ConcurrentHashMap<>();
 
     private static VoxelPassivesRegistry INSTANCE;

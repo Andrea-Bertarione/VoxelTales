@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VoxelConfigsRegistry extends AVoxelRegistry<VoxelConfigsRegistry> {
+public class VoxelConfigsRegistry extends AVoxelRegistry {
     private final String CONFIG_PATH = "Server/Config/";
     private final ConcurrentHashMap<Class<?>, Config<?>> configRegistry = new ConcurrentHashMap<>();
 

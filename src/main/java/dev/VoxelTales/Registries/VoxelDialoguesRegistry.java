@@ -12,7 +12,7 @@ import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VoxelDialoguesRegistry extends AVoxelRegistry<VoxelDialoguesRegistry> {
+public class VoxelDialoguesRegistry extends AVoxelRegistry {
     private final ConcurrentHashMap<String, DialogueController.DialogueNode> dialogueRegistry = new ConcurrentHashMap<>();
 
     private static VoxelDialoguesRegistry INSTANCE;

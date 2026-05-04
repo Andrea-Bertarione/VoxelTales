@@ -17,7 +17,7 @@ import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VoxelComponentsRegistry extends AVoxelRegistry<VoxelComponentsRegistry> {
+public class VoxelComponentsRegistry extends AVoxelRegistry {
     private final ConcurrentHashMap<Class<?>, ComponentType<EntityStore, ?>> componentRegistry = new ConcurrentHashMap<>();
 
     private static VoxelComponentsRegistry INSTANCE;

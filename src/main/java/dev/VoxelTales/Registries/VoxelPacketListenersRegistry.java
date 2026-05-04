@@ -8,7 +8,7 @@ import dev.VoxelTales.PacketListeners.WeaponActivationListener;
 import dev.VoxelTales.PacketListeners.WeaponMoveListener;
 import dev.VoxelTales.VoxelTalesPlugin;
 
-public class VoxelPacketListenersRegistry extends AVoxelRegistry<VoxelPacketListenersRegistry> {
+public class VoxelPacketListenersRegistry extends AVoxelRegistry {
     public void init(VoxelTalesPlugin plugin) {
         registerInbound(new WeaponMoveListener());
         registerInbound(new WeaponActivationListener());

@@ -10,7 +10,7 @@ import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.function.Supplier;
 
-public class VoxelNPCActionsRegistry extends AVoxelRegistry<VoxelNPCActionsRegistry> {
+public class VoxelNPCActionsRegistry extends AVoxelRegistry {
     public void init(VoxelTalesPlugin plugin) {
         NPCPlugin npcPlugin = NPCPlugin.get();
 

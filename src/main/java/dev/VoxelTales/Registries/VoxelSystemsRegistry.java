@@ -11,7 +11,7 @@ import dev.VoxelTales.Systems.MemoriesUnlockedSystem;
 import dev.VoxelTales.Systems.MobDeathXPSystem;
 import dev.VoxelTales.VoxelTalesPlugin;
 
-public class VoxelSystemsRegistry extends AVoxelRegistry<VoxelSystemsRegistry> {
+public class VoxelSystemsRegistry extends AVoxelRegistry {
     public void init(VoxelTalesPlugin plugin) {
         ComponentRegistryProxy<EntityStore> entityStoreRegistry = plugin.getEntityStoreRegistry();
 

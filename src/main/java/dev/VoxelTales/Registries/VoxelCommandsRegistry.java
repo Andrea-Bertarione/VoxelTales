@@ -9,7 +9,7 @@ import dev.VoxelTales.Assets.Commands.VoxelShowCurrentStats;
 import dev.VoxelTales.Core.AVoxelRegistry;
 import dev.VoxelTales.VoxelTalesPlugin;
 
-public class VoxelCommandsRegistry extends AVoxelRegistry<VoxelCommandsRegistry> {
+public class VoxelCommandsRegistry extends AVoxelRegistry {
     public void init(VoxelTalesPlugin plugin) {
         CommandRegistry commandRegistry = plugin.getCommandRegistry();
 

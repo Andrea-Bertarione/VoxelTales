@@ -6,7 +6,7 @@ import dev.VoxelTales.VoxelTalesPlugin;
 import irai.mod.DynamicFloatingDamageFormatter.DamageNumbers;
 
 //This class is kept for compatibility with existing mods and should not need to be modified.
-public class VoxelDamageKindsRegistry extends AVoxelRegistry<VoxelDamageKindsRegistry> {
+public class VoxelDamageKindsRegistry extends AVoxelRegistry {
     private static final String PHYSICAL_KIND = "VOXEL_PHYSICAL";
     private static final String FIRE_KIND = "VOXEL_FIRE";
 

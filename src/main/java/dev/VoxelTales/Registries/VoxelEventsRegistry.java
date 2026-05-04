@@ -14,7 +14,7 @@ import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.function.Consumer;
 
-public class VoxelEventsRegistry extends AVoxelRegistry<VoxelEventsRegistry> {
+public class VoxelEventsRegistry extends AVoxelRegistry {
     public void init(VoxelTalesPlugin plugin) {
         EventRegistry eventRegistry = plugin.getEventRegistry();
 
