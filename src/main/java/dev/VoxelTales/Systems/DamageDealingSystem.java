@@ -198,7 +198,12 @@ public class DamageDealingSystem extends DamageEventSystem {
         // Return the result of the crit check
         return tryCrit(finalScaledDamage, attackerStats);
     }
-
+    /*
+        Dexterity Boost
+        Increases the effectiveness of dexterity scaling weapons/skills also grants a chance to crit
+        Grants crit chance and damage equal to DexBoost/10
+        e.g. 10% dex boost is 1% critical chance and 1% critical damage
+     */
     private DamageResult tryCrit(Float currentDamage, EntityStatMap statMap) {
         int statIndex = VoxelStatsHelper.getStatIndex("Boost_Dexterity");
         if (statIndex == -1) return new DamageResult(currentDamage, false);
