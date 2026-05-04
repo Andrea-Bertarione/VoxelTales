@@ -1,7 +1,6 @@
 package dev.VoxelTales;
 
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
-import dev.VoxelTales.Configs.VoxelTalesConfigs;
 import dev.VoxelTales.Core.AVoxelRegistry;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class RegistryManager {
                 instance = registry.getDeclaredConstructor().newInstance();
             }
             catch (Exception e) {
-                LoggerUtil.getLogger().severe("Failed to initialize registry: " + registry.getName());
+                LoggerUtil.logException("Failed to initialize registry: " + registry.getName(), e);
                 return;
             }
 
@@ -47,11 +46,10 @@ public class RegistryManager {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends AVoxelRegistry<T>> T getRegistry(Class<T> clazz) {
+    public <T extends AVoxelRegistry<T>> T getRegistry(Class<T> clazz) throws IllegalStateException {
         AVoxelRegistry<?> instance = registries.get(clazz);
         if (instance == null) {
-            LoggerUtil.getLogger().severe("[RegistryManager] Registry not found: " + clazz.getSimpleName());
-            return null;
+            throw new IllegalStateException("[RegistryManager] Registry not found: " + clazz.getSimpleName());
         }
 
         return (T) instance;
