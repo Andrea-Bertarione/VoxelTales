@@ -21,21 +21,21 @@ public class VoxelAdminCommandCollection extends AbstractCommandCollection {
         addSubCommand(new OpenUICommand<>(
                 "config",
                 "Command to open the mod configuration menu",
-                CacheEnum.WeaponConfigurationPage,
+                CacheEnum.WEAPON_CONFIGURATION_PAGE,
                 WeaponConfigurationPage.class
         ));
 
         addSubCommand(new OpenUICommand<>(
                 "forger",
                 "Command to open the weapon forger menu",
-                CacheEnum.WeaponForgerPage,
+                CacheEnum.WEAPON_FORGER_PAGE,
                 WeaponForgerPage.class
         ));
 
         addSubCommand(new OpenUICommand<>(
                 "dialogue",
                 "Command to open the dialogue menu",
-                CacheEnum.DialoguePage,
+                CacheEnum.DIALOGUE_PAGE,
                 DialoguePage.class
         ));
     }

@@ -37,6 +37,10 @@ public class VoxelInventoryHelper {
             weaponHandlerComponent.setCurrentHandle(handle);
 
             VoxelInventoryHelper.setVoxelWeaponStack(playerRef);
+
+            VoxelCacheRegistry.staticInvalidate(CacheEnum.VOXEL_PLAYER_DAMAGE_CACHE, playerRef.getUuid());
+            VoxelCacheRegistry.staticInvalidate(CacheEnum.VOXEL_PLAYER_SCALING_CACHE, playerRef.getUuid());
+            VoxelCacheRegistry.staticInvalidate(CacheEnum.VOXEL_PLAYER_ATKSPEED_CACHE, playerRef.getUuid());
         });
     }
 
@@ -63,7 +67,7 @@ public class VoxelInventoryHelper {
         setVoxelWeaponStack(store, ref, hotbar, weaponHandlerComponent, slot);
 
         playerComponent.setWeaponSlot(slot);
-        VoxelCacheRegistry.update(CacheEnum.SLOT_CACHE, playerRef, slot);
+        VoxelCacheRegistry.staticUpdate(CacheEnum.SLOT_CACHE, playerRef, slot);
     }
 
     public static void setVoxelWeaponStack(PlayerRef playerRef) {
@@ -75,7 +79,7 @@ public class VoxelInventoryHelper {
         WeaponHandlerComponent weaponHandlerComponent = store.ensureAndGetComponent(ref, WeaponHandlerComponent.getComponentType());
         InventoryComponent.Hotbar hotbar = store.ensureAndGetComponent(ref, InventoryComponent.Hotbar.getComponentType());
 
-        setVoxelWeaponStack(store, ref, hotbar, weaponHandlerComponent, VoxelCacheRegistry.get(CacheEnum.SLOT_CACHE, playerRef, Short.class));
+        setVoxelWeaponStack(store, ref, hotbar, weaponHandlerComponent, VoxelCacheRegistry.staticGet(CacheEnum.SLOT_CACHE, playerRef, Short.class));
     }
 
     public static void setVoxelWeaponStack(@NotNull Store<EntityStore> store, @NotNull Ref<EntityStore> ref, InventoryComponent.Hotbar hotbar, WeaponHandlerComponent weaponHandlerComponent, short slot) {
@@ -87,7 +91,7 @@ public class VoxelInventoryHelper {
 
         CharacterStatsController.setWeaponModifiers(store, ref, (HashMap<String, Float>) weaponHandlerComponent.getCalculatedPassivesMap());
 
-        WeaponHUD weaponHUD = VoxelCacheRegistry.get(CacheEnum.HUD_CACHE, store.ensureAndGetComponent(ref, PlayerRef.getComponentType()), WeaponHUD.class);
+        WeaponHUD weaponHUD = VoxelCacheRegistry.staticGet(CacheEnum.HUD_CACHE, store.ensureAndGetComponent(ref, PlayerRef.getComponentType()), WeaponHUD.class);
         if (hotbar.getActiveSlot() == slot) {
             weaponHUD.show();
         }

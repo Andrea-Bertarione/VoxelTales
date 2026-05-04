@@ -52,7 +52,7 @@ public class OpenDialogueAction extends ActionBase {
         Player playerComponent = store.getComponent(playerReference, Player.getComponentType());
         if (playerComponent == null) return false;
 
-        DialoguePage page = VoxelCacheRegistry.get(CacheEnum.DialoguePage, playerRefComponent, DialoguePage.class);
+        DialoguePage page = VoxelCacheRegistry.staticGet(CacheEnum.DIALOGUE_PAGE, playerRefComponent, DialoguePage.class);
         DialogueStateComponent dialogueStateComponent = store.ensureAndGetComponent(playerReference, DialogueStateComponent.getComponentType());
 
         if (page == null) return false;
@@ -69,8 +69,7 @@ public class OpenDialogueAction extends ActionBase {
         }
 
         //LoggerUtil.getLogger().info("Trying to open Dialogue: " + dialogueKey);
-        page.openWith(VoxelDialoguesRegistry.get(String.valueOf(dialogueKey)));
-
+        page.openWith(VoxelDialoguesRegistry.staticGet(dialogueKey));
 
         return true;
     }

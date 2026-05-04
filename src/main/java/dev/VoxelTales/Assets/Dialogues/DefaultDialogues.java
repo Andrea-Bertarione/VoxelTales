@@ -19,12 +19,12 @@ public class DefaultDialogues {
         return DialogueController.DialogueResponse.custom(OPEN_FORGE_TEXT).withCallback((_, page) -> {
             //page.close();
 
-            WeaponForgerPage newPage = VoxelCacheRegistry.get(CacheEnum.WeaponForgerPage, page.getPlayerRef(), WeaponForgerPage.class);
+            WeaponForgerPage newPage = VoxelCacheRegistry.staticGet(CacheEnum.WEAPON_FORGER_PAGE, page.getPlayerRef(), WeaponForgerPage.class);
 
             if (newPage != null) {
                 newPage.open();
             } else {
-                page.getPlayerRef().sendMessage(Message.parse("Failed to open UI: " + CacheEnum.WeaponForgerPage.name()));
+                page.getPlayerRef().sendMessage(Message.parse("Failed to open UI: " + CacheEnum.WEAPON_FORGER_PAGE.name()));
             }
         });
     }

@@ -11,16 +11,20 @@ import dev.VoxelTales.Components.PlayerComponents.DialogueStateComponent;
 import dev.VoxelTales.Components.PlayerComponents.PlayerWeaponProgressComponent;
 import dev.VoxelTales.Components.PlayerComponents.VoxelPlayerComponent;
 import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
-import dev.VoxelTales.Interfaces.IVoxelRegistry;
+import dev.VoxelTales.Core.AVoxelRegistry;
 import dev.VoxelTales.Registries.RegistryEnums.ComponentEnum;
 import dev.VoxelTales.VoxelTalesPlugin;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VoxelComponentsRegistry implements IVoxelRegistry {
-    private static final ConcurrentHashMap<Class<?>, ComponentType<EntityStore, ?>> componentRegistry = new ConcurrentHashMap<>();
+public class VoxelComponentsRegistry extends AVoxelRegistry<VoxelComponentsRegistry> {
+    private final ConcurrentHashMap<Class<?>, ComponentType<EntityStore, ?>> componentRegistry = new ConcurrentHashMap<>();
 
-    public static void init(VoxelTalesPlugin plugin) {
+    private static VoxelComponentsRegistry INSTANCE;
+
+    public void init(VoxelTalesPlugin plugin) {
+        INSTANCE = this;
+
         ComponentRegistryProxy<EntityStore> entityStoreRegistry = plugin.getEntityStoreRegistry();
 
         registerClass(entityStoreRegistry, ComponentEnum.VOXEL_PLAYER_COMPONENT, VoxelPlayerComponent.class, VoxelPlayerComponent.CODEC);
@@ -29,15 +33,15 @@ public class VoxelComponentsRegistry implements IVoxelRegistry {
         registerClass(entityStoreRegistry, ComponentEnum.PLAYER_WEAPON_PROGRESS_COMPONENT, PlayerWeaponProgressComponent.class, PlayerWeaponProgressComponent.CODEC);
         registerClass(entityStoreRegistry, ComponentEnum.DIALOGUE_STATE_COMPONENT, DialogueStateComponent.class, DialogueStateComponent.CODEC);
 
-        LoggerUtil.getLogger().info("[VoxelComponentRegistry] Registered " + componentRegistry.size() + " components.");
+        LoggerUtil.getLogger().info("[VoxelComponentRegistry] Registered " + super.getRegistryCount() + " components.");
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Component<EntityStore>> ComponentType<EntityStore, T> getComponentType(Class<T> clazz) {
+    public <T extends Component<EntityStore>> ComponentType<EntityStore, T> getComponentType(Class<T> clazz) {
         return (ComponentType<EntityStore, T>) componentRegistry.get(clazz);
     }
 
-    private static <T extends Component<EntityStore>> void registerClass(
+    private <T extends Component<EntityStore>> void registerClass(
             ComponentRegistryProxy<EntityStore> entityStoreRegistry,
             ComponentEnum name,
             Class<T> clazz,
@@ -50,5 +54,11 @@ public class VoxelComponentsRegistry implements IVoxelRegistry {
         );
 
         componentRegistry.put(clazz, type);
+        super.incrementRegistryCount();
+    }
+
+    // Static direct access methods
+    public static <T extends Component<EntityStore>> ComponentType<EntityStore, T> staticGetComponentType(Class<T> clazz) {
+        return INSTANCE.getComponentType(clazz);
     }
 }

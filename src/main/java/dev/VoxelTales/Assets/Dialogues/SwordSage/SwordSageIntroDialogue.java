@@ -3,7 +3,7 @@ package dev.VoxelTales.Assets.Dialogues.SwordSage;
 import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
 import dev.VoxelTales.Controllers.DialogueController;
-import dev.VoxelTales.Interfaces.IVoxelDialogue;
+import dev.VoxelTales.Core.Interfaces.IVoxelDialogue;
 import dev.VoxelTales.Registries.VoxelDialoguesRegistry;
 
 import static dev.VoxelTales.Assets.Dialogues.DefaultDialogues.*;
@@ -63,6 +63,6 @@ public class SwordSageIntroDialogue implements IVoxelDialogue {
         finalNode.addResponse(defaultCloseResponse());
         finalNode.addResponse(defaultOpenForgeResponse());
 
-        VoxelDialoguesRegistry.register(DialogKey.SWORD_SAGE_INTRO, introNode);
+        VoxelDialoguesRegistry.staticRegister(DialogKey.SWORD_SAGE_INTRO, introNode);
     }
 }

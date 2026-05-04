@@ -17,7 +17,7 @@ public class DialogueStateComponent implements Component<EntityStore> {
     public Map<String, Boolean> dialogueFlags;
 
     public static ComponentType<EntityStore, DialogueStateComponent> getComponentType() {
-        return VoxelComponentsRegistry.getComponentType(DialogueStateComponent.class);
+        return VoxelComponentsRegistry.staticGetComponentType(DialogueStateComponent.class);
     }
 
     public static final BuilderCodec<DialogueStateComponent> CODEC =

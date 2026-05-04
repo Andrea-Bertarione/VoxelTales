@@ -18,8 +18,7 @@ import dev.VoxelTales.Configs.VoxelTalesConfigs;
 import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.UI.HUD.WeaponHUD;
-import dev.VoxelTales.Utils.VoxelWeaponMathHelper;
-import dev.VoxelTales.VoxelTalesPlugin;
+import dev.VoxelTales.Utils.VoxelMathHelper;
 
 public class LevelingController {
 
@@ -37,7 +36,7 @@ public class LevelingController {
         if (playerRef == null) { return; }
 
         // Redraw HUD
-        WeaponHUD weaponHUD = VoxelCacheRegistry.get(CacheEnum.HUD_CACHE, playerRef, WeaponHUD.class);
+        WeaponHUD weaponHUD = VoxelCacheRegistry.staticGet(CacheEnum.HUD_CACHE, playerRef, WeaponHUD.class);
         weaponHUD.update();
 
         if (levelsGained > 0) {
@@ -48,7 +47,7 @@ public class LevelingController {
 
     private static int checkLevelUP(WeaponHandlerComponent weaponHandlerComponent) {
         int startingLevel = weaponHandlerComponent.getSwordInternalLevel();
-        int requiredXP = VoxelWeaponMathHelper.getRequiredXP(startingLevel);
+        int requiredXP = VoxelMathHelper.getRequiredXP(startingLevel);
 
         VoxelTalesConfigs configs = VoxelTalesConfigs.get();
         if (startingLevel >= configs.getMaxLevel()) { return 0; }
@@ -57,7 +56,7 @@ public class LevelingController {
             weaponHandlerComponent.incrementLevel();
             weaponHandlerComponent.addSP(configs.getSpPerLevel());
 
-            requiredXP = VoxelWeaponMathHelper.getRequiredXP(weaponHandlerComponent.getSwordInternalLevel());
+            requiredXP = VoxelMathHelper.getRequiredXP(weaponHandlerComponent.getSwordInternalLevel());
         }
 
         return weaponHandlerComponent.getSwordInternalLevel() - startingLevel;

@@ -25,7 +25,7 @@ public class WeaponActivationListener implements PlayerPacketFilter {
             return false;
         }
 
-        Short lockedSlot = VoxelCacheRegistry.getSynced(CacheEnum.SLOT_CACHE, playerRef.getUuid(), Short.class);
+        Short lockedSlot = VoxelCacheRegistry.staticGetSynced(CacheEnum.SLOT_CACHE, playerRef.getUuid(), Short.class);
         if (lockedSlot == null) { return false; }
 
         // Step 2: Search the interaction updates for slot swaps
@@ -49,7 +49,7 @@ public class WeaponActivationListener implements PlayerPacketFilter {
         Ref<EntityStore> ref = playerRef.getReference();
         if (ref == null || !ref.isValid()) return;
 
-        WeaponHUD weaponHUD = VoxelCacheRegistry.get(CacheEnum.HUD_CACHE, playerRef, WeaponHUD.class);
+        WeaponHUD weaponHUD = VoxelCacheRegistry.staticGet(CacheEnum.HUD_CACHE, playerRef, WeaponHUD.class);
         World world = ref.getStore().getExternalData().getWorld();
 
         world.execute(weaponHUD::show);
@@ -60,7 +60,7 @@ public class WeaponActivationListener implements PlayerPacketFilter {
         Ref<EntityStore> ref = playerRef.getReference();
         if (ref == null || !ref.isValid()) return;
 
-        WeaponHUD weaponHUD = VoxelCacheRegistry.get(CacheEnum.HUD_CACHE, playerRef, WeaponHUD.class);
+        WeaponHUD weaponHUD = VoxelCacheRegistry.staticGet(CacheEnum.HUD_CACHE, playerRef, WeaponHUD.class);
         weaponHUD.hide();
     }
 }

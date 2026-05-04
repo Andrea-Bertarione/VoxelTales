@@ -26,8 +26,7 @@ public class SetHandleCommand extends AbstractPlayerCommand {
     @Override
     protected void execute(@NotNull CommandContext commandContext, @NotNull Store<EntityStore> store, @NotNull Ref<EntityStore> ref, @NotNull PlayerRef playerRef, @NotNull World world) {
         WeaponHandlerComponent weaponHandlerComponent = store.ensureAndGetComponent(ref,WeaponHandlerComponent.getComponentType());
-        weaponHandlerComponent.setCurrentHandle(name.get(commandContext));
 
-        VoxelInventoryHelper.setVoxelWeaponStack(playerRef);
+        VoxelInventoryHelper.equipNewWeapon(playerRef, weaponHandlerComponent.getCurrentBlade(), name.get(commandContext));
     }
 }

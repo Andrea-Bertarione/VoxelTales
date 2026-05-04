@@ -17,7 +17,7 @@ public class VoxelTalesConfigs {
     private boolean serverSetUP = false;
 
     public static VoxelTalesConfigs get() {
-        return VoxelConfigsRegistry.getConfig(VoxelTalesConfigs.class);
+        return VoxelConfigsRegistry.staticGet(VoxelTalesConfigs.class);
     }
 
     public VoxelTalesConfigs() {}

@@ -27,6 +27,6 @@ public class VoxelPlayerReadyEvent {
         VoxelInventoryHelper.setVoxelWeaponStack(playerRef);
         CharacterStatsController.setLevelHealthBoost(store, ref, weaponHandlerComponent.getSwordInternalLevel());
 
-        VoxelCacheRegistry.get(CacheEnum.VoxelPlayerWeaponProgressCache, playerRef, PlayerWeaponProgressComponent.PlayerWeaponProgressData.class);
+        VoxelCacheRegistry.staticGet(CacheEnum.VOXEL_PLAYER_WEAPON_PROGRESS_CACHE, playerRef, PlayerWeaponProgressComponent.PlayerWeaponProgressData.class);
     }
 }

@@ -5,7 +5,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.VoxelTales.Assets.Dialogues.DialogKey;
 import dev.VoxelTales.Assets.Dialogues.Flags.SwordSageFlags;
 import dev.VoxelTales.Controllers.DialogueController;
-import dev.VoxelTales.Interfaces.IVoxelDialogue;
+import dev.VoxelTales.Core.Interfaces.IVoxelDialogue;
 import dev.VoxelTales.Registries.VoxelDialoguesRegistry;
 import dev.VoxelTales.UI.Pages.DialoguePage;
 import dev.VoxelTales.Utils.VoxelFlagHelper;
@@ -42,7 +42,7 @@ public class SwordSagePostQuestDialogue implements IVoxelDialogue {
                     successBranch, failureBranch
                 )).withCallback(SwordSagePostQuestDialogue::unlockNewWeapon));
 
-        VoxelDialoguesRegistry.register(DialogKey.SWORD_SAGE_POST_QUEST, introNode);
+        VoxelDialoguesRegistry.staticRegister(DialogKey.SWORD_SAGE_POST_QUEST, introNode);
     }
 
     private static void unlockNewWeapon(UIContext ctx, DialoguePage page) {

@@ -16,7 +16,7 @@ public class WeaponMoveListener implements PlayerPacketFilter {
 
     @Override
     public boolean test(PlayerRef playerRef, Packet packet) {
-        Short lockedSlot = VoxelCacheRegistry.getSynced(CacheEnum.SLOT_CACHE, playerRef.getUuid(), Short.class);
+        Short lockedSlot = VoxelCacheRegistry.staticGetSynced(CacheEnum.SLOT_CACHE, playerRef.getUuid(), Short.class);
         if (lockedSlot == null) { return false; }
 
         boolean shouldBlock = isShouldBlock(packet, lockedSlot);

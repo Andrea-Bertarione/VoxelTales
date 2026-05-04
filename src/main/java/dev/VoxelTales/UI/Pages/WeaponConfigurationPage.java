@@ -207,7 +207,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
                 if (newId.isEmpty()) return;
 
                 VoxelWeaponConfigs.ComponentStats newStats = new VoxelWeaponConfigs.ComponentStats();
-                VoxelWeaponConfigsHelper.saveStatsOf(type, newId, newStats);
+                VoxelWeaponConfigsHelper.saveStatsOf(convertEnum(type), newId, newStats);
 
                 context.getById(type + ElementIds.ITEM_LIST_SUFFIX, GroupBuilder.class).ifPresent(group -> {
                     this.populateSidebar(type, group);
@@ -229,7 +229,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
             modal.setButtonDirection(ModalUI.ButtonDirection.VERTICAL);
 
             modalConfirmHelper(modal, (_, _) -> {
-                VoxelWeaponConfigsHelper.deleteEntry(type, this.selectedName);
+                VoxelWeaponConfigsHelper.deleteEntry(convertEnum(type), this.selectedName);
 
                 context.getById(type + ElementIds.ITEM_LIST_SUFFIX, GroupBuilder.class).ifPresent(group -> {
                     this.populateSidebar(type, group);
@@ -260,7 +260,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
                 String newId = dataMap.get(Fields.NEW_ID).toString();
 
                 if (!newId.isEmpty()) {
-                    VoxelWeaponConfigsHelper.renameEntry(type, this.selectedName, newId);
+                    VoxelWeaponConfigsHelper.renameEntry(convertEnum(type), this.selectedName, newId);
 
                     this.selectedName = newId;
 
@@ -280,7 +280,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
 
     private void bindSaveButton(String type) {
         bindButtonClick(type + ElementIds.SAVE_BTN_SUFFIX, (_, _) -> {
-            VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(type, this.selectedName);
+            VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(convertEnum(type), this.selectedName);
             if (stats == null) {
                 stats = new VoxelWeaponConfigs.ComponentStats();
             }
@@ -291,7 +291,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
             stats.setTier(this.tier);
             stats.setAttackSpeed(this.attackSpeed);
 
-            VoxelWeaponConfigsHelper.saveStatsOf(type, this.selectedName, stats);
+            VoxelWeaponConfigsHelper.saveStatsOf(convertEnum(type), this.selectedName, stats);
 
             this.isDirty = false;
             this.playSaveNotification(type, this.selectedName);
@@ -359,7 +359,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
     }
 
     private void selectEntry(String type, String name, UIContext context) {
-        VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(type, name);
+        VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(convertEnum(type), name);
         if (stats == null) {
             return;
         }
@@ -423,7 +423,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
         currentTabElements.forEach(this.builder::removeElement);
         currentTabElements.clear();
 
-        Set<String> names = VoxelWeaponConfigsHelper.getListOfNames(type);
+        Set<String> names = VoxelWeaponConfigsHelper.getListOfNames(convertEnum(type));
 
         String nameFilter = this.textBarFilter.getOrDefault(type, "").toLowerCase();
         String tierFilter = this.tierFilter.getOrDefault(type, "0");
@@ -435,7 +435,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
                     }
 
                     if (!tierFilter.equals("0")) {
-                        VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(type, name);
+                        VoxelWeaponConfigs.ComponentStats stats = VoxelWeaponConfigsHelper.getStatsOf(convertEnum(type), name);
                         if (stats == null) return false;
 
                         try {
@@ -489,5 +489,16 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
 
     private void playSaveNotification(String type, String name) {
         super.notifySuccess("Success!", "Successfully saved " + type + ": " + name, "Weapon_Sword_Steel", "SFX_Level_Up_Generic");
+    }
+
+    private VoxelWeaponConfigsHelper.Type convertEnum(String type) {
+        return switch (type) {
+            case "blades" -> VoxelWeaponConfigsHelper.Type.BLADES;
+            case "handles" -> VoxelWeaponConfigsHelper.Type.HANDLES;
+            default -> {
+                LoggerUtil.getLogger().severe("[VoxelTales UI] couldn't convert type: " + type);
+                yield null;
+            }
+        };
     }
 }

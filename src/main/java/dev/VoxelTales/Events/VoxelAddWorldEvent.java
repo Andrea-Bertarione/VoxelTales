@@ -41,7 +41,7 @@ public class VoxelAddWorldEvent {
             SwordSageController.spawnSwordSage(world, basePosition.add(SWORD_SAGE_POSITION_OFFSET));
 
             configs.setServerSetUP(true);
-            VoxelConfigsRegistry.save(VoxelTalesConfigs.class);
+            VoxelConfigsRegistry.staticSave(VoxelTalesConfigs.class);
 
         }), SWORD_SAGE_SPAWN_DELAY, TimeUnit.SECONDS);
     }

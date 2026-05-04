@@ -27,7 +27,7 @@ public class PlayerWeaponProgressComponent implements Component<EntityStore> {
     public Set<String> unlockedHandles;
 
     public static ComponentType<EntityStore, PlayerWeaponProgressComponent> getComponentType() {
-        return VoxelComponentsRegistry.getComponentType(PlayerWeaponProgressComponent.class);
+        return VoxelComponentsRegistry.staticGetComponentType(PlayerWeaponProgressComponent.class);
     }
 
     public static final BuilderCodec<PlayerWeaponProgressComponent> CODEC =
