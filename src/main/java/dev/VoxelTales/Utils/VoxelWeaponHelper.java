@@ -12,17 +12,21 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Components.PlayerComponents.VoxelPlayerComponent;
 import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
+import dev.VoxelTales.Configs.VoxelSkillConfigs;
+import dev.VoxelTales.Configs.VoxelWeaponConfigs;
 import dev.VoxelTales.Controllers.CharacterStatsController;
 import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
+import dev.VoxelTales.Registries.VoxelSkillsRegistry;
 import dev.VoxelTales.UI.HUD.WeaponHUD;
-import dev.VoxelTales.VoxelTalesPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public class VoxelInventoryHelper {
+public class VoxelWeaponHelper {
     private static final String DEFAULT_WEAPON_ID = "Weapon_Heirloom_Old_Old";
 
     public static void equipNewWeapon(PlayerRef playerRef, String blade, String handle) {
@@ -36,11 +40,32 @@ public class VoxelInventoryHelper {
             weaponHandlerComponent.setCurrentBlade(blade);
             weaponHandlerComponent.setCurrentHandle(handle);
 
-            VoxelInventoryHelper.setVoxelWeaponStack(playerRef);
+            VoxelWeaponHelper.setVoxelWeaponStack(playerRef);
 
             VoxelCacheRegistry.staticInvalidate(CacheEnum.VOXEL_PLAYER_DAMAGE_CACHE, playerRef.getUuid());
             VoxelCacheRegistry.staticInvalidate(CacheEnum.VOXEL_PLAYER_SCALING_CACHE, playerRef.getUuid());
             VoxelCacheRegistry.staticInvalidate(CacheEnum.VOXEL_PLAYER_ATKSPEED_CACHE, playerRef.getUuid());
+        });
+    }
+
+    public static void selectSkill(PlayerRef playerRef, String skillId) {
+        selectSkillType(playerRef, skillId, WeaponHandlerComponent::setSelectedSkill);
+    }
+
+    public static void selectUltimate(PlayerRef playerRef, String ultimateId) {
+        selectSkillType(playerRef, ultimateId, WeaponHandlerComponent::setSelectedUltimate);
+    }
+
+    private static void selectSkillType(PlayerRef playerRef, String skillId,
+                                        BiConsumer<WeaponHandlerComponent, VoxelSkillConfigs.SkillDefinition> setter) {
+        Ref<EntityStore> ref = playerRef.getReference();
+        if (ref == null || !ref.isValid()) return;
+
+        Store<EntityStore> store = ref.getStore();
+        store.getExternalData().getWorld().execute(() -> {
+            WeaponHandlerComponent weaponHandler = store.ensureAndGetComponent(ref, WeaponHandlerComponent.getComponentType());
+            VoxelSkillConfigs.SkillDefinition def = VoxelSkillsRegistry.staticGetSkill(skillId);
+            setter.accept(weaponHandler, def);
         });
     }
 
@@ -86,10 +111,12 @@ public class VoxelInventoryHelper {
         Player player = store.getComponent(ref, Player.getComponentType());
         assert player != null;
 
+        VoxelWeaponConfigs.WeaponStatSnapshot statSnapshot = weaponHandlerComponent.getStatSnapshot();
+
         hotbar.getInventory().setItemStackForSlot(slot,
                 generateItemStack(weaponHandlerComponent));
 
-        CharacterStatsController.setWeaponModifiers(store, ref, (HashMap<String, Float>) weaponHandlerComponent.getCalculatedPassivesMap());
+        CharacterStatsController.setWeaponModifiers(store, ref, (HashMap<String, Float>) statSnapshot.passivesMap());
 
         WeaponHUD weaponHUD = VoxelCacheRegistry.staticGet(CacheEnum.HUD_CACHE, store.ensureAndGetComponent(ref, PlayerRef.getComponentType()), WeaponHUD.class);
         if (hotbar.getActiveSlot() == slot) {

@@ -7,7 +7,7 @@ import dev.VoxelTales.Components.PlayerComponents.PlayerWeaponProgressComponent;
 import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import dev.VoxelTales.UI.Pages.Default.VoxelPageUI;
-import dev.VoxelTales.Utils.VoxelInventoryHelper;
+import dev.VoxelTales.Utils.VoxelWeaponHelper;
 import dev.VoxelTales.Utils.VoxelWeaponConfigsHelper;
 
 import java.text.DecimalFormat;
@@ -109,7 +109,7 @@ public class WeaponForgerPage extends VoxelPageUI {
     private void bindConfirmForgeButton() {
         this.builder.getById(CONFIRM_FORGE_BUTTON_ID, ButtonBuilder.class).ifPresent(button ->
                 button.onClick((_, context) -> {
-                    VoxelInventoryHelper.equipNewWeapon(this.playerRef, this.selectedBlade, this.selectedHandle);
+                    VoxelWeaponHelper.equipNewWeapon(this.playerRef, this.selectedBlade, this.selectedHandle);
 
                     super.notifySuccess("Success!", "Successfully forged " + this.selectedBlade + " - " + this.selectedHandle, "Weapon_Heirloom_" + this.selectedBlade + "_" + this.selectedHandle, "SFX_Level_Up_Generic");
 

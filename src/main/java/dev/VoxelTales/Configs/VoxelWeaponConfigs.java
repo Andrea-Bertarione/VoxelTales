@@ -3,14 +3,45 @@ package dev.VoxelTales.Configs;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
+import dev.VoxelTales.Assets.Gameplay.WeaponComponentWeight;
+import dev.VoxelTales.Assets.Gameplay.WeaponType;
 import dev.VoxelTales.Registries.VoxelConfigsRegistry;
+import dev.VoxelTales.Utils.VoxelWeaponConfigsHelper;
+import org.bson.types.Code;
 
-import java.util.HashMap;
+import java.util.*;
+import java.util.function.BinaryOperator;
 
 public class VoxelWeaponConfigs {
     public static VoxelWeaponConfigs get() {
         return VoxelConfigsRegistry.staticGet(VoxelWeaponConfigs.class);
+    }
+
+    public record WeaponStatSnapshot(
+            Map<String, Float> damageMap,
+            Map<String, Float> scalingMap,
+            Map<String, Float> passivesMap,
+            float attackSpeed
+    ) {
+        public static WeaponStatSnapshot of(String blade, String handle) {
+            VoxelWeaponConfigs.ComponentStats bladeStats = VoxelWeaponConfigsHelper.getBladeStats(blade);
+            VoxelWeaponConfigs.ComponentStats handleStats = VoxelWeaponConfigsHelper.getHandleStats(handle);
+
+            return new WeaponStatSnapshot(
+                    mergeMaps(bladeStats.getBaseDamage(),     handleStats.getBaseDamage(),     (a, b) -> (a + b) / 2),
+                    mergeMaps(bladeStats.getDamageScaling(),  handleStats.getDamageScaling(),  (a, b) -> (a + b) / 2),
+                    mergeMaps(bladeStats.getPassives(),       handleStats.getPassives(),        Float::sum),
+                    bladeStats.getAttackSpeed() * handleStats.getAttackSpeed()
+            );
+        }
+
+        private static Map<String, Float> mergeMaps(Map<String, Float> base, Map<String, Float> other, BinaryOperator<Float> mergeFunc) {
+            Map<String, Float> result = new HashMap<>(base);
+            other.forEach((key, value) -> result.merge(key, value, mergeFunc));
+            return result;
+        }
     }
 
     public static class ComponentStats {
@@ -20,6 +51,10 @@ public class VoxelWeaponConfigs {
         private Integer tier;
         private Float attackSpeed;
         private String itemIconId;
+        private WeaponComponentWeight weight;
+        private List<String> skillPool;
+        private List<String> ultimatePool;
+
 
         public static final BuilderCodec<ComponentStats> CODEC = BuilderCodec.builder(ComponentStats.class, ComponentStats::new)
                 .append(
@@ -58,6 +93,22 @@ public class VoxelWeaponConfigs {
                         (stats) -> stats.itemIconId
                 )
                 .add()
+                .append(
+                        new KeyedCodec<>("Weight", Codec.STRING),
+                        (stats, value) -> stats.weight = WeaponComponentWeight.valueOf(value.toUpperCase()),
+                        (stats) -> stats.weight.getDisplayName()
+                )
+                .add()
+                .append(
+                        new KeyedCodec<>("SkillPool", new ArrayCodec<>(Codec.STRING, String[]::new)),
+                        (stats, value) -> stats.skillPool = new ArrayList<>(Arrays.asList(value)),
+                        (stats) -> stats.skillPool.toArray(String[]::new)
+                ).add()
+                .append(
+                        new KeyedCodec<>("UltimatePool", new ArrayCodec<>(Codec.STRING, String[]::new)),
+                        (stats, value) -> stats.ultimatePool = new ArrayList<>(Arrays.asList(value)),
+                        (stats) -> stats.ultimatePool.toArray(String[]::new)
+                ).add()
                 .build();
 
         public ComponentStats() {
@@ -67,6 +118,9 @@ public class VoxelWeaponConfigs {
             this.tier = 1;
             this.attackSpeed = 1.0f;
             this.itemIconId = "Weapon_Sword_Steel";
+            this.weight = WeaponComponentWeight.MEDIUM;
+            this.skillPool = new ArrayList<>();
+            this.ultimatePool = new ArrayList<>();
         }
 
         public HashMap<String, Float> getDamageScaling() { return damageScaling; }
@@ -74,30 +128,26 @@ public class VoxelWeaponConfigs {
         public HashMap<String, Float> getPassives() { return passives; }
         public Integer getTier() { return tier; }
         public String getItemIconId() { return itemIconId; }
+        public WeaponComponentWeight getWeight() { return weight; }
 
         public void setDamageScaling(HashMap<String, Float> damageScaling) {
             this.damageScaling = damageScaling;
         }
-
         public void setBaseDamage(HashMap<String, Float> baseDamage) {
             this.baseDamage = baseDamage;
         }
-
         public void setPassives(HashMap<String, Float> passives) {
             this.passives = passives;
         }
-
         public void setTier(Integer tier) {
             this.tier = tier;
         }
-
         public Float getAttackSpeed() { return attackSpeed; }
-
         public void setAttackSpeed(Float attackSpeed) { this.attackSpeed = attackSpeed; }
-
         public void setItemIconId(String itemIconId) {
             this.itemIconId = itemIconId;
         }
+        public void setWeight(WeaponComponentWeight weight) { this.weight = weight; }
 
         public float getPassiveEffectiveness(String passiveName) {
             return passives.getOrDefault(passiveName, 0.0f);

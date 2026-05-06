@@ -12,31 +12,22 @@ public class VoxelAdminCommandCollection extends AbstractCommandCollection {
     public VoxelAdminCommandCollection() {
         super("voxel", "Collection of admin commands");
 
+        registerAdminCommands();
+        registerUICommands();
+    }
+
+    private void registerAdminCommands() {
         addSubCommand(new GiveXPCommand());
         addSubCommand(new SetBladeCommand());
         addSubCommand(new SetHandleCommand());
         addSubCommand(new SetSkillCommand());
+        addSubCommand(new SetUltimateCommand());
         addSubCommand(new SpawnSwordSage());
+    }
 
-        addSubCommand(new OpenUICommand<>(
-                "config",
-                "Command to open the mod configuration menu",
-                CacheEnum.WEAPON_CONFIGURATION_PAGE,
-                WeaponConfigurationPage.class
-        ));
-
-        addSubCommand(new OpenUICommand<>(
-                "forger",
-                "Command to open the weapon forger menu",
-                CacheEnum.WEAPON_FORGER_PAGE,
-                WeaponForgerPage.class
-        ));
-
-        addSubCommand(new OpenUICommand<>(
-                "dialogue",
-                "Command to open the dialogue menu",
-                CacheEnum.DIALOGUE_PAGE,
-                DialoguePage.class
-        ));
+    private void registerUICommands() {
+        addSubCommand(new OpenUICommand<>("config", "Open mod configuration", CacheEnum.WEAPON_CONFIGURATION_PAGE, WeaponConfigurationPage.class));
+        addSubCommand(new OpenUICommand<>("forger", "Open weapon forger", CacheEnum.WEAPON_FORGER_PAGE, WeaponForgerPage.class));
+        addSubCommand(new OpenUICommand<>("dialogue", "Open dialogue menu", CacheEnum.DIALOGUE_PAGE, DialoguePage.class));
     }
 }

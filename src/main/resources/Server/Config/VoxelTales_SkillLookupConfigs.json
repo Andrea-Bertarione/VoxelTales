@@ -1,0 +1,19 @@
+{
+  "SkillDefinitions": {
+    "Root_Thrust_Simple": {
+      "Name": "Root_Thrust_Simple",
+      "DisplayName": "Lunge",
+      "WeaponType": "Sword"
+    },
+    "Root_Charged_Shot": {
+      "Name": "Root_Charged_Shot",
+      "DisplayName": "Charged Shot",
+      "WeaponType": "ShortBow"
+    },
+    "Root_Vortex_Strike": {
+      "Name": "Root_Vortex_Strike",
+      "DisplayName": "Vortex Strike",
+      "WeaponType": "Sword"
+    }
+  }
+}
