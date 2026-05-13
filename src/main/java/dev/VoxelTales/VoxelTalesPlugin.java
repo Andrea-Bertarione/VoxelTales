@@ -58,7 +58,8 @@ public class VoxelTalesPlugin extends JavaPlugin {
                 VoxelNPCActionsRegistry.class,
                 VoxelDialoguesRegistry.class,
                 VoxelCacheRegistry.class,
-                VoxelSkillsRegistry.class
+                VoxelSkillsRegistry.class,
+                VoxelPassivesRegistry.class
         ), this);
     }
 

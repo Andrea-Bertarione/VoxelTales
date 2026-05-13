@@ -8,6 +8,7 @@ import au.ellie.hyui.types.NumberFieldFormat;
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import dev.VoxelTales.Assets.Gameplay.WeaponComponentWeight;
 import dev.VoxelTales.Configs.VoxelWeaponConfigs;
 import dev.VoxelTales.UI.Components.ModalUI;
 import dev.VoxelTales.UI.Pages.Default.VoxelEditorPageUI;
@@ -54,6 +55,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
     private static final class ElementIds {
         private static final String ITEM_LIST_SUFFIX = "-item-list";
         private static final String TIER_INPUT_SUFFIX = "-tier-input";
+        private static final String WEIGHT_INPUT_SUFFIX = "-weight-input";
         private static final String ATK_SPEED_INPUT_SUFFIX = "-atk-speed-input";
         private static final String SEARCH_BAR_SUFFIX = "-search-bar";
         private static final String TIER_FILTER_SUFFIX = "-tier-filter";
@@ -85,6 +87,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
     private HashMap<String, Float> passives = new HashMap<>();
     private Integer tier;
     private Float attackSpeed;
+    private String weight;
 
     private final Map<String, Set<UIElementBuilder<?>>> inspectionElements = new HashMap<>();
     private final Map<String, Set<UIElementBuilder<?>>> sideBarElements = new HashMap<>();
@@ -104,6 +107,13 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
                     el.addEventListener(CustomUIEventBindingType.ValueChanged, (newTier) -> {
                         this.isDirty = true;
                         this.tier = newTier.intValue();
+                    })
+            );
+
+            this.builder.getById(tabId + ElementIds.WEIGHT_INPUT_SUFFIX, DropdownBoxBuilder.class).ifPresent(el ->
+                    el.addEventListener(CustomUIEventBindingType.ValueChanged, (newWeight) -> {
+                        this.isDirty = true;
+                        this.weight = newWeight;
                     })
             );
 
@@ -289,6 +299,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
             stats.setDamageScaling(this.damageScaling);
             stats.setPassives(this.passives);
             stats.setTier(this.tier);
+            stats.setWeight(WeaponComponentWeight.fromDisplay(this.weight));
             stats.setAttackSpeed(this.attackSpeed);
 
             VoxelWeaponConfigsHelper.saveStatsOf(convertEnum(type), this.selectedName, stats);
@@ -366,6 +377,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
 
         this.selectedName = name;
         this.tier = stats.getTier();
+        this.weight = stats.getWeight().name();
         this.attackSpeed = stats.getAttackSpeed() != null ? stats.getAttackSpeed() : 1.0f;
         this.baseDamage = new HashMap<>(stats.getBaseDamage());
         this.damageScaling = new HashMap<>(stats.getDamageScaling());
@@ -384,6 +396,10 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
 
         context.getById(type + ElementIds.TIER_INPUT_SUFFIX, NumberFieldBuilder.class).ifPresent(el ->
                 el.withValue(this.tier)
+        );
+
+        context.getById(type + ElementIds.WEIGHT_INPUT_SUFFIX, DropdownBoxBuilder.class).ifPresent(el ->
+                el.withValue(this.weight)
         );
 
         context.getById(type + ElementIds.ATK_SPEED_INPUT_SUFFIX, NumberFieldBuilder.class).ifPresent(el ->

@@ -6,10 +6,8 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
 import dev.VoxelTales.Assets.Gameplay.WeaponComponentWeight;
-import dev.VoxelTales.Assets.Gameplay.WeaponType;
 import dev.VoxelTales.Registries.VoxelConfigsRegistry;
 import dev.VoxelTales.Utils.VoxelWeaponConfigsHelper;
-import org.bson.types.Code;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
@@ -95,7 +93,7 @@ public class VoxelWeaponConfigs {
                 .add()
                 .append(
                         new KeyedCodec<>("Weight", Codec.STRING),
-                        (stats, value) -> stats.weight = WeaponComponentWeight.valueOf(value.toUpperCase()),
+                        (stats, value) -> stats.weight = WeaponComponentWeight.fromDisplay(value),
                         (stats) -> stats.weight.getDisplayName()
                 )
                 .add()

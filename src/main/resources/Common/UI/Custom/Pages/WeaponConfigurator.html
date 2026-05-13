@@ -76,6 +76,46 @@
             anchor-height: 80;
         }
 
+        .pool-section {
+            layout-mode: top;
+            margin-top: 20;
+        }
+
+        .pool-section-helper {
+            font-size: 11;
+            color: #888888;
+            margin-bottom: 5;
+        }
+
+        .pool-columns {
+            layout-mode: left;
+            anchor-height: 180;
+        }
+
+        .pool-column {
+            layout-mode: top;
+            flex-weight: 1;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 5;
+            margin-right: 10;
+        }
+
+        .pool-column:last-child {
+            margin-right: 0;
+        }
+
+        .pool-column-title {
+            font-size: 12;
+            color: #aaaaaa;
+            margin-bottom: 5;
+        }
+
+        .pool-list {
+            layout-mode: topscrolling;
+            flex-weight: 1;
+            data-hyui-scrollbar-style: DefaultScrollbarStyle;
+        }
+
         .hidden { display: none; }
     </style>
 
@@ -181,7 +221,7 @@
                                                 </div>
                                             </div>
 
-                                            <div style="layout-mode: left; anchor-width: 200; margin-right: 15;">
+                                            <div style="layout-mode: left; anchor-width: 300; margin-right: 15;">
                                                 <div style="layout-mode: top; flex-weight: 1;">
                                                     <p style="font-size: 12; color: #ffcc00; margin-top: 10; text-align: center;">ATK SPEED</p>
                                                     <input id="blades-atk-speed-input" type="number" class="default-style" value="1.0" />
@@ -190,8 +230,17 @@
                                                     <p style="font-size: 12; color: #ffcc00; margin-top: 10; text-align: center;">TIER</p>
                                                     <input id="blades-tier-input" type="number" class="default-style" value="0" />
                                                 </div>
+
                                                 <button id="blades-delete-item" class="small-tertiary-button" style="margin-left: 10; margin-top: 10; anchor-height: 25; anchor-width: 25">X</button>
                                             </div>
+                                        </div>
+
+                                        <div style="layout-mode: top; flex-weight: 1; margin-left: 10;">
+                                            <select id="blades-weight-input" style="flex-weight: 1;">
+                                                <option value="LIGHT">Light</option>
+                                                <option value="MEDIUM">Medium</option>
+                                                <option value="HEAVY">Heavy</option>
+                                            </select>
                                         </div>
 
                                         <p class="editor-section-header">Base Damage</p>
@@ -205,6 +254,60 @@
                                         <p class="editor-section-header">Passives</p>
                                         <div id="blades-passive-container" style="layout-mode: top;"></div>
                                         <button id="blades-add-passive-btn" class="tertiary-button" style="anchor-height: 25; margin-top: 5;">+ Add Passive</button>
+
+                                        <!-- SKILL POOL SECTION -->
+                                        <div class="pool-section">
+                                            <p class="editor-section-header">Skill Pool</p>
+                                            <p class="pool-section-helper">
+                                                Click a skill to add or remove it from this blade's skill pool.
+                                            </p>
+
+                                            <div class="pool-columns">
+                                                <!-- Available skills -->
+                                                <div class="pool-column">
+                                                    <p class="pool-column-title">Available Skills</p>
+                                                    <div id="blades-skill-available-list" class="pool-list">
+                                                        <!-- Filled from Java code -->
+                                                        <button class="tertiary-button" style="flex-weight: 1; anchor-left: 35; anchor-height: 35; anchor-top: 5;">Lunge</button>
+                                                        <button class="tertiary-button" style="flex-weight: 1; anchor-left: 35; anchor-height: 35; anchor-top: 5;">Charged Shot</button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Selected skills -->
+                                                <div class="pool-column">
+                                                    <p class="pool-column-title">Selected Skills</p>
+                                                    <div id="blades-skill-selected-list" class="pool-list">
+                                                        <!-- Filled from Java with current skillPool -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- ULTIMATE POOL SECTION -->
+                                        <div class="pool-section">
+                                            <p class="editor-section-header">Ultimate Pool</p>
+                                            <p class="pool-section-helper">
+                                                Click an ultimate to add or remove it from this blade's ultimate pool.
+                                            </p>
+
+                                            <div class="pool-columns">
+                                                <!-- Available ultimates -->
+                                                <div class="pool-column">
+                                                    <p class="pool-column-title">Available Ultimates</p>
+                                                    <div id="blades-ultimate-available-list" class="pool-list">
+                                                        <!-- Filled from Java with !selected entries -->
+                                                    </div>
+                                                </div>
+
+                                                <!-- Selected ultimates -->
+                                                <div class="pool-column">
+                                                    <p class="pool-column-title">Selected Ultimates</p>
+                                                    <div id="blades-ultimate-selected-list" class="pool-list">
+                                                        <!-- Filled from Java with ultimatePool -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div style="margin-top: 40; layout-mode: left; anchor-height: 45;">
                                             <button id="blades-save-btn" class="primary-button" style="flex-weight: 1; margin-right: 10;">Save Changes</button>
@@ -267,7 +370,7 @@
                                                 </div>
                                             </div>
 
-                                            <div style="layout-mode: left; anchor-width: 200; margin-right: 15;">
+                                            <div style="layout-mode: left; anchor-width: 300; margin-right: 15;">
                                                 <div style="layout-mode: top; flex-weight: 1;">
                                                     <p style="font-size: 12; color: #ffcc00; margin-top: 10; text-align: center;">ATK SPEED</p>
                                                     <input id="handles-atk-speed-input" type="number" class="default-style" value="1.0" />
@@ -276,8 +379,17 @@
                                                     <p style="font-size: 12; color: #ffcc00; margin-top: 10; text-align: center;">TIER</p>
                                                     <input id="handles-tier-input" type="number" class="default-style" value="0" />
                                                 </div>
+
                                                 <button id="handles-delete-item" class="small-tertiary-button" style="margin-left: 10; margin-top: 10; anchor-height: 25; anchor-width: 25">X</button>
                                             </div>
+                                        </div>
+
+                                        <div style="layout-mode: top; flex-weight: 1; margin-left: 10;">
+                                            <select id="handles-weight-input" style="flex-weight: 1;">
+                                                <option value="LIGHT">Light</option>
+                                                <option value="MEDIUM">Medium</option>
+                                                <option value="HEAVY">Heavy</option>
+                                            </select>
                                         </div>
 
                                         <p class="editor-section-header">Base Damage</p>
@@ -292,6 +404,44 @@
                                         <div id="handles-passive-container" style="layout-mode: top;"></div>
                                         <button id="handles-add-passive-btn" class="tertiary-button" style="anchor-height: 25; margin-top: 5;">+ Add Passive</button>
 
+                                        <!-- Handles Skill Pool -->
+                                        <div class="pool-section">
+                                            <p class="editor-section-header">Skill Pool</p>
+                                            <p class="pool-section-helper">
+                                                Click a skill to add or remove it from this handle's skill pool.
+                                            </p>
+
+                                            <div class="pool-columns">
+                                                <div class="pool-column">
+                                                    <p class="pool-column-title">Available Skills</p>
+                                                    <div id="handles-skill-available-list" class="pool-list"></div>
+                                                </div>
+                                                <div class="pool-column">
+                                                    <p class="pool-column-title">Selected Skills</p>
+                                                    <div id="handles-skill-selected-list" class="pool-list"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Handles Ultimate Pool -->
+                                        <div class="pool-section">
+                                            <p class="editor-section-header">Ultimate Pool</p>
+                                            <p class="pool-section-helper">
+                                                Click an ultimate to add or remove it from this handle's ultimate pool.
+                                            </p>
+
+                                            <div class="pool-columns">
+                                                <div class="pool-column">
+                                                    <p class="pool-column-title">Available Ultimates</p>
+                                                    <div id="handles-ultimate-available-list" class="pool-list"></div>
+                                                </div>
+                                                <div class="pool-column">
+                                                    <p class="pool-column-title">Selected Ultimates</p>
+                                                    <div id="handles-ultimate-selected-list" class="pool-list"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div style="margin-top: 40; layout-mode: left; anchor-height: 45;">
                                             <button id="handles-save-btn" class="primary-button" style="flex-weight: 1; margin-right: 10;">Save Changes</button>
                                             <button id="handles-reset-btn" class="secondary-button" style="flex-weight: 1;">Reset</button>
@@ -302,7 +452,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
