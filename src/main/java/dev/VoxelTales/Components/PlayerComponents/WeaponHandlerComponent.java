@@ -162,12 +162,14 @@ public class WeaponHandlerComponent implements Component<EntityStore> {
 
     public void setSelectedSkill(VoxelSkillConfigs.SkillDefinition selectedSkill) {
         if (selectedSkill == null) throw new IllegalArgumentException("Selected skill cannot be null!");
+        if (selectedSkill.isUltimate()) throw new IllegalArgumentException("Selected skill cannot be an ultimate!");
         if (selectedSkill.getWeaponType() != this.getComposedWeaponType()) throw new IllegalArgumentException("Selected skill weapon type does not match the current weapon type!");
 
         this.selectedSkill = selectedSkill.getName();
     }
     public void setSelectedUltimate(VoxelSkillConfigs.SkillDefinition selectedUltimate) {
         if (selectedUltimate == null) throw new IllegalArgumentException("Selected ultimate cannot be null!");
+        if (!selectedUltimate.isUltimate()) throw new IllegalArgumentException("Selected ultimate must be flagged as ultimate!");
         if (selectedUltimate.getWeaponType() != this.getComposedWeaponType()) throw new IllegalArgumentException("Selected ultimate weapon type does not match the current weapon type!");
 
         this.selectedUltimate = selectedUltimate.getName();

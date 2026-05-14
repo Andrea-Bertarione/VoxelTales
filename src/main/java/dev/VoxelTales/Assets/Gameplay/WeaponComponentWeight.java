@@ -1,26 +1,43 @@
 package dev.VoxelTales.Assets.Gameplay;
 
 public enum WeaponComponentWeight {
-    LIGHT("Small"),
-    MEDIUM("Medium"),
-    HEAVY("Heavy");
+    LIGHT("Small",  "Light"),
+    MEDIUM("Medium","Medium"),
+    HEAVY("Heavy",  "Heavy");
 
-    private final String displayName;
+    private final String configName; // what lives in JSON / assets
+    private final String uiLabel;    // what you show in the UI
 
-    public String getDisplayName() {
-        return this.displayName;
+    WeaponComponentWeight(String configName, String uiLabel) {
+        this.configName = configName;
+        this.uiLabel = uiLabel;
     }
 
-    public static WeaponComponentWeight fromDisplay(String displayName) {
+    public String getConfigName() {
+        return configName;
+    }
+
+    public String getUiLabel() {
+        return uiLabel;
+    }
+
+    // For decoding existing JSON values like "Small"
+    public static WeaponComponentWeight fromConfig(String value) {
         for (WeaponComponentWeight weight : values()) {
-            if (weight.displayName.equalsIgnoreCase(displayName)) {
+            if (weight.configName.equalsIgnoreCase(value)) {
                 return weight;
             }
         }
-        throw new IllegalArgumentException("Unknown WeaponComponentWeight display name: " + displayName);
+        throw new IllegalArgumentException("Unknown WeaponComponentWeight config name: " + value);
     }
 
-    WeaponComponentWeight(String displayName) {
-        this.displayName = displayName;
+    // Optional: if you ever want to map from UI label back
+    public static WeaponComponentWeight fromUiLabel(String label) {
+        for (WeaponComponentWeight weight : values()) {
+            if (weight.uiLabel.equalsIgnoreCase(label)) {
+                return weight;
+            }
+        }
+        throw new IllegalArgumentException("Unknown WeaponComponentWeight UI label: " + label);
     }
 }

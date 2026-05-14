@@ -32,6 +32,6 @@ public enum WeaponType {
     );
 
     public static WeaponType resolve(WeaponComponentWeight bladeWeight, WeaponComponentWeight handleWeight) {
-        return MATRIX.get(bladeWeight.getDisplayName() + "_" + handleWeight.getDisplayName());
+        return MATRIX.get(bladeWeight.getConfigName() + "_" + handleWeight.getConfigName());
     }
 }

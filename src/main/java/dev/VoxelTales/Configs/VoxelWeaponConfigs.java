@@ -93,8 +93,8 @@ public class VoxelWeaponConfigs {
                 .add()
                 .append(
                         new KeyedCodec<>("Weight", Codec.STRING),
-                        (stats, value) -> stats.weight = WeaponComponentWeight.fromDisplay(value),
-                        (stats) -> stats.weight.getDisplayName()
+                        (stats, value) -> stats.weight = WeaponComponentWeight.fromConfig(value),
+                        (stats) -> stats.weight.getConfigName()
                 )
                 .add()
                 .append(
@@ -127,6 +127,8 @@ public class VoxelWeaponConfigs {
         public Integer getTier() { return tier; }
         public String getItemIconId() { return itemIconId; }
         public WeaponComponentWeight getWeight() { return weight; }
+        public List<String> getSkillPool() { return skillPool; }
+        public List<String> getUltimatePool() { return ultimatePool; }
 
         public void setDamageScaling(HashMap<String, Float> damageScaling) {
             this.damageScaling = damageScaling;
@@ -146,6 +148,8 @@ public class VoxelWeaponConfigs {
             this.itemIconId = itemIconId;
         }
         public void setWeight(WeaponComponentWeight weight) { this.weight = weight; }
+        public void setSkillPool(List<String> skillPool) { this.skillPool = skillPool; }
+        public void setUltimatePool(List<String> ultimatePool) { this.ultimatePool = ultimatePool; }
 
         public float getPassiveEffectiveness(String passiveName) {
             return passives.getOrDefault(passiveName, 0.0f);

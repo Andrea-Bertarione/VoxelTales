@@ -19,23 +19,27 @@ public class VoxelSkillConfigs {
         private String name;
         private String displayName;
         private WeaponType weaponType;
+        private boolean isUltimate;
 
         public static final BuilderCodec<SkillDefinition> CODEC = BuilderCodec.builder(SkillDefinition.class, SkillDefinition::new)
                 .append(new KeyedCodec<>("Name", Codec.STRING), SkillDefinition::setName, SkillDefinition::getName).add()
                 .append(new KeyedCodec<>("DisplayName", Codec.STRING), SkillDefinition::setDisplayName, SkillDefinition::getDisplayName).add()
                 .append(new KeyedCodec<>("WeaponType", Codec.STRING), (s, v) -> s.setWeaponType(WeaponType.valueOf(v.toUpperCase())), (s) -> s.weaponType.name.toUpperCase()).add()
+                .append(new KeyedCodec<>("IsUltimate", Codec.BOOLEAN), (s, v) -> s.isUltimate = v, (s) -> s.isUltimate).add()
                 .build();
 
         public SkillDefinition() {
             this.name = "Root_Thrust_Simple";
             this.displayName = "Thrust";
             this.weaponType = WeaponType.SWORD;
+            this.isUltimate = false;
         }
 
-        public SkillDefinition(String name, String displayName, WeaponType weaponType) {
+        public SkillDefinition(String name, String displayName, WeaponType weaponType, boolean isUltimate) {
             this.name = name;
             this.displayName = displayName;
             this.weaponType = weaponType;
+            this.isUltimate = isUltimate    ;
         }
 
         public String getName() {
@@ -60,6 +64,14 @@ public class VoxelSkillConfigs {
 
         public void setWeaponType(WeaponType weaponType) {
             this.weaponType = weaponType;
+        }
+
+        public boolean isUltimate() {
+            return isUltimate;
+        }
+
+        public void setUltimate(boolean isUltimate) {
+            this.isUltimate = isUltimate;
         }
     }
 

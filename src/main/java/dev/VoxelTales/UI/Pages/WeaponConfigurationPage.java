@@ -9,6 +9,7 @@ import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.VoxelTales.Assets.Gameplay.WeaponComponentWeight;
+import dev.VoxelTales.Configs.VoxelSkillConfigs;
 import dev.VoxelTales.Configs.VoxelWeaponConfigs;
 import dev.VoxelTales.UI.Components.ModalUI;
 import dev.VoxelTales.UI.Pages.Default.VoxelEditorPageUI;
@@ -71,6 +72,10 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
         private static final String ADD_CATEGORY_BTN_SUFFIX = "-add-";
         private static final String CATEGORY_BTN_SUFFIX = "-btn";
         private static final String ITEM_PREFIX = "-item-";
+        private static final String SKILL_AVAILABLE_LIST_SUFFIX = "-skill-available-list";
+        private static final String SKILL_SELECTED_LIST_SUFFIX = "-skill-selected-list";
+        private static final String ULTIMATE_AVAILABLE_LIST_SUFFIX = "-ultimate-available-list";
+        private static final String ULTIMATE_SELECTED_LIST_SUFFIX = "-ultimate-selected-list";
     }
 
     private static final List<String> TABS = List.of(Tabs.OVERVIEW, Tabs.BLADES, Tabs.HANDLES);
@@ -89,8 +94,12 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
     private Float attackSpeed;
     private String weight;
 
+    private List<String> skillPool = new ArrayList<>();
+    private List<String> ultimatePool = new ArrayList<>();
+
     private final Map<String, Set<UIElementBuilder<?>>> inspectionElements = new HashMap<>();
     private final Map<String, Set<UIElementBuilder<?>>> sideBarElements = new HashMap<>();
+    private final Map<String, Set<UIElementBuilder<?>>> poolElements = new HashMap<>();
 
     public WeaponConfigurationPage(PlayerRef playerRef) {
         super(playerRef);
@@ -299,8 +308,11 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
             stats.setDamageScaling(this.damageScaling);
             stats.setPassives(this.passives);
             stats.setTier(this.tier);
-            stats.setWeight(WeaponComponentWeight.fromDisplay(this.weight));
+            stats.setWeight(WeaponComponentWeight.valueOf(this.weight));
             stats.setAttackSpeed(this.attackSpeed);
+
+            stats.setSkillPool(new ArrayList<>(this.skillPool));
+            stats.setUltimatePool(new ArrayList<>(this.ultimatePool));
 
             VoxelWeaponConfigsHelper.saveStatsOf(convertEnum(type), this.selectedName, stats);
 
@@ -383,6 +395,9 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
         this.damageScaling = new HashMap<>(stats.getDamageScaling());
         this.passives = new HashMap<>(stats.getPassives());
 
+        this.skillPool = new ArrayList<>(stats.getSkillPool());
+        this.ultimatePool = new ArrayList<>(stats.getUltimatePool());
+
         if (this.selectedName != null && !this.selectedName.equals(name)) {
             String oldSafeId = (type + ElementIds.ITEM_PREFIX + this.selectedName).toLowerCase().replaceAll("[^a-z0-9]", "");
             context.getById(oldSafeId, ButtonBuilder.class)
@@ -408,6 +423,7 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
 
         this.isDirty = false;
         buildSelectedSide(context, type);
+        buildSkillPools(context, type);
 
         context.updatePage(true);
     }
@@ -486,6 +502,132 @@ public class WeaponConfigurationPage extends VoxelEditorPageUI {
 
             group.addChild(btn);
         }
+    }
+
+    private void buildSkillPools(UIContext context, String type) {
+        // Fetch all skill definitions from your skill configs/registry
+        // Adjust this depending on how you expose them.
+        VoxelSkillConfigs skillConfigs = VoxelSkillConfigs.get();
+        Map<String, VoxelSkillConfigs.SkillDefinition> allSkills = skillConfigs.getSkillDefinitions();
+
+        // Regular skills
+        List<VoxelSkillConfigs.SkillDefinition> availableSkills = new ArrayList<>();
+        List<VoxelSkillConfigs.SkillDefinition> selectedSkills = new ArrayList<>();
+
+        // Ultimates
+        List<VoxelSkillConfigs.SkillDefinition> availableUltimates = new ArrayList<>();
+        List<VoxelSkillConfigs.SkillDefinition> selectedUltimates = new ArrayList<>();
+
+        for (VoxelSkillConfigs.SkillDefinition def : allSkills.values()) {
+            String id = def.getName();
+            boolean isUltimate = def.isUltimate();
+
+            if (isUltimate) {
+                if (this.ultimatePool.contains(id)) {
+                    selectedUltimates.add(def);
+                } else {
+                    availableUltimates.add(def);
+                }
+            } else {
+                if (this.skillPool.contains(id)) {
+                    selectedSkills.add(def);
+                } else {
+                    availableSkills.add(def);
+                }
+            }
+        }
+
+        // Sort by display name/id if you like
+        Comparator<VoxelSkillConfigs.SkillDefinition> byName =
+                Comparator.comparing(VoxelSkillConfigs.SkillDefinition::getName);
+        availableSkills.sort(byName);
+        selectedSkills.sort(byName);
+        availableUltimates.sort(byName);
+        selectedUltimates.sort(byName);
+
+        // Now render into the four lists
+        renderPoolList(context, type + ElementIds.SKILL_AVAILABLE_LIST_SUFFIX, availableSkills, false);
+        renderPoolList(context, type + ElementIds.SKILL_SELECTED_LIST_SUFFIX, selectedSkills, true);
+        renderUltimatePoolList(context, type, availableUltimates, false);
+        renderUltimatePoolList(context, type, selectedUltimates, true);
+    }
+
+    private void renderPoolList(UIContext context,
+                                String listId,
+                                List<VoxelSkillConfigs.SkillDefinition> defs,
+                                boolean selectedList) {
+
+        context.getById(listId, GroupBuilder.class).ifPresent(group -> {
+            Set<UIElementBuilder<?>> entries = this.poolElements.computeIfAbsent(listId, _ -> new HashSet<>());
+            entries.forEach(this.builder::removeElement);
+            entries.clear();
+
+            for (VoxelSkillConfigs.SkillDefinition def : defs) {
+                String skillId = def.getName();
+
+                ButtonBuilder btn = ButtonBuilder.tertiaryTextButton()
+                        .withText(skillId)
+                        .withAnchor(new HyUIAnchor().setHeight(35).setLeft(35).setTop(5))
+                        .withFlexWeight(1)
+                        .onClick((__, ctx) -> {
+                            this.isDirty = true;
+                            if (selectedList) {
+                                // move from selected -> available
+                                this.skillPool.remove(skillId);
+                            } else {
+                                // move from available -> selected
+                                if (!this.skillPool.contains(skillId)) {
+                                    this.skillPool.add(skillId);
+                                }
+                            }
+                            // rebuild pools for this type
+                            String type = listId.startsWith(Tabs.BLADES) ? Tabs.BLADES : Tabs.HANDLES;
+                            buildSkillPools(ctx, type);
+                            ctx.updatePage(true);
+                        });
+
+                entries.add(btn);
+                group.addChild(btn);
+            }
+        });
+    }
+
+    private void renderUltimatePoolList(UIContext context,
+                                        String type,
+                                        List<VoxelSkillConfigs.SkillDefinition> defs,
+                                        boolean selectedList) {
+
+        String listId = type + (selectedList ? ElementIds.ULTIMATE_SELECTED_LIST_SUFFIX : ElementIds.ULTIMATE_AVAILABLE_LIST_SUFFIX);
+
+        context.getById(listId, GroupBuilder.class).ifPresent(group -> {
+            Set<UIElementBuilder<?>> entries = this.poolElements.computeIfAbsent(listId, _ -> new HashSet<>());
+            entries.forEach(this.builder::removeElement);
+            entries.clear();
+
+            for (VoxelSkillConfigs.SkillDefinition def : defs) {
+                String skillId = def.getName();
+
+                ButtonBuilder btn = ButtonBuilder.tertiaryTextButton()
+                        .withText(skillId)
+                        .withAnchor(new HyUIAnchor().setHeight(28).setBottom(3))
+                        .withFlexWeight(1)
+                        .onClick((__, ctx) -> {
+                            this.isDirty = true;
+                            if (selectedList) {
+                                this.ultimatePool.remove(skillId);
+                            } else {
+                                if (!this.ultimatePool.contains(skillId)) {
+                                    this.ultimatePool.add(skillId);
+                                }
+                            }
+                            buildSkillPools(ctx, type);
+                            ctx.updatePage(true);
+                        });
+
+                entries.add(btn);
+                group.addChild(btn);
+            }
+        });
     }
 
     private ButtonBuilder buildSideButton(String type, String name, BiConsumer<Void, UIContext> callback) {
