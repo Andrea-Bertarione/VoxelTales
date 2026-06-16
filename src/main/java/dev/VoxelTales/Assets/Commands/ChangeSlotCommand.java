@@ -13,7 +13,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
-import dev.VoxelTales.Utils.VoxelInventoryHelper;
+import dev.VoxelTales.Utils.VoxelWeaponHelper;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +44,7 @@ public class ChangeSlotCommand extends AbstractPlayerCommand {
             return;
         }
 
-        VoxelInventoryHelper.changeVoxelWeaponSlot(playerRef, store, ref, itemSlot, newSlot);
+        VoxelWeaponHelper.changeVoxelWeaponSlot(playerRef, store, ref, itemSlot, newSlot);
         context.sendMessage(Message.raw("Weapon slot changed to " + formattedSlot));
     }
 }

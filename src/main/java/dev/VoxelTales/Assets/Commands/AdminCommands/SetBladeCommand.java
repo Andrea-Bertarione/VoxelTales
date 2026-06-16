@@ -10,8 +10,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
-import dev.VoxelTales.Utils.VoxelInventoryHelper;
-import dev.VoxelTales.VoxelTalesPlugin;
+import dev.VoxelTales.Utils.VoxelWeaponHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class SetBladeCommand extends AbstractPlayerCommand {
@@ -27,6 +26,6 @@ public class SetBladeCommand extends AbstractPlayerCommand {
     protected void execute(@NotNull CommandContext commandContext, @NotNull Store<EntityStore> store, @NotNull Ref<EntityStore> ref, @NotNull PlayerRef playerRef, @NotNull World world) {
         WeaponHandlerComponent weaponHandlerComponent = store.ensureAndGetComponent(ref, WeaponHandlerComponent.getComponentType());
 
-        VoxelInventoryHelper.equipNewWeapon(playerRef, name.get(commandContext), weaponHandlerComponent.getCurrentHandle());
+        VoxelWeaponHelper.equipNewWeapon(playerRef, name.get(commandContext), weaponHandlerComponent.getCurrentHandle());
     }
 }

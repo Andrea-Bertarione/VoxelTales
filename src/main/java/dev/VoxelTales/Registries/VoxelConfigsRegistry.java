@@ -4,6 +4,7 @@ import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.VoxelTales.Configs.EntityXPConfigs;
+import dev.VoxelTales.Configs.VoxelSkillConfigs;
 import dev.VoxelTales.Configs.VoxelTalesConfigs;
 import dev.VoxelTales.Configs.VoxelWeaponConfigs;
 import dev.VoxelTales.Core.AVoxelRegistry;
@@ -17,7 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VoxelConfigsRegistry extends AVoxelRegistry {
-    private final String CONFIG_PATH = "Server/Config/";
+    private static final String CONFIG_PATH = "Server/Config/";
     private final ConcurrentHashMap<Class<?>, Config<?>> configRegistry = new ConcurrentHashMap<>();
 
     private static VoxelConfigsRegistry INSTANCE;
@@ -25,24 +26,21 @@ public class VoxelConfigsRegistry extends AVoxelRegistry {
     public void init(VoxelTalesPlugin plugin) {
         INSTANCE = this;
 
-        registerClass(plugin, ConfigEnum.VOXELTALES_GENERAL_CONFIGS, VoxelTalesConfigs.class, VoxelTalesConfigs.CODEC);
-        registerClass(plugin, ConfigEnum.ENTITY_XP_CONFIGS, EntityXPConfigs.class, EntityXPConfigs.CODEC);
+        registerClass(plugin, ConfigEnum.VOXELTALES_GENERAL_CONFIGS, VoxelTalesConfigs.class, VoxelTalesConfigs.CODEC, false);
+        registerClass(plugin, ConfigEnum.ENTITY_XP_CONFIGS, EntityXPConfigs.class, EntityXPConfigs.CODEC, false);
         registerClass(plugin, ConfigEnum.WEAPON_LOOKUP_CONFIGS, VoxelWeaponConfigs.class, VoxelWeaponConfigs.CODEC, true);
+        registerClass(plugin, ConfigEnum.SKILL_LOOKUP_CONFIGS, VoxelSkillConfigs.class, VoxelSkillConfigs.CODEC, true);
 
         LoggerUtil.getLogger().info("[VoxelConfigsRegistry] Registered " + super.getRegistryCount() + " configs.");
     }
 
-    private void registerClass(VoxelTalesPlugin plugin, ConfigEnum configEnum, Class<?> clazz, BuilderCodec<?> codec) {
-        configRegistry.put(clazz, plugin.registerConfig(configEnum.getName(), codec));
-        super.incrementRegistryCount();
-    }
-
     private void registerClass(VoxelTalesPlugin plugin, ConfigEnum configEnum, Class<?> clazz, BuilderCodec<?> codec, boolean copyConfig) {
-        registerClass(plugin, configEnum, clazz, codec);
-
         if (copyConfig) {
             copyConfigIfMissing(plugin, configEnum);
         }
+
+        configRegistry.put(clazz, plugin.registerConfig(configEnum.getName(), codec));
+        super.incrementRegistryCount();
     }
 
     public void saveAll() {

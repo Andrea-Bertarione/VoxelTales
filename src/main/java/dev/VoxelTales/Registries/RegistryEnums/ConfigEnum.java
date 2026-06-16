@@ -3,7 +3,8 @@ package dev.VoxelTales.Registries.RegistryEnums;
 public enum ConfigEnum {
     VOXELTALES_GENERAL_CONFIGS("VoxelTales_GeneralConfigs"),
     ENTITY_XP_CONFIGS("VoxelTales_EntityXPConfigs"),
-    WEAPON_LOOKUP_CONFIGS("VoxelTales_WeaponLookupConfigs");
+    WEAPON_LOOKUP_CONFIGS("VoxelTales_WeaponLookupConfigs"),
+    SKILL_LOOKUP_CONFIGS("VoxelTales_SkillLookupConfigs");
 
     private final String name;
 

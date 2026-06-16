@@ -6,6 +6,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
 import dev.VoxelTales.Configs.VoxelTalesConfigs;
+import dev.VoxelTales.Configs.VoxelWeaponConfigs;
 import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
 import kotlin.Pair;
@@ -25,18 +26,18 @@ public class VoxelMathHelper {
     }
 
     public static Map<String, Float> getCachedDamageMap(PlayerRef playerRef) {
-        return Objects.requireNonNull(getWeaponHandlerComponent(playerRef)).getCalculatedDamageMap();
+        return Objects.requireNonNull(getStatSnapshot(playerRef)).damageMap();
     }
 
     public static Map<String, Float> getCachedScalingMap(PlayerRef playerRef) {
-        return Objects.requireNonNull(getWeaponHandlerComponent(playerRef)).getCalculatedScalingMap();
+        return Objects.requireNonNull(getStatSnapshot(playerRef)).scalingMap();
     }
 
     public static float getCachedAttackSpeedMap(PlayerRef playerRef) {
-        return Objects.requireNonNull(getWeaponHandlerComponent(playerRef)).getCalculatedAttackSpeed();
+        return Objects.requireNonNull(getStatSnapshot(playerRef)).attackSpeed();
     }
 
-    private static WeaponHandlerComponent getWeaponHandlerComponent(PlayerRef playerRef) {
+    private static VoxelWeaponConfigs.WeaponStatSnapshot getStatSnapshot(PlayerRef playerRef) {
         Pair<Ref<EntityStore>, Store<EntityStore>> pair = getPlayerRefAndStore(playerRef);
         if (pair == null) {
             return null;
@@ -45,7 +46,7 @@ public class VoxelMathHelper {
         Ref<EntityStore> ref = pair.getFirst();
         Store<EntityStore> store = pair.getSecond();
 
-        return store.ensureAndGetComponent(ref, WeaponHandlerComponent.getComponentType());
+        return store.ensureAndGetComponent(ref, WeaponHandlerComponent.getComponentType()).getStatSnapshot();
     }
 
     private static Pair<Ref<EntityStore>, Store<EntityStore>> getPlayerRefAndStore(PlayerRef playerRef) {

@@ -37,6 +37,6 @@ public class RouterSkillInteraction extends RunRootInteraction {
 
         context.getMetaStore().putMetaObject(VoxelDamageMetadata.INTERACTION_SOURCE_KEY, "Skill");
 
-        context.execute(Objects.requireNonNull(RootInteraction.getAssetMap().getAsset(weaponHandlerComponent.getSelectedSkill())));
+        context.execute(Objects.requireNonNull(RootInteraction.getAssetMap().getAsset(weaponHandlerComponent.getSelectedSkillDefinition().getName())));
     }
 }

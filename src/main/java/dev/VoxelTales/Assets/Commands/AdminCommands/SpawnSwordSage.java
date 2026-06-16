@@ -2,9 +2,6 @@ package dev.VoxelTales.Assets.Commands.AdminCommands;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
@@ -16,6 +13,9 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.VoxelTales.Controllers.SwordSageController;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 public class SpawnSwordSage extends AbstractPlayerCommand {
     public SpawnSwordSage() {
@@ -43,8 +43,8 @@ public class SpawnSwordSage extends AbstractPlayerCommand {
         TransformComponent playerTransform = store.ensureAndGetComponent(ref, TransformComponent.getComponentType());
         Vector3d playerPosition = playerTransform.getPosition();
 
-        Vector3f finalRotation = rotation != null ? new Vector3f(rotation.getX(), rotation.getY(), rotation.getZ()) : null;
-        Vector3d finalPosition = position != null ? new Vector3d(position.getX(), position.getY(), position.getZ()) : playerPosition;
+        Vector3f finalRotation = rotation != null ? new Vector3f(rotation.x, rotation.y, rotation.z) : null;
+        Vector3d finalPosition = position != null ? new Vector3d(position.x, position.y, position.z) : playerPosition;
 
         world.execute(() -> SwordSageController.spawnSwordSage(world, finalPosition, finalRotation, equipmentId, roleId));
     }

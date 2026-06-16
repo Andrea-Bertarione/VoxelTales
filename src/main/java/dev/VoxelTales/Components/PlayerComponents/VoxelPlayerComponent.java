@@ -41,6 +41,8 @@ public class VoxelPlayerComponent implements Component<EntityStore> {
 
     public VoxelPlayerComponent() {
         this.weaponSlot = 0;
+        this.areStatsUpdated = false;
+        this.weaponStatModifiers = new HashMap<>();
     }
 
     public VoxelPlayerComponent(VoxelPlayerComponent clone) {

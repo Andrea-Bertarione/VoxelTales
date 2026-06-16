@@ -20,6 +20,7 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.VoxelTales.Assets.Balancing.CombatBalancing;
 import dev.VoxelTales.Components.CombatComponents.CombatTrackerComponent;
 import dev.VoxelTales.Components.PlayerComponents.WeaponHandlerComponent;
+import dev.VoxelTales.Configs.VoxelWeaponConfigs;
 import dev.VoxelTales.Registries.MetaData.VoxelDamageMetadata;
 import dev.VoxelTales.Registries.RegistryEnums.CacheEnum;
 import dev.VoxelTales.Registries.VoxelCacheRegistry;
@@ -57,8 +58,10 @@ public class DamageDealingSystem extends DamageEventSystem {
 
         float totalEffectiveBoost = 0.0f;
 
+        VoxelWeaponConfigs.WeaponStatSnapshot statSnapshot = weapon.getStatSnapshot();
+
         @SuppressWarnings("unchecked")
-        Map<String, Float> scalings = playerRef != null ? VoxelCacheRegistry.staticGet(CacheEnum.VOXEL_PLAYER_SCALING_CACHE, playerRef, Map.class) : weapon.getCalculatedScalingMap();
+        Map<String, Float> scalings = playerRef != null ? VoxelCacheRegistry.staticGetSynced(CacheEnum.VOXEL_PLAYER_SCALING_CACHE, playerRef.getUuid(), Map.class) : statSnapshot.scalingMap();
         for (Map.Entry<String, Float> entry : scalings.entrySet()) {
             float scalingValue = entry.getValue();
             float statBoost = 0f;
@@ -88,7 +91,7 @@ public class DamageDealingSystem extends DamageEventSystem {
 
         @SuppressWarnings("unchecked")
         Map<String, Float> typeMap = playerRef != null ?
-                VoxelCacheRegistry.staticGet(CacheEnum.VOXEL_PLAYER_DAMAGE_CACHE, playerRef, Map.class) : weapon.getCalculatedDamageMap(); // e.g., {"Fire": 0.7, "Magic": 0.3}
+                VoxelCacheRegistry.staticGetSynced(CacheEnum.VOXEL_PLAYER_DAMAGE_CACHE, playerRef.getUuid(), Map.class) : statSnapshot.damageMap(); // e.g., {"Fire": 0.7, "Magic": 0.3}
         if (typeMap.isEmpty()) return;
 
         boolean isFirst = true;
@@ -190,7 +193,7 @@ public class DamageDealingSystem extends DamageEventSystem {
         int weaponLevel = weaponHandlerComponent.getSwordInternalLevel();
         float levelMultiplier = 1.0f + (weaponLevel * CombatBalancing.LEVEL_DAMAGE_MULTIPLIER);
 
-        float atkSpeed = VoxelCacheRegistry.staticGet(CacheEnum.VOXEL_PLAYER_ATKSPEED_CACHE, playerRef, Float.class);
+        float atkSpeed = VoxelCacheRegistry.staticGetSynced(CacheEnum.VOXEL_PLAYER_ATKSPEED_CACHE, playerRef.getUuid(), Float.class);
         float speedMultiplier = CombatBalancing.getSpeedDamageMultiplier(atkSpeed);
 
         float finalScaledDamage = (baseDamage * speedMultiplier) * levelMultiplier * (1.0f + totalEffectiveBoost);

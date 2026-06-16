@@ -37,6 +37,6 @@ public class RouterSignatureInteraction extends RunRootInteraction {
 
         context.getMetaStore().putMetaObject(VoxelDamageMetadata.INTERACTION_SOURCE_KEY, "Signature");
 
-        context.execute(Objects.requireNonNull(RootInteraction.getAssetMap().getAsset(weaponHandlerComponent.getSelectedUltimate())));
+        context.execute(Objects.requireNonNull(RootInteraction.getAssetMap().getAsset(weaponHandlerComponent.getSelectedUltimateDefinition().getName())));
     }
 }

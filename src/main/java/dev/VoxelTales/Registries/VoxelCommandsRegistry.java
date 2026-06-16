@@ -3,6 +3,7 @@ package dev.VoxelTales.Registries;
 import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandRegistry;
+import dev.VoxelTales.Assets.Commands.ListAllSkillsCommand;
 import dev.VoxelTales.Assets.Commands.ChangeSlotCommand;
 import dev.VoxelTales.Assets.Commands.VoxelAdminCommandCollection;
 import dev.VoxelTales.Assets.Commands.VoxelShowCurrentStats;
@@ -16,6 +17,7 @@ public class VoxelCommandsRegistry extends AVoxelRegistry {
         registerCommand(commandRegistry, new ChangeSlotCommand());
         registerCommand(commandRegistry, new VoxelShowCurrentStats());
         registerCommand(commandRegistry, new VoxelAdminCommandCollection());
+        registerCommand(commandRegistry, new ListAllSkillsCommand());
 
         LoggerUtil.getLogger().info("[VoxelCommandsRegistry] Registered " + super.getRegistryCount() + " commands.");
     }

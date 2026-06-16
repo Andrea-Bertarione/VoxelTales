@@ -14,7 +14,10 @@
       },
       "Tier": 2,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "Quick": {
       "DamageScaling": {
@@ -28,7 +31,10 @@
       },
       "Tier": 2,
       "AttackSpeed": 1.100000023841858,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Small",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "Incandescent": {
       "DamageScaling": {
@@ -46,7 +52,10 @@
       },
       "Tier": 2,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "default": {
       "DamageScaling": {
@@ -58,7 +67,10 @@
       "Passives": {},
       "Tier": 1,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "Starter": {
       "DamageScaling": {
@@ -70,7 +82,10 @@
       "Passives": {},
       "Tier": 0,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "Old": {
       "DamageScaling": {
@@ -83,7 +98,10 @@
       "Passives": {},
       "Tier": 1,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     }
   },
   "Handles": {
@@ -100,7 +118,10 @@
       },
       "Tier": 2,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "Quick": {
       "DamageScaling": {
@@ -114,7 +135,10 @@
       },
       "Tier": 2,
       "AttackSpeed": 1.100000023841858,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Small",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "Incandescent": {
       "DamageScaling": {
@@ -132,7 +156,10 @@
       },
       "Tier": 2,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "default": {
       "DamageScaling": {
@@ -144,7 +171,10 @@
       "Passives": {},
       "Tier": 1,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "Starter": {
       "DamageScaling": {
@@ -156,7 +186,10 @@
       "Passives": {},
       "Tier": 0,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     },
     "Old": {
       "DamageScaling": {
@@ -169,7 +202,10 @@
       "Passives": {},
       "Tier": 1,
       "AttackSpeed": 1.0,
-      "ItemIconId": "Weapon_Sword_Steel"
+      "ItemIconId": "Weapon_Sword_Steel",
+      "Weight": "Medium",
+      "SkillPool": [],
+      "UltimatePool": []
     }
   }
 }
