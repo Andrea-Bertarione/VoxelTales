@@ -6,7 +6,7 @@
 
     <groupId>dev.Berta-Forge</groupId>
     <artifactId>VoxelTales</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2</version>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -35,13 +35,13 @@
         <dependency>
             <groupId>com.hypixel.hytale</groupId>
             <artifactId>Server</artifactId>
-            <version>2026.03.26-89796e57b</version>
+            <version>0.5.5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>curse.maven</groupId>
             <artifactId>hyui-1431415</artifactId>
-            <version>7820303</version>
+            <version>8151837</version>
         </dependency>
         <dependency>
             <groupId>irai.mod</groupId>
